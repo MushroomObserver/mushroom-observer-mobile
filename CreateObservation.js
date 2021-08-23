@@ -148,6 +148,7 @@ const CreateObservation = () => {
             <Row>
               <Label>Confidence</Label>
               <RNPickerSelect
+                style={{inputIOS: {color: '#007bff', fontSize: 18}}}
                 items={[
                   {label: "I'd Call It That", value: 3.0},
                   {label: 'Promising', value: 2.0},
