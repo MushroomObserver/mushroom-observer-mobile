@@ -18,7 +18,7 @@ import {
   View,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {Picker} from '@react-native-picker/picker';
+import RNPickerSelect from 'react-native-picker-select';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 import styles from './styles';
@@ -27,6 +27,11 @@ const Row = props => <View style={styles.row}>{props.children}</View>;
 const Field = props => <View style={styles.field}>{props.children}</View>;
 const Label = props => (
   <Text style={styles.label} {...props}>
+    {props.children}
+  </Text>
+);
+const Sublabel = props => (
+  <Text style={styles.sublabel} {...props}>
     {props.children}
   </Text>
 );
@@ -63,8 +68,9 @@ const CreateObservation = () => {
             <Row>
               <Label>When</Label>
               <DateTimePicker
-                style={{flexGrow: 1, margin: 0, padding: 0}}
                 value={when}
+                style={{width: 125}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
+                maximumDate={new Date()}
                 mode="date"
                 display="default"
                 onChange={onChangeWhen}
@@ -72,12 +78,30 @@ const CreateObservation = () => {
             </Row>
           </Field>
           <Field>
-            <Label>Where</Label>
-            <Input value={where} onChange={setWhere} />
+            <Label>Where (required)</Label>
+            <Row>
+              <Input value={where} onChange={setWhere} />
+              <Button title="Locate" />
+            </Row>
+            <Sublabel>
+              Where the observation was made. In the US this should be at least
+              accurate to the county. Examples:
+            </Sublabel>
+            <Sublabel>Albion, Mendocino Co., California, USA</Sublabel>
+            <Sublabel>
+              Hotel Parque dos Coqueiros, Aracaju, Sergipe, Brazil
+            </Sublabel>
+            <Sublabel>
+              *Use the Locate Button to bring this location up on the map. Then
+              click to add a marker and drag it to the specific Latitude &
+              Longitude.
+            </Sublabel>
           </Field>
           <Field>
-            <Label>Is this location where it was collected?</Label>
-            <Switch value={foundHere} onValueChange={setFoundHere} />
+            <Row>
+              <Label>Is this location where it was collected?</Label>
+              <Switch value={foundHere} onValueChange={setFoundHere} />
+            </Row>
           </Field>
           <View style={styles.row}>
             <Field>
@@ -105,40 +129,37 @@ const CreateObservation = () => {
           <Field>
             <Label>What</Label>
             <Input value={what} onChange={setWhat} />
+            <Sublabel>
+              The name you would apply to this observation. If you don’t know
+              what it is, just leave it blank. If you find a better name in the
+              future, you can always propose a name later.
+            </Sublabel>
+            <Sublabel>
+              <Text style={{fontWeight: 'bold'}}>
+                Scientific names are currently required,
+              </Text>{' '}
+              but do not include any author information. If multiple names
+              apply, you will be given the option to select between them. If the
+              name is not recognized in the database, then you will be given the
+              option to add the name or fix the spelling if it’s just a typo.
+            </Sublabel>
           </Field>
           <Field>
             <Row>
-              <Button
-                title="Camera"
-                onPress={() =>
-                  launchCamera({}, response => {
-                    console.log(response);
-                  })
-                }
-              />
-              <Button
-                title="Gallery"
-                onPress={() =>
-                  launchImageLibrary({}, response => {
-                    console.log(response);
-                  })
-                }
+              <Label>Confidence</Label>
+              <RNPickerSelect
+                items={[
+                  {label: "I'd Call It That", value: 3.0},
+                  {label: 'Promising', value: 2.0},
+                  {label: 'Could Be', value: 1.0},
+                  {label: 'Doubtful', value: -1.0},
+                  {label: 'Not Likely', value: -2.0},
+                  {label: 'As If!', value: -3.0},
+                ]}
+                onValueChange={setConfidence}
+                value={confidence}
               />
             </Row>
-          </Field>
-          <Field>
-            <Label>Confidence</Label>
-            <Picker
-              selectedValue={confidence}
-              onValueChange={value => setConfidence(value)}>
-              <Picker.Item label="" value="" />
-              <Picker.Item label="I'd Call It That" value="3.0" />
-              <Picker.Item label="Promising" value="2.0" />
-              <Picker.Item label="Could Be" value="1.0" />
-              <Picker.Item label="Doubtful" value="-1.0" />
-              <Picker.Item label="Not Likely" value="-2.0" />
-              <Picker.Item label="As If!" value="-3.0" />
-            </Picker>
           </Field>
           <Field>
             <Row>
@@ -175,6 +196,10 @@ const CreateObservation = () => {
                 onValueChange={setSpecimenAvailable}
               />
             </Row>
+            <Sublabel>
+              Check when there is a preserved specimen available for further
+              study.
+            </Sublabel>
           </Field>
           <Field>
             <Label>Notes</Label>
@@ -184,6 +209,40 @@ const CreateObservation = () => {
               multiline={true}
               onChange={setNotes}
             />
+            <Sublabel>
+              Please include any additional information you can think of about
+              this observation that isn’t clear from the photographs, e.g.,
+              habitat, substrate or nearby trees; distinctive texture, scent,
+              taste, staining or bruising; results of chemical or microscopic
+              analyses, etc.
+            </Sublabel>
+          </Field>
+          <Field>
+            <Label>Photos</Label>
+            <Row>
+              <Button
+                title="Camera"
+                onPress={() =>
+                  launchCamera(
+                    {mediaType: 'photo', selectionLimit: 1},
+                    response => {
+                      console.log(response);
+                    },
+                  )
+                }
+              />
+              <Button
+                title="Gallery"
+                onPress={() =>
+                  launchImageLibrary(
+                    {mediaType: 'photo', selectionLimit: 4},
+                    response => {
+                      console.log(response);
+                    },
+                  )
+                }
+              />
+            </Row>
           </Field>
         </View>
       </ScrollView>

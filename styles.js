@@ -11,16 +11,19 @@ import {StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   field: {
     flex: 1,
     margin: 10,
   },
   label: {
-    flexGrow: 1,
     margin: 5,
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
+  },
+  sublabel: {
+    margin: 5,
   },
   input: {
     flex: 1,

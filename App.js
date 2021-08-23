@@ -43,7 +43,13 @@ const App = () => {
             ),
           })}
         />
-        <Stack.Screen name="Create Observation" component={CreateObservation} />
+        <Stack.Screen
+          name="Create Observation"
+          component={CreateObservation}
+          options={({navigation}) => ({
+            headerRight: () => <Button title="Create" />,
+          })}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
