@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
 import {
   Button,
@@ -19,7 +11,8 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+
+import PhotoCarousel from './PhotoCarousel';
 
 import styles from './styles';
 
@@ -69,7 +62,7 @@ const CreateObservation = () => {
               <Label>When</Label>
               <DateTimePicker
                 value={when}
-                style={{width: 125}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
+                style={{width: 125, backfaceVisibility: false}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
                 maximumDate={new Date()}
                 mode="date"
                 display="default"
@@ -202,6 +195,7 @@ const CreateObservation = () => {
               study.
             </Sublabel>
           </Field>
+          <PhotoCarousel />
           <Field>
             <Label>Notes</Label>
             <Input
@@ -217,33 +211,6 @@ const CreateObservation = () => {
               taste, staining or bruising; results of chemical or microscopic
               analyses, etc.
             </Sublabel>
-          </Field>
-          <Field>
-            <Label>Photos</Label>
-            <Row>
-              <Button
-                title="Camera"
-                onPress={() =>
-                  launchCamera(
-                    {mediaType: 'photo', selectionLimit: 1},
-                    response => {
-                      console.log(response);
-                    },
-                  )
-                }
-              />
-              <Button
-                title="Gallery"
-                onPress={() =>
-                  launchImageLibrary(
-                    {mediaType: 'photo', selectionLimit: 4},
-                    response => {
-                      console.log(response);
-                    },
-                  )
-                }
-              />
-            </Row>
           </Field>
         </View>
       </ScrollView>
