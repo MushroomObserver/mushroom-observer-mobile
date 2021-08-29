@@ -12,6 +12,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 
+import Location from './Location';
 import PhotoCarousel from './PhotoCarousel';
 
 import styles from './styles';
@@ -32,12 +33,6 @@ const Input = props => <TextInput style={styles.input} {...props} />;
 
 const CreateObservation = () => {
   const [when, setWhen] = React.useState(new Date());
-  const [where, setWhere] = React.useState('');
-  const [foundHere, setFoundHere] = React.useState(true);
-  const [latitude, setLatitude] = React.useState('');
-  const [longitude, setLongitude] = React.useState('');
-  const [elevation, setElevation] = React.useState('');
-  const [hideCoordinates, setHideCoordinates] = React.useState(false);
   const [what, setWhat] = React.useState('');
   const [confidence, setConfidence] = React.useState('');
   const [sight, setSight] = React.useState(false);
@@ -70,55 +65,7 @@ const CreateObservation = () => {
               />
             </Row>
           </Field>
-          <Field>
-            <Label>Where (required)</Label>
-            <Row>
-              <Input value={where} onChange={setWhere} />
-              <Button title="Locate" />
-            </Row>
-            <Sublabel>
-              Where the observation was made. In the US this should be at least
-              accurate to the county. Examples:
-            </Sublabel>
-            <Sublabel>Albion, Mendocino Co., California, USA</Sublabel>
-            <Sublabel>
-              Hotel Parque dos Coqueiros, Aracaju, Sergipe, Brazil
-            </Sublabel>
-            <Sublabel>
-              *Use the Locate Button to bring this location up on the map. Then
-              click to add a marker and drag it to the specific Latitude &
-              Longitude.
-            </Sublabel>
-          </Field>
-          <Field>
-            <Row>
-              <Label>Is this location where it was collected?</Label>
-              <Switch value={foundHere} onValueChange={setFoundHere} />
-            </Row>
-          </Field>
-          <View style={styles.row}>
-            <Field>
-              <Label>Latitude</Label>
-              <Input value={latitude} onChange={setLatitude} />
-            </Field>
-            <Field>
-              <Label>Longitude</Label>
-              <Input value={longitude} onChange={setLongitude} />
-            </Field>
-            <Field>
-              <Label>Elevation</Label>
-              <Input value={elevation} onChange={setElevation} />
-            </Field>
-          </View>
-          <Field>
-            <Row>
-              <Label>Hide exact coordinates?</Label>
-              <Switch
-                value={hideCoordinates}
-                onValueChange={setHideCoordinates}
-              />
-            </Row>
-          </Field>
+          <Location />
           <Field>
             <Label>What</Label>
             <Input value={what} onChange={setWhat} />

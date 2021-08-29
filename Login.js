@@ -16,6 +16,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import Config from 'react-native-config';
 
 import styles from './styles';
 
@@ -29,20 +30,15 @@ const Label = props => (
 const Input = props => <TextInput style={styles.input} {...props} />;
 
 const Login = () => {
-  const DEVELOPMENT = true;
-  const AUTH_URL = DEVELOPMENT
-    ? 'http://localhost:3000'
-    : 'https://mushroomobserver.org';
-  const APP_API_KEY = DEVELOPMENT
-    ? 'not-my-api-key'
-    : 'definitely-not-my-api-key';
+  const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
+  const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
 
   const [username, onChangeUsername] = React.useState(null);
 
   const login = async () => {
     try {
       const apiKeyResponse = await fetch(
-        `${AUTH_URL}/api2/api_keys?api_key=${APP_API_KEY}&for_user=${username}&app=mobile-test&detail=high`,
+        `${API_URL}/api2/api_keys?api_key=${API_KEY}&for_user=${username}&app=mobile-test&detail=high`,
         {
           method: 'POST',
           headers: {

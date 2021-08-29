@@ -10,12 +10,13 @@ import {
 import Login from './Login';
 import ListObservations from './ListObservations';
 import CreateObservation from './CreateObservation';
+import MapScreen from './MapScreen';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => (
   <NavigationContainer>
-    <Stack.Navigator initialRouteName="Observations">
+    <Stack.Navigator initialRouteName="Select Location">
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen
         name="Observations"
@@ -34,6 +35,13 @@ const App = () => (
         component={CreateObservation}
         options={({navigation}) => ({
           headerRight: () => <Button title="Create" />,
+        })}
+      />
+      <Stack.Screen
+        name="Select Location"
+        component={MapScreen}
+        options={({navigation}) => ({
+          headerRight: () => <Button title="Select" />,
         })}
       />
     </Stack.Navigator>
