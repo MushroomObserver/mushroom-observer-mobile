@@ -1,36 +1,23 @@
 import React from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import GetLocation from 'react-native-get-location';
 import MapView from 'react-native-maps';
 
 const {width, height} = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
-const LATITUDE = 37.78825;
-const LONGITUDE = -122.4324;
-const LATITUDE_DELTA = 0.0922;
+const LATITUDE_DELTA = 0.052;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const MapScreen = () => {
+const MapScreen = ({
+  route: {
+    params: {latitude, longitude},
+  },
+}) => {
   const [region, setRegion] = React.useState({
-    latitude: LATITUDE,
-    longitude: LONGITUDE,
+    latitude,
+    longitude,
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
-  });
-
-  React.useEffect(() => {
-    const getLocation = async () => {
-      const newRegion = await GetLocation.getCurrentPosition({
-        enableHighAccuracy: false,
-        timeout: 1000,
-      });
-      setRegion({
-        latitude: newRegion.latitude,
-        longitude: newRegion.longitude,
-      });
-    };
-    getLocation();
   });
 
   return (

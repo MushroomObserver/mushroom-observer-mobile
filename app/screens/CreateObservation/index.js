@@ -1,37 +1,21 @@
 import React from 'react';
 import {
-  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
   Switch,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 
+import {Row, Field, Label, Sublabel, Input} from '../../components';
+
 import Location from './Location';
-import PhotoCarousel from './PhotoCarousel';
+import Photos from './Photos';
 
-import styles from './styles';
-
-const Row = props => <View style={styles.row}>{props.children}</View>;
-const Field = props => <View style={styles.field}>{props.children}</View>;
-const Label = props => (
-  <Text style={styles.label} {...props}>
-    {props.children}
-  </Text>
-);
-const Sublabel = props => (
-  <Text style={styles.sublabel} {...props}>
-    {props.children}
-  </Text>
-);
-const Input = props => <TextInput style={styles.input} {...props} />;
-
-const CreateObservation = () => {
+const CreateObservation = ({navigation}) => {
   const [when, setWhen] = React.useState(new Date());
   const [what, setWhat] = React.useState('');
   const [confidence, setConfidence] = React.useState('');
@@ -65,7 +49,7 @@ const CreateObservation = () => {
               />
             </Row>
           </Field>
-          <Location />
+          <Location navigation={navigation} />
           <Field>
             <Label>What</Label>
             <Input value={what} onChange={setWhat} />
@@ -84,11 +68,12 @@ const CreateObservation = () => {
               option to add the name or fix the spelling if it’s just a typo.
             </Sublabel>
           </Field>
+          <Photos />
           <Field>
             <Row>
               <Label>Confidence</Label>
               <RNPickerSelect
-                style={{inputIOS: {color: '#007bff', fontSize: 18}}}
+                style={{inputIOS: {color: '#007bff', margin: 8, fontSize: 18}}}
                 items={[
                   {label: "I'd Call It That", value: 3.0},
                   {label: 'Promising', value: 2.0},
@@ -142,7 +127,6 @@ const CreateObservation = () => {
               study.
             </Sublabel>
           </Field>
-          <PhotoCarousel />
           <Field>
             <Label>Notes</Label>
             <Input

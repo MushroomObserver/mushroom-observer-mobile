@@ -10,7 +10,7 @@ import {
 import Carousel, {ParallaxImage} from 'react-native-snap-carousel';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useActionSheet} from '@expo/react-native-action-sheet';
-import styles from './styles';
+import styles from '../../styles';
 
 const {width: screenWidth} = Dimensions.get('window');
 
@@ -22,13 +22,15 @@ const Label = props => (
   </Text>
 );
 
-const PhotoCarousel = props => {
+const PhotoPicker = props => {
+  const SELECTION_LIMIT = 10;
   const [photos, setPhotos] = useState([]);
   const [selected, setSelected] = useState(0);
   const {showActionSheetWithOptions} = useActionSheet();
 
   const addPhotos = addedPhotos => {
     const newPhotos = photos.concat(addedPhotos);
+    console.log(photos[0]);
     setPhotos(newPhotos);
   };
 
@@ -77,7 +79,10 @@ const PhotoCarousel = props => {
                       break;
                     case 1:
                       launchImageLibrary(
-                        {mediaType: 'photo', selectionLimit: 4 - photos.length},
+                        {
+                          mediaType: 'photo',
+                          selectionLimit: SELECTION_LIMIT - photos.length,
+                        },
                         ({assets}) => addPhotos(assets),
                       );
                       break;
@@ -87,7 +92,7 @@ const PhotoCarousel = props => {
                 },
               )
             }
-            disabled={photos && photos.length === 4}
+            disabled={photos && photos.length === SELECTION_LIMIT}
           />
         </Row>
       </Field>
@@ -109,7 +114,7 @@ const PhotoCarousel = props => {
   );
 };
 
-export default PhotoCarousel;
+export default PhotoPicker;
 
 const carouselStyles = StyleSheet.create({
   container: {

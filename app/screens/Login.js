@@ -1,33 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
-import {
-  Button,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {Button, SafeAreaView, ScrollView, StatusBar} from 'react-native';
 import Config from 'react-native-config';
-
-import styles from './styles';
-
-const Row = props => <View style={styles.row}>{props.children}</View>;
-const Field = props => <View style={styles.field}>{props.children}</View>;
-const Label = props => (
-  <Text style={styles.label} {...props}>
-    {props.children}
-  </Text>
-);
-const Input = props => <TextInput style={styles.input} {...props} />;
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {Row, Label, Field, Input} from '../components';
 
 const Login = () => {
   const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
@@ -48,28 +23,18 @@ const Login = () => {
         },
       );
       const apiKeyJson = await apiKeyResponse.json();
-      console.log(apiKeyJson);
       let {
         user,
         results: [{key}],
       } = apiKeyJson;
-      console.log(user, key);
-      const userResponse = await fetch(
-        `${AUTH_URL}/api2/user?api_key=${APP_API_KEY}&id=${user}`,
-        {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
+
+      await EncryptedStorage.setItem(
+        'USER',
+        JSON.stringify({name: username, id: user}),
       );
-      const userJson = await userResponse.json();
-      console.log(userJson);
+      await EncryptedStorage.setItem('USER_API_KEY', key);
     } catch (error) {
       console.error(error);
-    } finally {
-      console.log('done');
     }
   };
 
@@ -82,7 +47,6 @@ const Login = () => {
             <Label>Username</Label>
             <Input
               placeholder="username"
-              style={styles.input}
               onChangeText={onChangeUsername}
               value={username}
             />
