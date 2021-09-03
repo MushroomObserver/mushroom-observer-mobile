@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -9,14 +10,20 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
+import Config from 'react-native-config';
 
 import {Row, Field, Label, Sublabel, Input} from '../../components';
 
-import Location from './Location';
 import Photos from './Photos';
 
-const CreateObservation = ({navigation}) => {
+const CreateObservation = ({navigation, route}) => {
   const [when, setWhen] = React.useState(new Date());
+  const [where, setWhere] = React.useState('');
+  const [latitude, setLatitude] = React.useState('');
+  const [longitude, setLongitude] = React.useState('');
+  const [elevation, setElevation] = React.useState('');
+  const [foundHere, setFoundHere] = React.useState(true);
+  const [hideCoordinates, setHideCoordinates] = React.useState(false);
   const [what, setWhat] = React.useState('');
   const [confidence, setConfidence] = React.useState('');
   const [sight, setSight] = React.useState(false);
@@ -31,6 +38,39 @@ const CreateObservation = ({navigation}) => {
     setWhen(currentDate);
   };
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => <Button title="Save" />,
+    });
+  }, [navigation]);
+
+  React.useEffect(() => {
+    if (route.params?.region) {
+      setLatitude(route.params.region.latitude);
+      setLongitude(route.params.region.longitude);
+
+      const fetchElevation = async () => {
+        const elevationResponse = await fetch(
+          `https://maps.googleapis.com/maps/api/elevation/json?key=${
+            Config.GOOGLE_MAPS_API_KEY
+          }&locations=${encodeURIComponent(
+            `${route.params.region.latitude},${route.params.region.longitude}`,
+          )}`,
+          {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        const {results} = await elevationResponse.json();
+        setElevation(results[0].elevation);
+      };
+      fetchElevation();
+    }
+  }, [route.params?.region]);
+
   return (
     <SafeAreaView>
       <StatusBar />
@@ -41,7 +81,7 @@ const CreateObservation = ({navigation}) => {
               <Label>When</Label>
               <DateTimePicker
                 value={when}
-                style={{width: 125, backfaceVisibility: false}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
+                style={{width: 115, backfaceVisibility: false}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
                 maximumDate={new Date()}
                 mode="date"
                 display="default"
@@ -49,7 +89,91 @@ const CreateObservation = ({navigation}) => {
               />
             </Row>
           </Field>
-          <Location navigation={navigation} />
+          <Field>
+            <Label>Where (required)</Label>
+            <Row>
+              <Input value={where} onChangeText={setWhere} />
+              <Button
+                title="Locate"
+                disabled={!(where?.length > 0)}
+                onPress={async () => {
+                  const geocodeResponse = await fetch(
+                    `https://maps.googleapis.com/maps/api/geocode/json?key=${
+                      Config.GOOGLE_MAPS_API_KEY
+                    }&address=${encodeURIComponent(where)}`,
+                    {
+                      method: 'GET',
+                      headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                      },
+                    },
+                  );
+                  const {
+                    results: [
+                      {
+                        geometry: {
+                          location: {lat, lng},
+                        },
+                      },
+                    ],
+                  } = await geocodeResponse.json();
+                  navigation.navigate('Select Location', {
+                    latitude: lat,
+                    longitude: lng,
+                  });
+                }}
+              />
+            </Row>
+            <Sublabel>
+              Where the observation was made. In the US this should be at least
+              accurate to the county. Examples:
+            </Sublabel>
+            <Sublabel>
+              <Text style={{fontStyle: 'italic'}}>
+                Albion, Mendocino Co., California, USA
+              </Text>
+            </Sublabel>
+            <Sublabel>
+              <Text style={{fontStyle: 'italic'}}>
+                Hotel Parque dos Coqueiros, Aracaju, Sergipe, Brazil
+              </Text>
+            </Sublabel>
+            <Sublabel>
+              <Text style={{fontWeight: 'bold'}}>Use the Locate Button</Text> to
+              bring this location up on the map. Then click to add a marker and
+              drag it to the specific Latitude & Longitude.
+            </Sublabel>
+          </Field>
+          <Field>
+            <Row>
+              <Label>Is this location where it was collected?</Label>
+              <Switch value={foundHere} onValueChange={setFoundHere} />
+            </Row>
+          </Field>
+          <Row>
+            <Field>
+              <Label>Latitude</Label>
+              <Input value={`${latitude}`} />
+            </Field>
+            <Field>
+              <Label>Longitude</Label>
+              <Input value={`${longitude}`} />
+            </Field>
+            <Field>
+              <Label>Elevation</Label>
+              <Input value={`${elevation}`} />
+            </Field>
+          </Row>
+          <Field>
+            <Row>
+              <Label>Hide exact coordinates?</Label>
+              <Switch
+                value={hideCoordinates}
+                onValueChange={setHideCoordinates}
+              />
+            </Row>
+          </Field>
           <Field>
             <Label>What</Label>
             <Input value={what} onChange={setWhat} />

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from 'react-native';
+import {Alert, Button} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
@@ -10,19 +10,19 @@ import {
 import Login from './screens/Login';
 import ListObservations from './screens/ListObservations';
 import CreateObservation from './screens/CreateObservation';
-import MapScreen from './screens/MapScreen';
+import SelectLocation from './screens/SelectLocation';
 import Settings from './screens/Settings';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 const Stack = createNativeStackNavigator();
 const App = () => {
-  const [userApiKeyExists, setUserApiKeyExists] = React.useState(false);
+  const [userExists, setUserExists] = React.useState(false);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     async function retrieveUserApiKey() {
       try {
-        const userApiKey = await EncryptedStorage.getItem('USER_API_KEY');
-        setUserApiKeyExists(userApiKey !== undefined);
+        const user = await EncryptedStorage.getItem('USER');
+        setUserExists(user !== undefined);
       } catch (error) {
         console.log(error);
       }
@@ -30,10 +30,31 @@ const App = () => {
     retrieveUserApiKey();
   });
 
+  const logoutAlert = () =>
+    Alert.alert('Logout', 'Are you sure?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: async () => {
+          try {
+            await EncryptedStorage.clear();
+            setUserExists(false);
+            // Congrats! You've just cleared the device storage!
+          } catch (error) {
+            // There was an error on the native side
+          }
+        },
+      },
+    ]);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {!userApiKeyExists ? (
+        {!userExists ? (
           <Stack.Screen
             name="Login"
             component={Login}
@@ -47,10 +68,16 @@ const App = () => {
               name="Observations"
               component={ListObservations}
               options={({navigation}) => ({
-                headerRight: () => (
+                headerLeft: () => (
                   <Button
                     title="Settings"
                     onPress={() => navigation.navigate('Settings')}
+                  />
+                ),
+                headerRight: () => (
+                  <Button
+                    title="Create"
+                    onPress={() => navigation.navigate('Create Observation')}
                   />
                 ),
               })}
@@ -58,20 +85,19 @@ const App = () => {
             <Stack.Screen
               name="Create Observation"
               component={CreateObservation}
-              options={({navigation}) => ({
-                headerRight: () => <Button title="Create" />,
-              })}
             />
-            <Stack.Screen
-              name="Select Location"
-              component={MapScreen}
-              options={({navigation}) => ({
-                headerRight: () => <Button title="Select" />,
-              })}
-            />
+            <Stack.Screen name="Select Location" component={SelectLocation} />
           </>
         )}
-        <Stack.Screen name="Settings" component={Settings} />
+        <Stack.Screen
+          name="Settings"
+          component={Settings}
+          options={() => ({
+            headerRight: () => (
+              <Button title="Logout" onPress={() => logoutAlert()} />
+            ),
+          })}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

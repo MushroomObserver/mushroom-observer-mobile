@@ -30,9 +30,8 @@ const Login = () => {
 
       await EncryptedStorage.setItem(
         'USER',
-        JSON.stringify({name: username, id: user}),
+        JSON.stringify({name: username, id: user, apiKey: key}),
       );
-      await EncryptedStorage.setItem('USER_API_KEY', key);
     } catch (error) {
       console.error(error);
     }

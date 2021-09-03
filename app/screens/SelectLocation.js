@@ -1,6 +1,6 @@
 import React from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import MapView from 'react-native-maps';
+import {Button, Dimensions, StyleSheet, Text, View} from 'react-native';
+import MapView, {Marker} from 'react-native-maps';
 
 const {width, height} = Dimensions.get('window');
 
@@ -8,11 +8,30 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.052;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const MapScreen = ({
+const SelectLocation = ({
+  navigation,
   route: {
     params: {latitude, longitude},
   },
 }) => {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          title="Select"
+          onPress={() => {
+            // Pass and merge params back to home screen
+            navigation.navigate({
+              name: 'Create Observation',
+              params: {region},
+              merge: true,
+            });
+          }}
+        />
+      ),
+    });
+  }, [navigation, region]);
+
   const [region, setRegion] = React.useState({
     latitude,
     longitude,
@@ -26,8 +45,9 @@ const MapScreen = ({
         provider="google"
         style={mapStyles.map}
         initialRegion={region}
-        onRegionChange={setRegion}
-      />
+        onRegionChange={setRegion}>
+        <Marker coordinate={region} />
+      </MapView>
       <View style={[mapStyles.bubble, mapStyles.latlng]}>
         <Text style={mapStyles.centeredText}>
           {region.latitude.toPrecision(7)},{region.longitude.toPrecision(7)}
@@ -74,4 +94,4 @@ const mapStyles = StyleSheet.create({
   },
   centeredText: {textAlign: 'center'},
 });
-export default MapScreen;
+export default SelectLocation;
