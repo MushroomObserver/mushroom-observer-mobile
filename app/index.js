@@ -10,8 +10,10 @@ import {
 
 import Login from './screens/Login';
 import ListObservations from './screens/ListObservations';
-import CreateObservation from './screens/CreateObservation';
 import SelectLocation from './screens/CreateObservation/SelectLocation';
+import NameAndPhotos from './screens/CreateObservation/NameAndPhotos';
+import TimeAndLocation from './screens/CreateObservation/TimeAndLocation';
+import IdentificationAndNotes from './screens/CreateObservation/IdentificationAndNotes';
 import Settings from './screens/Settings';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
@@ -20,8 +22,13 @@ const Tab = createBottomTabNavigator();
 
 const CreateObservationStack = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Create Observation" component={CreateObservation} />
+    <Stack.Screen name="Name and Photos" component={NameAndPhotos} />
+    <Stack.Screen name="Time and Location" component={TimeAndLocation} />
     <Stack.Screen name="Select Location" component={SelectLocation} />
+    <Stack.Screen
+      name="Identification and Notes"
+      component={IdentificationAndNotes}
+    />
   </Stack.Navigator>
 );
 
@@ -77,7 +84,7 @@ const App = () => {
         <Tab.Navigator>
           <Tab.Screen name="Observations" component={ListObservations} />
           <Tab.Screen
-            name="Create Observations"
+            name="Create Observation"
             component={CreateObservationStack}
             options={{headerShown: false}}
           />
