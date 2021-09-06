@@ -2,6 +2,7 @@ import React from 'react';
 import {Alert, Button} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   ActionSheetProvider,
   connectActionSheet,
@@ -10,11 +11,20 @@ import {
 import Login from './screens/Login';
 import ListObservations from './screens/ListObservations';
 import CreateObservation from './screens/CreateObservation';
-import SelectLocation from './screens/SelectLocation';
+import SelectLocation from './screens/CreateObservation/SelectLocation';
 import Settings from './screens/Settings';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const CreateObservationStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Create Observation" component={CreateObservation} />
+    <Stack.Screen name="Select Location" component={SelectLocation} />
+  </Stack.Navigator>
+);
+
 const App = () => {
   const [userExists, setUserExists] = React.useState(false);
 
@@ -53,8 +63,8 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        {!userExists ? (
+      {!userExists ? (
+        <Stack.Navigator>
           <Stack.Screen
             name="Login"
             component={Login}
@@ -62,43 +72,26 @@ const App = () => {
               title: 'Mushroom Observer',
             }}
           />
-        ) : (
-          <>
-            <Stack.Screen
-              name="Observations"
-              component={ListObservations}
-              options={({navigation}) => ({
-                headerLeft: () => (
-                  <Button
-                    title="Settings"
-                    onPress={() => navigation.navigate('Settings')}
-                  />
-                ),
-                headerRight: () => (
-                  <Button
-                    title="Create"
-                    onPress={() => navigation.navigate('Create Observation')}
-                  />
-                ),
-              })}
-            />
-            <Stack.Screen
-              name="Create Observation"
-              component={CreateObservation}
-            />
-            <Stack.Screen name="Select Location" component={SelectLocation} />
-          </>
-        )}
-        <Stack.Screen
-          name="Settings"
-          component={Settings}
-          options={() => ({
-            headerRight: () => (
-              <Button title="Logout" onPress={() => logoutAlert()} />
-            ),
-          })}
-        />
-      </Stack.Navigator>
+        </Stack.Navigator>
+      ) : (
+        <Tab.Navigator>
+          <Tab.Screen name="Observations" component={ListObservations} />
+          <Tab.Screen
+            name="Create Observations"
+            component={CreateObservationStack}
+            options={{headerShown: false}}
+          />
+          <Tab.Screen
+            name="Settings"
+            component={Settings}
+            options={() => ({
+              headerRight: () => (
+                <Button title="Logout" onPress={() => logoutAlert()} />
+              ),
+            })}
+          />
+        </Tab.Navigator>
+      )}
     </NavigationContainer>
   );
 };

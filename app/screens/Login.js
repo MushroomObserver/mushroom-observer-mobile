@@ -1,37 +1,17 @@
 import React from 'react';
 import {Button, SafeAreaView, ScrollView, StatusBar} from 'react-native';
-import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {Row, Label, Field, Input} from '../components';
 
-const Login = () => {
-  const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
-  const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
+import {login} from '../api/musroomObserver';
 
+const Login = () => {
   const [username, onChangeUsername] = React.useState(null);
 
-  const login = async () => {
+  const submitLogin = async () => {
     try {
-      const apiKeyResponse = await fetch(
-        `${API_URL}/api2/api_keys?api_key=${API_KEY}&for_user=${username}&app=mobile-test&detail=high`,
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      const apiKeyJson = await apiKeyResponse.json();
-      let {
-        user,
-        results: [{key}],
-      } = apiKeyJson;
-
-      await EncryptedStorage.setItem(
-        'USER',
-        JSON.stringify({name: username, id: user, apiKey: key}),
-      );
+      const user = await login(username);
+      await EncryptedStorage.setItem('USER', JSON.stringify(user));
     } catch (error) {
       console.error(error);
     }
@@ -51,7 +31,7 @@ const Login = () => {
             />
           </Field>
         </Row>
-        <Button title="Login" onPress={() => login()} />
+        <Button title="Login" onPress={submitLogin} />
       </ScrollView>
     </SafeAreaView>
   );

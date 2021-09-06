@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, SafeAreaView, ScrollView, StatusBar} from 'react-native';
+import {SafeAreaView, ScrollView, StatusBar} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 import {Row, Field, Label, Sublabel} from '../components';

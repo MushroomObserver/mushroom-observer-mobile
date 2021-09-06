@@ -10,11 +10,11 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
-import Config from 'react-native-config';
 
 import {Row, Field, Label, Sublabel, Input} from '../../components';
 
 import Photos from './Photos';
+import {getElevation, getGeocode} from '../../api/google';
 
 const CreateObservation = ({navigation, route}) => {
   const [when, setWhen] = React.useState(new Date());
@@ -46,26 +46,16 @@ const CreateObservation = ({navigation, route}) => {
 
   React.useEffect(() => {
     if (route.params?.region) {
-      setLatitude(route.params.region.latitude);
-      setLongitude(route.params.region.longitude);
+      const region = route.params.region;
+      setLatitude(region.latitude);
+      setLongitude(region.longitude);
 
       const fetchElevation = async () => {
-        const elevationResponse = await fetch(
-          `https://maps.googleapis.com/maps/api/elevation/json?key=${
-            Config.GOOGLE_MAPS_API_KEY
-          }&locations=${encodeURIComponent(
-            `${route.params.region.latitude},${route.params.region.longitude}`,
-          )}`,
-          {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          },
+        const newElevation = await getElevation(
+          region.latitude,
+          region.longitude,
         );
-        const {results} = await elevationResponse.json();
-        setElevation(results[0].elevation);
+        setElevation(newElevation);
       };
       fetchElevation();
     }
@@ -76,6 +66,25 @@ const CreateObservation = ({navigation, route}) => {
       <StatusBar />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View>
+          <Photos />
+          <Field>
+            <Label>What</Label>
+            <Input value={what} onChange={setWhat} />
+            <Sublabel>
+              The name you would apply to this observation. If you don’t know
+              what it is, just leave it blank. If you find a better name in the
+              future, you can always propose a name later.
+            </Sublabel>
+            <Sublabel>
+              <Text style={{fontWeight: 'bold'}}>
+                Scientific names are currently required,
+              </Text>{' '}
+              but do not include any author information. If multiple names
+              apply, you will be given the option to select between them. If the
+              name is not recognized in the database, then you will be given the
+              option to add the name or fix the spelling if it’s just a typo.
+            </Sublabel>
+          </Field>
           <Field>
             <Row>
               <Label>When</Label>
@@ -97,31 +106,8 @@ const CreateObservation = ({navigation, route}) => {
                 title="Locate"
                 disabled={!(where?.length > 0)}
                 onPress={async () => {
-                  const geocodeResponse = await fetch(
-                    `https://maps.googleapis.com/maps/api/geocode/json?key=${
-                      Config.GOOGLE_MAPS_API_KEY
-                    }&address=${encodeURIComponent(where)}`,
-                    {
-                      method: 'GET',
-                      headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                      },
-                    },
-                  );
-                  const {
-                    results: [
-                      {
-                        geometry: {
-                          location: {lat, lng},
-                        },
-                      },
-                    ],
-                  } = await geocodeResponse.json();
-                  navigation.navigate('Select Location', {
-                    latitude: lat,
-                    longitude: lng,
-                  });
+                  const newLocation = await getGeocode(where);
+                  navigation.navigate('Select Location', newLocation);
                 }}
               />
             </Row>
@@ -174,25 +160,6 @@ const CreateObservation = ({navigation, route}) => {
               />
             </Row>
           </Field>
-          <Field>
-            <Label>What</Label>
-            <Input value={what} onChange={setWhat} />
-            <Sublabel>
-              The name you would apply to this observation. If you don’t know
-              what it is, just leave it blank. If you find a better name in the
-              future, you can always propose a name later.
-            </Sublabel>
-            <Sublabel>
-              <Text style={{fontWeight: 'bold'}}>
-                Scientific names are currently required,
-              </Text>{' '}
-              but do not include any author information. If multiple names
-              apply, you will be given the option to select between them. If the
-              name is not recognized in the database, then you will be given the
-              option to add the name or fix the spelling if it’s just a typo.
-            </Sublabel>
-          </Field>
-          <Photos />
           <Field>
             <Row>
               <Label>Confidence</Label>
