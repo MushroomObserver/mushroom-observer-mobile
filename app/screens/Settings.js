@@ -1,29 +1,11 @@
 import React from 'react';
 import {SafeAreaView, ScrollView, StatusBar} from 'react-native';
-import EncryptedStorage from 'react-native-encrypted-storage';
 
 import {Row, Field, Label, Sublabel} from '../components';
+import UserContext from '../components/UserContext';
 
 const Settings = () => {
-  const [user, setUser] = React.useState({
-    name: '',
-    id: 0,
-    apiKey: '',
-  });
-
-  React.useLayoutEffect(() => {
-    async function retrieveUserAndApiKey() {
-      try {
-        const storedUser = await EncryptedStorage.getItem('USER');
-        if (storedUser !== undefined) {
-          setUser(JSON.parse(storedUser));
-        }
-      } catch (error) {
-        // There was an error on the native side
-      }
-    }
-    retrieveUserAndApiKey();
-  });
+  const {user} = React.useContext(UserContext);
 
   return (
     <SafeAreaView>

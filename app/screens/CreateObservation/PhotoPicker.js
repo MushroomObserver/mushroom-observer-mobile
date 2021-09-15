@@ -30,7 +30,6 @@ const PhotoPicker = props => {
 
   const addPhotos = addedPhotos => {
     const newPhotos = photos.concat(addedPhotos);
-    console.log(photos[0]);
     setPhotos(newPhotos);
   };
 
