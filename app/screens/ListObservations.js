@@ -25,7 +25,7 @@ const ListObservations = () => {
         console.log(error);
       }
     };
-    loadObservations();
+    // loadObservations();
   }, [Observation, user]);
 
   return (
