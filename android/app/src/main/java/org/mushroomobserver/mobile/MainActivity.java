@@ -1,4 +1,4 @@
-package org.mushroomobserver;
+package org.mushroomobserver.mobile;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;

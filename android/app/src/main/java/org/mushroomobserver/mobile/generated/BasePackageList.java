@@ -1,4 +1,4 @@
-package org.mushroomobserver.generated;
+package org.mushroomobserver.mobile.generated;
 
 import java.util.Arrays;
 import java.util.List;
