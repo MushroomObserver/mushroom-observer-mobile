@@ -133,7 +133,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "org.mushroomobserver.mobile.mushroomobserver"
+        applicationId "org.mushroomobserver.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2

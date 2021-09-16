@@ -35,12 +35,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "org.mushroomobserver.mobile.mushroomobserver",
+    package = "org.mushroomobserver.mobile",
 )
 
 android_resource(
     name = "res",
-    package = "org.mushroomobserver.mobile.mushroomobserver",
+    package = "org.mushroomobserver.mobile",
     res = "src/main/res",
 )
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Button,
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -16,6 +17,7 @@ import {getElevation, getGeocode} from '../../api/google';
 
 const TimeAndLocation = ({navigation, route}) => {
   const [when, setWhen] = React.useState(new Date());
+  const [showDatePicker, setShowDatePicker] = React.useState(false);
   const [where, setWhere] = React.useState('');
   const [latitude, setLatitude] = React.useState('');
   const [longitude, setLongitude] = React.useState('');
@@ -23,9 +25,9 @@ const TimeAndLocation = ({navigation, route}) => {
   const [foundHere, setFoundHere] = React.useState(true);
   const [hideCoordinates, setHideCoordinates] = React.useState(false);
 
-  const onChangeWhen = (event, selectedDate) => {
-    const currentDate = selectedDate || when;
-    setWhen(currentDate);
+  const onChangeWhen = (_, selectedDate = when) => {
+    setShowDatePicker(false);
+    setWhen(new Date(selectedDate));
   };
 
   React.useLayoutEffect(() => {
@@ -64,14 +66,23 @@ const TimeAndLocation = ({navigation, route}) => {
           <Field>
             <Row>
               <Label>When</Label>
-              <DateTimePicker
-                value={when}
-                style={{width: 115, backfaceVisibility: false}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
-                maximumDate={new Date()}
-                mode="date"
-                display="default"
-                onChange={onChangeWhen}
-              />
+              {Platform.OS === 'android' && (
+                <Button
+                  title={when.toLocaleDateString('en-US')}
+                  onPress={() => setShowDatePicker(true)}
+                />
+              )}
+              {Platform.OS === 'ios' ||
+                (showDatePicker && (
+                  <DateTimePicker
+                    value={when}
+                    // style={{width: 115, backfaceVisibility: false}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
+                    maximumDate={new Date()}
+                    mode="date"
+                    display="calendar"
+                    onChange={onChangeWhen}
+                  />
+                ))}
             </Row>
           </Field>
           <Field>
