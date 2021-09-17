@@ -1,28 +1,16 @@
 import React, {useState} from 'react';
-import {
-  Button,
-  Text,
-  View,
-  Dimensions,
-  StyleSheet,
-  Platform,
-} from 'react-native';
+import {Button, View, Dimensions, StyleSheet, Platform} from 'react-native';
 import Carousel, {ParallaxImage} from 'react-native-snap-carousel';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useActionSheet} from '@expo/react-native-action-sheet';
-import styles from '../../styles';
+import {useNavigation} from '@react-navigation/core';
+import {Field, Row, Label} from '../../components';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-const Field = props => <View style={styles.field}>{props.children}</View>;
-const Row = props => <View style={styles.row}>{props.children}</View>;
-const Label = props => (
-  <Text style={styles.label} {...props}>
-    {props.children}
-  </Text>
-);
-
 const PhotoPicker = props => {
+  const navigation = useNavigation();
+
   const SELECTION_LIMIT = 10;
   const [photos, setPhotos] = useState([]);
   const [selected, setSelected] = useState(0);
@@ -41,7 +29,11 @@ const PhotoPicker = props => {
     }
   };
 
-  const renderItem = ({item, index}, parallaxProps) => {
+  const editPhoto = () => {
+    navigation.navigate('Edit Photo', photos[selected]);
+  };
+
+  const renderItem = ({item}, parallaxProps) => {
     return (
       <View style={carouselStyles.item}>
         <ParallaxImage
@@ -106,7 +98,10 @@ const PhotoPicker = props => {
             hasParallaxImages={true}
             onSnapToItem={setSelected}
           />
-          <Button title="Remove Image" onPress={removePhoto} />
+          <View style={carouselStyles.buttonContainer}>
+            <Button title="Remove" onPress={removePhoto} />
+            <Button title="Edit" onPress={editPhoto} />
+          </View>
         </View>
       )}
     </View>
@@ -119,6 +114,11 @@ const carouselStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   item: {
     width: screenWidth - 60,

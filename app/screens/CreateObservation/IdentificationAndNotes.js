@@ -13,11 +13,6 @@ import {Row, Field, Label, Sublabel, Input} from '../../components';
 
 const IdentificationAndNotes = ({navigation, route}) => {
   const [confidence, setConfidence] = React.useState('');
-  const [sight, setSight] = React.useState(false);
-  const [usedReferences, setUsedReferences] = React.useState(false);
-  const [microscopic, setMicroscopic] = React.useState(false);
-  const [chemical, setChemical] = React.useState(false);
-  const [specimenAvailable, setSpecimenAvailable] = React.useState(false);
   const [notes, setNotes] = React.useState('');
 
   React.useLayoutEffect(() => {
@@ -48,46 +43,6 @@ const IdentificationAndNotes = ({navigation, route}) => {
                 value={confidence}
               />
             </Row>
-          </Field>
-          <Field>
-            <Row>
-              <Label>Recognized by signt</Label>
-              <Switch value={sight} onValueChange={setSight} />
-            </Row>
-          </Field>
-          <Field>
-            <Row>
-              <Label>Used references</Label>
-              <Switch
-                value={usedReferences}
-                onValueChange={setUsedReferences}
-              />
-            </Row>
-          </Field>
-          <Field>
-            <Row>
-              <Label>Based on microscopic features</Label>
-              <Switch value={microscopic} onValueChange={setMicroscopic} />
-            </Row>
-          </Field>
-          <Field>
-            <Row>
-              <Label>Based on chemical features</Label>
-              <Switch value={chemical} onValueChange={setChemical} />
-            </Row>
-          </Field>
-          <Field>
-            <Row>
-              <Label>Specimen available</Label>
-              <Switch
-                value={specimenAvailable}
-                onValueChange={setSpecimenAvailable}
-              />
-            </Row>
-            <Sublabel>
-              Check when there is a preserved specimen available for further
-              study.
-            </Sublabel>
           </Field>
           <Field>
             <Label>Notes</Label>

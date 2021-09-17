@@ -17,7 +17,9 @@ import {getElevation, getGeocode} from '../../api/google';
 
 const TimeAndLocation = ({navigation, route}) => {
   const [when, setWhen] = React.useState(new Date());
-  const [showDatePicker, setShowDatePicker] = React.useState(false);
+  const [showDatePicker, setShowDatePicker] = React.useState(
+    Platform.OS === 'ios',
+  );
   const [where, setWhere] = React.useState('');
   const [latitude, setLatitude] = React.useState('');
   const [longitude, setLongitude] = React.useState('');
@@ -72,17 +74,16 @@ const TimeAndLocation = ({navigation, route}) => {
                   onPress={() => setShowDatePicker(true)}
                 />
               )}
-              {Platform.OS === 'ios' ||
-                (showDatePicker && (
-                  <DateTimePicker
-                    value={when}
-                    // style={{width: 115, backfaceVisibility: false}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
-                    maximumDate={new Date()}
-                    mode="date"
-                    display="calendar"
-                    onChange={onChangeWhen}
-                  />
-                ))}
+              {showDatePicker && (
+                <DateTimePicker
+                  value={when}
+                  style={{width: 80, backfaceVisibility: false}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
+                  maximumDate={new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={onChangeWhen}
+                />
+              )}
             </Row>
           </Field>
           <Field>

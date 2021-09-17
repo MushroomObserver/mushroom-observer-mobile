@@ -6,6 +6,7 @@ import SelectLocation from './SelectLocation';
 import NameAndPhotos from './NameAndPhotos';
 import TimeAndLocation from './TimeAndLocation';
 import IdentificationAndNotes from './IdentificationAndNotes';
+import EditPhoto from '../EditPhoto';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ const CreateObservation = () => (
       name="Identification and Notes"
       component={IdentificationAndNotes}
     />
+    <Stack.Screen name="Edit Photo" component={EditPhoto} />
   </Stack.Navigator>
 );
 
