@@ -3,9 +3,13 @@ import Config from 'react-native-config';
 const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
 const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
 
-export const login = async username => {
+export const login = async (username, password) => {
   const apiKeyResponse = await fetch(
-    `${API_URL}/api2/api_keys?api_key=${API_KEY}&for_user=${username}&app=mushroom-observer-mobile&detail=high`,
+    `${API_URL}/api2/api_keys?api_key=${API_KEY}&for_user=${encodeURIComponent(
+      username,
+    )}&password=${encodeURIComponent(
+      password,
+    )}&app=mushroom-observer-mobile&detail=high`,
     {
       method: 'POST',
       headers: {
