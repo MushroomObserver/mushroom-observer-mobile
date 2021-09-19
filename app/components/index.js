@@ -17,7 +17,24 @@ export const Sublabel = props => (
     {props.children}
   </Text>
 );
-export const Input = props => <TextInput style={styles.input} {...props} />;
+
+export class Input extends React.Component {
+  textInput;
+
+  focus() {
+    this.textInput.focus();
+  }
+
+  render() {
+    return (
+      <TextInput
+        ref={r => (this.textInput = r)}
+        style={styles.input}
+        {...this.props}
+      />
+    );
+  }
+}
 
 export default {
   Row,

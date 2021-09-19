@@ -4,19 +4,17 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  Switch,
   Text,
   View,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import RNPickerSelect from 'react-native-picker-select';
 
-import {Row, Field, Label, Sublabel, Input} from '../../components';
+import {Field, Label, Sublabel, Input} from '../../components';
 
 import Photos from './PhotoPicker';
+import {useNavigation} from '@react-navigation/core';
 
-const NameAndPhotos = ({navigation, route}) => {
-  const [what, setWhat] = React.useState('');
+const NameAndPhotos = () => {
+  const navigation = useNavigation();
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -28,6 +26,8 @@ const NameAndPhotos = ({navigation, route}) => {
       ),
     });
   }, [navigation]);
+
+  const [what, setWhat] = React.useState(null);
 
   return (
     <SafeAreaView>

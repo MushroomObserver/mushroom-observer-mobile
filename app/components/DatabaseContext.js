@@ -185,7 +185,7 @@ export const DatabaseProvider = props => {
     async function syncDatabase() {
       try {
         await database.sync({
-          force: true,
+          // force: true,
         });
       } catch (error) {
         console.log('load user error', error);

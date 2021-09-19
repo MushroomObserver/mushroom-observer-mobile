@@ -26,7 +26,6 @@ export const UserProvider = props => {
       const newUser = await musroomObserver.login(name, password);
       await EncryptedStorage.setItem('User', JSON.stringify(newUser));
       setUser(newUser);
-      console.log(newUser);
     } catch (error) {
       console.error('login error', error);
     }
