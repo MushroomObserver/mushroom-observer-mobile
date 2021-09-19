@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {connectActionSheet} from '@expo/react-native-action-sheet';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import Login from './screens/Login';
 import ListObservations from './screens/ListObservations';
 import CreateObservation from './screens/CreateObservation';
@@ -30,7 +31,19 @@ const App = () => {
           />
         </Stack.Navigator>
       ) : (
-        <Tab.Navigator>
+        <Tab.Navigator
+          screenOptions={({route}) => ({
+            tabBarIcon: ({size, color}) => {
+              switch (route.name) {
+                case 'Observations':
+                  return <Icon name="list" size={size} color={color} />;
+                case 'Create Observation':
+                  return <Icon name="eye" size={size} color={color} />;
+                case 'Settings':
+                  return <Icon name="cog" size={size} color={color} />;
+              }
+            },
+          })}>
           <Tab.Screen name="Observations" component={ListObservations} />
           <Tab.Screen
             name="Create Observation"

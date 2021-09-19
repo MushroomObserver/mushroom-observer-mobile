@@ -33,6 +33,7 @@
     "react-native-snap-carousel": "^3.9.1",
     "react-native-sqlite-storage": "^5.0.0",
     "react-native-unimodules": "^0.14.6",
+    "react-native-vector-icons": "^8.1.0",
     "react-redux": "^7.2.5",
     "rn-sequelize": "^5.21.4"
   },

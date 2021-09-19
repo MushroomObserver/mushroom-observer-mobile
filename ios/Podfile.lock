@@ -386,6 +386,8 @@ PODS:
   - RNScreens (3.5.0):
     - React-Core
     - React-RCTImage
+  - RNVectorIcons (8.1.0):
+    - React-Core
   - UMAppLoader (2.2.0)
   - UMCore (7.1.1)
   - UMReactNativeAdapter (6.3.5):
@@ -463,6 +465,7 @@ DEPENDENCIES:
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
   - "UMCore (from `../node_modules/@unimodules/core/ios`)"
   - "UMReactNativeAdapter (from `../node_modules/@unimodules/react-native-adapter/ios`)"
@@ -573,6 +576,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   UMAppLoader:
     :path: "../node_modules/unimodules-app-loader/ios"
   UMCore:
@@ -641,6 +646,7 @@ SPEC CHECKSUMS:
   RNCPicker: c3a3d481bec16624ed84a3c2a64c92fdc5515960
   RNDateTimePicker: c9911be59b1f8670b9f244b85af3a7c295e175ed
   RNScreens: 01ab149b5dd5c27f5ff26741b1d2bdf2cee1af35
+  RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   UMAppLoader: db2dae4bc3085e21f56d6d9cf7783d08c5999af4
   UMCore: 063edcab3a9de0c44301fe77af147aa1a654b40f
   UMReactNativeAdapter: 548b3f6ae0e814ce55c8b2059ac1dc4bf43ec2db
@@ -648,6 +654,6 @@ SPEC CHECKSUMS:
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 9512579fc12dfebcfde5cfb3dfb07d5eb9ebba00
+PODFILE CHECKSUM: de5a83165686bfaccef0e43a7a64961e64b0be9d
 
 COCOAPODS: 1.10.2

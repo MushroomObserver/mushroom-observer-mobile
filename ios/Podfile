@@ -19,6 +19,7 @@ target 'MushroomObserver' do
     :hermes_enabled => false
   )
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
 
   target 'MushroomObserverTests' do
