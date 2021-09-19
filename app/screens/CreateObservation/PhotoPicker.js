@@ -16,9 +16,11 @@ const PhotoPicker = props => {
   const [selected, setSelected] = useState(0);
   const {showActionSheetWithOptions} = useActionSheet();
 
-  const addPhotos = addedPhotos => {
-    const newPhotos = photos.concat(addedPhotos);
-    setPhotos(newPhotos);
+  const addPhotos = ({didCancel, assets}) => {
+    if (!didCancel) {
+      const newPhotos = photos.concat(assets);
+      setPhotos(newPhotos);
+    }
   };
 
   const removePhoto = () => {
@@ -37,7 +39,7 @@ const PhotoPicker = props => {
     return (
       <View style={carouselStyles.item}>
         <ParallaxImage
-          source={{uri: item.uri}}
+          source={{uri: item?.uri}}
           resizeMode="contain"
           containerStyle={carouselStyles.imageContainer}
           style={carouselStyles.image}
@@ -65,7 +67,7 @@ const PhotoPicker = props => {
                     case 0:
                       launchCamera(
                         {mediaType: 'photo', saveToPhotos: true},
-                        ({assets}) => addPhotos(assets),
+                        addPhotos,
                       );
                       break;
                     case 1:
@@ -74,7 +76,7 @@ const PhotoPicker = props => {
                           mediaType: 'photo',
                           selectionLimit: SELECTION_LIMIT - photos.length,
                         },
-                        ({assets}) => addPhotos(assets),
+                        addPhotos,
                       );
                       break;
                     default:

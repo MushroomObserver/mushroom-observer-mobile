@@ -4,12 +4,12 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  Switch,
+  StyleSheet,
   View,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
-import {Row, Field, Label, Sublabel, Input} from '../../components';
+import {Field, Label, Sublabel, Input} from '../../components';
 
 const IdentificationAndNotes = ({navigation, route}) => {
   const [confidence, setConfidence] = React.useState('');
@@ -27,22 +27,20 @@ const IdentificationAndNotes = ({navigation, route}) => {
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View>
           <Field>
-            <Row>
-              <Label>Confidence</Label>
-              <RNPickerSelect
-                style={{inputIOS: {color: '#007bff', margin: 8, fontSize: 18}}}
-                items={[
-                  {label: "I'd Call It That", value: 3.0},
-                  {label: 'Promising', value: 2.0},
-                  {label: 'Could Be', value: 1.0},
-                  {label: 'Doubtful', value: -1.0},
-                  {label: 'Not Likely', value: -2.0},
-                  {label: 'As If!', value: -3.0},
-                ]}
-                onValueChange={setConfidence}
-                value={confidence}
-              />
-            </Row>
+            <Label>Confidence</Label>
+            <RNPickerSelect
+              style={pickerSelectStyles}
+              items={[
+                {label: "I'd Call It That", value: 3.0},
+                {label: 'Promising', value: 2.0},
+                {label: 'Could Be', value: 1.0},
+                {label: 'Doubtful', value: -1.0},
+                {label: 'Not Likely', value: -2.0},
+                {label: 'As If!', value: -3.0},
+              ]}
+              onValueChange={setConfidence}
+              selectedValue={confidence}
+            />
           </Field>
           <Field>
             <Label>Notes</Label>
@@ -65,5 +63,19 @@ const IdentificationAndNotes = ({navigation, route}) => {
     </SafeAreaView>
   );
 };
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    color: '#007bff',
+    margin: 8,
+    fontSize: 18,
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 18,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+});
 
 export default IdentificationAndNotes;

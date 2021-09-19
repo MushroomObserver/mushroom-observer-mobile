@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
+  StyleSheet,
   View,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -76,22 +77,20 @@ const EditPhoto = props => {
             <Sublabel>Date the photograph or drawing was created.</Sublabel>
           </Field>
           <Field>
-            <Row>
-              <Label>License</Label>
-              <RNPickerSelect
-                style={{inputIOS: {color: '#007bff', margin: 8, fontSize: 18}}}
-                items={[
-                  {label: 'Creative Commons Non-commercial v3.0', value: 3.0},
-                  {
-                    label: 'Creative Commons Wikipedia Compatible v3.0',
-                    value: 2.0,
-                  },
-                  {label: 'Public Domain', value: 1.0},
-                ]}
-                onValueChange={setLicense}
-                value={license}
-              />
-            </Row>
+            <Label>License</Label>
+            <RNPickerSelect
+              style={pickerSelectStyles}
+              items={[
+                {label: 'Creative Commons Non-commercial v3.0', value: 3.0},
+                {
+                  label: 'Creative Commons Wikipedia Compatible v3.0',
+                  value: 2.0,
+                },
+                {label: 'Public Domain', value: 1.0},
+              ]}
+              onValueChange={setLicense}
+              value={license}
+            />
           </Field>
           <Field>
             <Label>Notes</Label>
@@ -110,5 +109,19 @@ const EditPhoto = props => {
     </SafeAreaView>
   );
 };
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    color: '#007bff',
+    margin: 8,
+    fontSize: 18,
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 18,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+});
 
 export default EditPhoto;

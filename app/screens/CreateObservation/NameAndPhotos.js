@@ -27,7 +27,7 @@ const NameAndPhotos = () => {
     });
   }, [navigation]);
 
-  const [what, setWhat] = React.useState(null);
+  const [what, setWhat] = React.useState('');
 
   return (
     <SafeAreaView>
