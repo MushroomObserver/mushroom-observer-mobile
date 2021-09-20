@@ -1,11 +1,46 @@
 import React from 'react';
-import {SafeAreaView, ScrollView, StatusBar} from 'react-native';
-
+import {
+  Alert,
+  Button,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  View,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/core';
+import {useDispatch} from 'react-redux';
 import {Row, Field, Label, Sublabel} from '../components';
-import UserContext from '../components/UserContext';
+import {useAuth} from '../hooks/useAuth';
+import {clearCredentials} from '../services/auth';
 
 const Settings = () => {
-  const {user} = React.useContext(UserContext);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const auth = useAuth();
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{marginRight: 15}}>
+          <Button
+            title="Logout"
+            onPress={() =>
+              Alert.alert('Logout', 'Are you sure?', [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'OK',
+                  onPress: () => dispatch(clearCredentials()),
+                },
+              ])
+            }
+          />
+        </View>
+      ),
+    });
+  }, [dispatch, navigation]);
 
   return (
     <SafeAreaView>
@@ -14,15 +49,15 @@ const Settings = () => {
         <Field>
           <Row>
             <Label>Logged in as</Label>
-            <Sublabel>{user?.name}</Sublabel>
+            <Sublabel>{auth.user.login_name}</Sublabel>
           </Row>
         </Field>
         <Field>
           <Row>
             <Label>Current API key</Label>
-            <Sublabel>{`********************${user?.apiKey.substring(
-              user?.apiKey.length - 4,
-              user?.apiKey.length,
+            <Sublabel>{`********************${auth.key.substring(
+              auth.key.length - 4,
+              auth.key.length,
             )}`}</Sublabel>
           </Row>
         </Field>

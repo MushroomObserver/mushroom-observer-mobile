@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, Button} from 'react-native';
+import {Alert, Button, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -9,18 +9,17 @@ import Login from './screens/Login';
 import ListObservations from './screens/ListObservations';
 import CreateObservation from './screens/CreateObservation';
 import Settings from './screens/Settings';
-
-import UserContext from './components/UserContext';
+import {useAuth} from './hooks/useAuth';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-  const {user, logout} = React.useContext(UserContext);
+  const auth = useAuth();
 
   return (
     <NavigationContainer>
-      {!user ? (
+      {!auth.user ? (
         <Stack.Navigator>
           <Stack.Screen
             name="Login"
@@ -35,7 +34,7 @@ const App = () => {
           screenOptions={({route}) => ({
             tabBarIcon: ({size, color}) => {
               switch (route.name) {
-                case 'Observations':
+                case 'My Observations':
                   return <Icon name="list" size={size} color={color} />;
                 case 'Create Observation':
                   return <Icon name="eye" size={size} color={color} />;
@@ -44,36 +43,13 @@ const App = () => {
               }
             },
           })}>
-          <Tab.Screen name="Observations" component={ListObservations} />
+          <Tab.Screen name="My Observations" component={ListObservations} />
           <Tab.Screen
             name="Create Observation"
             component={CreateObservation}
             options={{headerShown: false}}
           />
-          <Tab.Screen
-            name="Settings"
-            component={Settings}
-            options={() => ({
-              headerRight: () => (
-                <Button
-                  title="Logout"
-                  onPress={() =>
-                    Alert.alert('Logout', 'Are you sure?', [
-                      {
-                        text: 'Cancel',
-                        onPress: () => console.log('Cancel Pressed'),
-                        style: 'cancel',
-                      },
-                      {
-                        text: 'OK',
-                        onPress: logout,
-                      },
-                    ])
-                  }
-                />
-              ),
-            })}
-          />
+          <Tab.Screen name="Settings" component={Settings} />
         </Tab.Navigator>
       )}
     </NavigationContainer>

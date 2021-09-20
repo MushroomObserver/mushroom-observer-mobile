@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {
   Button,
   SafeAreaView,
@@ -7,27 +7,28 @@ import {
   Text,
   View,
 } from 'react-native';
-
-import {Field, Label, Sublabel, Input} from '../../components';
+import {useNavigation} from '@react-navigation/core';
 
 import Photos from './PhotoPicker';
-import {useNavigation} from '@react-navigation/core';
+import {Field, Label, Sublabel, Input} from '../../components';
 
 const NameAndPhotos = () => {
   const navigation = useNavigation();
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <Button
           title="Next"
-          onPress={() => navigation.navigate('Time and Location')}
+          onPress={() => {
+            navigation.navigate('Time and Location');
+          }}
         />
       ),
     });
   }, [navigation]);
 
-  const [what, setWhat] = React.useState('');
+  const [name, setName] = useState();
 
   return (
     <SafeAreaView>
@@ -35,8 +36,8 @@ const NameAndPhotos = () => {
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View>
           <Field>
-            <Label>What</Label>
-            <Input value={what} onChange={setWhat} />
+            <Label>Name</Label>
+            <Input value={name} onChange={setName} />
             <Sublabel>
               The name you would apply to this observation. If you don’t know
               what it is, just leave it blank. If you find a better name in the

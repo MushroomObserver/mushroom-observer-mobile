@@ -8,7 +8,7 @@ export const Field = props => (
   <View style={styles.field}>{props.children}</View>
 );
 export const Label = props => (
-  <Text style={styles.label} {...props}>
+  <Text style={[styles.label]} {...props}>
     {props.children}
   </Text>
 );

@@ -35,7 +35,6 @@ const EditPhoto = props => {
     navigation.setOptions({
       headerRight: () => <Button title="Save" />,
     });
-    console.log('params', route.params);
   }, [navigation, route]);
 
   return (

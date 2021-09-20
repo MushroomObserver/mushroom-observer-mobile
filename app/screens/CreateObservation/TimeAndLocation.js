@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useLayoutEffect, useEffect, useState} from 'react';
 import {
   Button,
   Platform,
@@ -11,52 +11,58 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+import {useNavigation, useRoute} from '@react-navigation/core';
+
 import {Row, Field, Label, Sublabel, Input} from '../../components';
 
 import {getElevation, getGeocode} from '../../api/google';
 
-const TimeAndLocation = ({navigation, route}) => {
-  const [when, setWhen] = React.useState(new Date());
-  const [showDatePicker, setShowDatePicker] = React.useState(
-    Platform.OS === 'ios',
-  );
-  const [where, setWhere] = React.useState('');
-  const [latitude, setLatitude] = React.useState('');
-  const [longitude, setLongitude] = React.useState('');
-  const [elevation, setElevation] = React.useState('');
-  const [foundHere, setFoundHere] = React.useState(true);
-  const [hideCoordinates, setHideCoordinates] = React.useState(false);
+const TimeAndLocation = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
 
-  const onChangeWhen = (_, selectedDate = when) => {
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(Platform.OS === 'ios');
+
+  const [location, setLocation] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const [altitude, setAltitude] = useState('');
+  const [isCollectionLocation, setIsCollectionLocation] = useState(true);
+  const [gpsHidden, setGpsHidden] = useState(false);
+
+  const onChangeDate = (_, selectedDate = date) => {
     setShowDatePicker(false);
-    setWhen(new Date(selectedDate));
+    setDate(new Date(selectedDate));
   };
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <Button
           title="Next"
-          onPress={() => navigation.navigate('Identification and Notes')}
+          onPress={() => {
+            navigation.navigate('Identification and Notes');
+          }}
         />
       ),
     });
   }, [navigation]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (route.params?.region) {
       const region = route.params.region;
       setLatitude(region.latitude);
       setLongitude(region.longitude);
 
-      const fetchElevation = async () => {
-        const newElevation = await getElevation(
+      const fetchAltitude = async () => {
+        const newAltitude = await getElevation(
           region.latitude,
           region.longitude,
         );
-        setElevation(newElevation);
+        setAltitude(newAltitude);
       };
-      fetchElevation();
+      fetchAltitude();
     }
   }, [route.params?.region]);
 
@@ -70,18 +76,18 @@ const TimeAndLocation = ({navigation, route}) => {
               <Label>When</Label>
               {Platform.OS === 'android' && (
                 <Button
-                  title={when.toLocaleDateString('en-US')}
+                  title={date.toLocaleDateString('en-US')}
                   onPress={() => setShowDatePicker(true)}
                 />
               )}
               {showDatePicker && (
                 <DateTimePicker
-                  value={when}
+                  value={date}
                   style={{width: 80, backfaceVisibility: false}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
                   maximumDate={new Date()}
                   mode="date"
                   display="default"
-                  onChange={onChangeWhen}
+                  onChange={onChangeDate}
                 />
               )}
             </Row>
@@ -89,13 +95,13 @@ const TimeAndLocation = ({navigation, route}) => {
           <Field>
             <Label>Where (required)</Label>
             <Row>
-              <Input value={where} onChangeText={setWhere} />
+              <Input value={location} onChangeText={setLocation} />
               <Button
                 title="Locate"
-                disabled={!(where?.length > 0)}
+                disabled={!(location?.length > 0)}
                 onPress={async () => {
-                  const newLocation = await getGeocode(where);
-                  navigation.navigate('Select Location', newLocation);
+                  const coordinates = await getGeocode(location);
+                  navigation.navigate('Select Location', coordinates);
                 }}
               />
             </Row>
@@ -122,30 +128,30 @@ const TimeAndLocation = ({navigation, route}) => {
           <Field>
             <Row>
               <Label>Is this location where it was collected?</Label>
-              <Switch value={foundHere} onValueChange={setFoundHere} />
+              <Switch
+                value={isCollectionLocation}
+                onValueChange={setIsCollectionLocation}
+              />
             </Row>
           </Field>
           <Row>
             <Field>
               <Label>Latitude</Label>
-              <Input value={`${latitude}`} />
+              <Input value={`${latitude}`} onChange={setLatitude} />
             </Field>
             <Field>
               <Label>Longitude</Label>
-              <Input value={`${longitude}`} />
+              <Input value={`${longitude}`} onChange={setLongitude} />
             </Field>
             <Field>
-              <Label>Elevation</Label>
-              <Input value={`${elevation}`} />
+              <Label>Altitude</Label>
+              <Input value={`${altitude}`} onChange={setAltitude} />
             </Field>
           </Row>
           <Field>
             <Row>
               <Label>Hide exact coordinates?</Label>
-              <Switch
-                value={hideCoordinates}
-                onValueChange={setHideCoordinates}
-              />
+              <Switch value={gpsHidden} onValueChange={setGpsHidden} />
             </Row>
           </Field>
         </View>

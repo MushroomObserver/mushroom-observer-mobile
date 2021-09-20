@@ -34,6 +34,7 @@ export const login = async (username, password) => {
 export const getObservations = async user => {
   const getObservationsResponse = await fetch(
     `${API_URL}/api2/observations?&api_key=${user.apiKey}&user=${user.name}&detail=high`,
+    // `${API_URL}/api2/observations?&api_key=${user.apiKey}&user=3525&detail=high`,
     {
       method: 'GET',
       headers: {
@@ -43,7 +44,6 @@ export const getObservations = async user => {
     },
   );
   const {results} = await getObservationsResponse.json();
-  console.log(user.apiKey, results);
   return results;
 };
 
