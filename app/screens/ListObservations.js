@@ -30,10 +30,10 @@ const Observation = ({item}) => {
           uri: `https://mushroomobserver.org/images/thumb/${item.primary_image?.id}.jpg`,
         }}
       />
-      <View>
+      <View style={styles.observationContent}>
         <View>
-          <Text>#{item.id}</Text>
-          <Text>{item.date}</Text>
+          <Text>Observation #{item.id}</Text>
+          <Text>Date: {item.date}</Text>
         </View>
         <View>
           <Text>{item.consensus?.name}</Text>
@@ -82,11 +82,22 @@ const styles = StyleSheet.create({
   observation: {
     flex: 1,
     flexDirection: 'row',
-    padding: 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: 'whitesmoke',
+    borderWidth: 1,
+    backgroundColor: 'white',
+    margin: 10,
+    padding: 7,
   },
   observationImage: {
-    width: 50,
-    height: 50,
+    flexGrow: 1,
+    marginLeft: 2,
+    marginRight: 7,
+  },
+  observationContent: {
+    flexGrow: 3,
   },
 });
 
