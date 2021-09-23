@@ -1,7 +1,7 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {setupListeners} from '@reduxjs/toolkit/query/react';
-import {mushroomObserver} from './services/mushroomObserver';
-import authReducer from './services/auth';
+import {mushroomObserver} from '../services/mushroomObserver';
+import authReducer from '../services/auth';
 
 import {offline} from '@redux-offline/redux-offline';
 import offlineConfig from '@redux-offline/redux-offline/lib/defaults';
@@ -16,9 +16,9 @@ export const store = configureStore({
   // and other useful features of `rtk-query`.
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware().concat(mushroomObserver.middleware),
-
+  devTools: true,
   // Adding offline enchancers
-  // enhancers: [offline(offlineConfig)],
+  enhancers: [offline(offlineConfig)],
 });
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

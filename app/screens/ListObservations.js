@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   FlatList,
   Image,
@@ -7,10 +7,36 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Config from 'react-native-config';
 import {useAuth} from '../hooks/useAuth';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useGetObservationsByUserQuery} from '../services/mushroomObserver';
+import {useDispatch} from 'react-redux';
 
+const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
+const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
+
+const loadObservations = login_name => ({
+  type: 'LOAD_OBSERVATIONS_REQUEST',
+  payload: {login_name},
+  meta: {
+    offline: {
+      // the network action to execute:
+      effect: {
+        url: `${API_URL}/api2/observations?api_key=${API_KEY}&user=${login_name}&detail=high`,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+      // action to dispatch when effect succeeds:
+      commit: {type: 'LOAD_OBSERVATIONS_COMMIT', meta: {login_name}},
+      // action to dispatch if network action fails permanently:
+      rollback: {type: 'LOAD_OBSERVATIONS_ROLLBACK', meta: {login_name}},
+    },
+  },
+});
 const NoObservations = () => (
   <View style={styles.noObservations}>
     <Icon name="eye-slash" size={50} color="gray" />
@@ -22,7 +48,6 @@ const Observation = ({item}) => {
   return (
     <TouchableOpacity style={styles.observation}>
       <Image
-        style={styles.observationImage}
         width={90}
         height={90}
         resizeMethod="scale"
@@ -31,15 +56,17 @@ const Observation = ({item}) => {
         }}
       />
       <View style={styles.observationContent}>
-        <View>
-          <Text>Observation #{item.id}</Text>
-          <Text>Date: {item.date}</Text>
-        </View>
-        <View>
-          <Text>{item.consensus?.name}</Text>
-          <Text>{item.consensus?.author}</Text>
-        </View>
-        <Text>{item.location?.name}</Text>
+        <Text>Observation #{item.id}</Text>
+        <Text>Date: {item.date}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail">
+          {`${item.consensus?.name} ${item.consensus?.author}`}
+        </Text>
+        <Text
+          style={styles.observationText}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {item.location?.name}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -47,12 +74,20 @@ const Observation = ({item}) => {
 
 const ListObservations = () => {
   const auth = useAuth();
-  const {data, isLoading} = useGetObservationsByUserQuery(auth);
+  // const {data, isLoading} = useGetObservationsByUserQuery(auth);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const action = loadObservations('oliviacpu');
+    console.log(action);
+    dispatch(action);
+  }, [dispatch]);
   return (
     <View style={styles.container}>
       <FlatList
-        data={data?.results}
-        refreshing={isLoading}
+        // data={data?.results}
+        // refreshing={isLoading}
         ListEmptyComponent={NoObservations}
         contentContainerStyle={styles.contentContainerStyle}
         renderItem={({item}) => <Observation item={item} />}
@@ -83,21 +118,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
     borderColor: 'whitesmoke',
     borderWidth: 1,
     backgroundColor: 'white',
     margin: 10,
     padding: 7,
   },
-  observationImage: {
-    flexGrow: 1,
-    marginLeft: 2,
-    marginRight: 7,
-  },
   observationContent: {
-    flexGrow: 3,
+    flex: 1,
+    flexGrow: 1,
+    marginHorizontal: 7,
+    justifyContent: 'space-between',
   },
 });
 

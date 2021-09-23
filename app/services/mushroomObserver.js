@@ -1,5 +1,7 @@
 import Config from 'react-native-config';
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import {normalize} from 'normalizr';
+import schema from '../store/schema';
 
 const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
 const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
@@ -31,6 +33,7 @@ export const mushroomObserver = createApi({
     getObservationsByUser: builder.query({
       query: ({user, key}) =>
         `observations?api_key=${key}&user=${user.login_name}&detail=high`,
+      // `observations?api_key=${key}&user=3746&detail=high`,
     }),
     getImageById: builder.query({
       query: id => `images?api_key=${API_KEY}&id=${id}&detail=high`,
