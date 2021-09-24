@@ -7,36 +7,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Config from 'react-native-config';
-import {useAuth} from '../hooks/useAuth';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {useGetObservationsByUserQuery} from '../services/mushroomObserver';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {loadObservations, selectAll} from '../store/observations';
 
-const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
-const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
-
-const loadObservations = login_name => ({
-  type: 'LOAD_OBSERVATIONS_REQUEST',
-  payload: {login_name},
-  meta: {
-    offline: {
-      // the network action to execute:
-      effect: {
-        url: `${API_URL}/api2/observations?api_key=${API_KEY}&user=${login_name}&detail=high`,
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      },
-      // action to dispatch when effect succeeds:
-      commit: {type: 'LOAD_OBSERVATIONS_COMMIT', meta: {login_name}},
-      // action to dispatch if network action fails permanently:
-      rollback: {type: 'LOAD_OBSERVATIONS_ROLLBACK', meta: {login_name}},
-    },
-  },
-});
 const NoObservations = () => (
   <View style={styles.noObservations}>
     <Icon name="eye-slash" size={50} color="gray" />
@@ -73,21 +47,18 @@ const Observation = ({item}) => {
 };
 
 const ListObservations = () => {
-  const auth = useAuth();
-  // const {data, isLoading} = useGetObservationsByUserQuery(auth);
-
   const dispatch = useDispatch();
+  const observations = useSelector(selectAll);
 
+  console.log(observations);
   useEffect(() => {
-    const action = loadObservations('oliviacpu');
-    console.log(action);
-    dispatch(action);
+    dispatch(loadObservations('oliviacpu'));
   }, [dispatch]);
+
   return (
     <View style={styles.container}>
       <FlatList
-        // data={data?.results}
-        // refreshing={isLoading}
+        data={observations}
         ListEmptyComponent={NoObservations}
         contentContainerStyle={styles.contentContainerStyle}
         renderItem={({item}) => <Observation item={item} />}
