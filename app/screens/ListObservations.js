@@ -50,7 +50,6 @@ const ListObservations = () => {
   const dispatch = useDispatch();
   const observations = useSelector(selectAll);
 
-  console.log(observations);
   useEffect(() => {
     dispatch(loadObservations('oliviacpu'));
   }, [dispatch]);

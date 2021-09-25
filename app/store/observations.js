@@ -4,17 +4,17 @@ import {createEntityAdapter, createSlice} from '@reduxjs/toolkit';
 const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
 const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
 
-const observationsAdapter = createEntityAdapter();
+const adapter = createEntityAdapter();
 
-const observationsSlice = createSlice({
+const slice = createSlice({
   name: 'observations',
-  initialState: observationsAdapter.getInitialState(),
+  initialState: adapter.getInitialState(),
   reducers: {
-    observationAdded: observationsAdapter.addOne,
-    observationUpdated: observationsAdapter.updateOne,
-    observationCreated: observationsAdapter.updateOne,
+    observationAdded: adapter.addOne,
+    observationUpdated: adapter.updateOne,
+    observationCreated: adapter.updateOne,
     observationsLoaded(state, action) {
-      observationsAdapter.setMany(state, action.payload.results);
+      adapter.setMany(state, action.payload.results);
     },
     loadObservations: {
       reducer: (state, action) => {},
@@ -48,7 +48,7 @@ const observationsSlice = createSlice({
 });
 
 // Extract the action creators object and the reducer
-const {actions, reducer} = observationsSlice;
+const {actions, reducer} = slice;
 
 console.log('reducer', reducer);
 // Extract and export each action creator by name
@@ -61,6 +61,6 @@ export const {
 } = actions;
 
 export const {selectAll, selectById, selectEntities, selectIds, selectTotal} =
-  observationsAdapter.getSelectors(state => state.observations);
+  adapter.getSelectors(state => state.observations);
 // Export the reducer, either as a default or named export
 export default reducer;

@@ -1,19 +1,39 @@
-import {configureStore} from '@reduxjs/toolkit';
+import {configureStore, combineReducers} from '@reduxjs/toolkit';
 
 import {offline} from '@redux-offline/redux-offline';
 import offlineConfig from '@redux-offline/redux-offline/lib/defaults';
 
-import {mushroomObserver} from '../services/mushroomObserver';
-import authReducer from '../services/auth';
+import {persistReducer} from 'redux-persist';
+import createSensitiveStorage from 'redux-persist-sensitive-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import auth from './auth';
 import observations from './observations';
+import images from './images';
+
+const mainPersistConfig = {
+  key: 'main',
+  storage: AsyncStorage,
+};
+
+const sensitiveStorage = createSensitiveStorage({
+  keychainService: 'mushroomObserverKeychain',
+  sharedPreferencesName: 'mushroomObserverSharedPreferences',
+});
+
+const authPersistConfig = {
+  key: 'auth',
+  storage: sensitiveStorage,
+};
+
+let rootReducer = combineReducers({
+  auth: persistReducer(authPersistConfig, auth),
+  observations: persistReducer(mainPersistConfig, observations),
+  images: persistReducer(mainPersistConfig, images),
+});
 
 export const store = configureStore({
-  reducer: {
-    // Add the generated reducer as a specific top-level slice
-    auth: authReducer,
-    [mushroomObserver.reducerPath]: mushroomObserver.reducer,
-    observations: observations,
-  },
+  reducer: rootReducer,
   devTools: true,
   // Adding offline enchancers
   enhancers: [offline(offlineConfig)],

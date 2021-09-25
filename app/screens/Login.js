@@ -1,50 +1,17 @@
-import React, {useState, useEffect, createRef} from 'react';
+import React, {useState, createRef} from 'react';
 import {Button, Image, SafeAreaView, ScrollView, StatusBar} from 'react-native';
+
 import {useDispatch} from 'react-redux';
-import {setCredentials} from '../services/auth';
-import {
-  useGetApiKeyForUserMutation,
-  useGetUserByIdQuery,
-} from '../services/mushroomObserver';
+import {login} from '../store/auth';
 import {Label, Field, Input} from '../components';
 
 const Login = () => {
   const dispatch = useDispatch();
-
-  const [
-    login,
-    {isLoading: isLoggingIn, data: loginResponse, isSuccess: isLoginSuccess},
-  ] = useGetApiKeyForUserMutation();
-
   const [username, onChangeUsername] = useState(null);
   const [password, onChangePassword] = useState(null);
   const passwordInput = createRef(null);
 
-  const {data: userResponse, isSuccess: isUserLoaded} = useGetUserByIdQuery(
-    loginResponse?.user,
-    {
-      skip: !isLoginSuccess,
-    },
-  );
-
-  const submitLogin = () => login({username, password});
-
-  useEffect(() => {
-    if (isLoginSuccess && isUserLoaded) {
-      dispatch(
-        setCredentials({
-          user: userResponse.results[0],
-          key: loginResponse.results[0].key,
-        }),
-      );
-    }
-  }, [
-    dispatch,
-    isLoginSuccess,
-    isUserLoaded,
-    loginResponse?.results,
-    userResponse?.results,
-  ]);
+  const submitLogin = () => dispatch(login(username, password));
   return (
     <SafeAreaView>
       <StatusBar />
@@ -94,7 +61,7 @@ const Login = () => {
         </Field>
         <Button
           title="Login"
-          disabled={!username || !password || isLoggingIn}
+          disabled={!username || !password}
           onPress={submitLogin}
         />
       </ScrollView>

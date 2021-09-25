@@ -19,12 +19,8 @@ target 'MushroomObserver' do
     :hermes_enabled => false
   )
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
 
-  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
 
-  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-async-storage/async-storage'
 
   target 'MushroomObserverTests' do
     inherit! :complete
