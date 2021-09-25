@@ -1,9 +1,35 @@
 import React, {useState, createRef} from 'react';
-import {Button, Image, SafeAreaView, ScrollView, StatusBar} from 'react-native';
+import {
+  Button,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  TextInput,
+} from 'react-native';
 
 import {useDispatch} from 'react-redux';
 import {login} from '../store/auth';
-import {Label, Field, Input} from '../components';
+import {Label, Field} from '../components';
+import styles from '../styles';
+
+class Input extends React.Component {
+  textInput;
+
+  focus() {
+    this.textInput.focus();
+  }
+
+  render() {
+    return (
+      <TextInput
+        ref={r => (this.textInput = r)}
+        style={styles.input}
+        {...this.props}
+      />
+    );
+  }
+}
 
 const Login = () => {
   const dispatch = useDispatch();

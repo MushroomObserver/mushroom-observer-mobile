@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -9,12 +9,19 @@ import ListObservations from './screens/ListObservations';
 import CreateObservation from './screens/CreateObservation';
 import Settings from './screens/Settings';
 import {useAuth} from './hooks/useAuth';
+import {useDispatch} from 'react-redux';
+import {loadNames} from './store/names';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
   const auth = useAuth();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loadNames());
+  });
 
   return (
     <NavigationContainer>

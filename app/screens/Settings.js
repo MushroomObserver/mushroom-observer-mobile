@@ -11,7 +11,7 @@ import {useNavigation} from '@react-navigation/core';
 import {useDispatch} from 'react-redux';
 import {Row, Field, Label, Sublabel} from '../components';
 import {useAuth} from '../hooks/useAuth';
-import {clearCredentials} from '../store/auth';
+import {logout} from '../store/auth';
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -32,7 +32,7 @@ const Settings = () => {
                 },
                 {
                   text: 'OK',
-                  onPress: () => dispatch(clearCredentials()),
+                  onPress: () => dispatch(logout()),
                 },
               ])
             }

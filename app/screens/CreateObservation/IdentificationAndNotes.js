@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useLayoutEffect} from 'react';
 import {
   Button,
   SafeAreaView,
@@ -8,18 +8,35 @@ import {
   View,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-
+import {useDispatch, useSelector} from 'react-redux';
+import {omitBy, isEmpty} from 'lodash';
+import {useNavigation} from '@react-navigation/core';
+import {selectDraft} from '../../store/draft';
+import {useAuth} from '../../hooks/useAuth';
+import {postObservation} from '../../store/observations';
 import {Field, Label, Sublabel, Input} from '../../components';
 
-const IdentificationAndNotes = ({navigation, route}) => {
-  const [confidence, setConfidence] = React.useState('');
-  const [notes, setNotes] = React.useState('');
+const IdentificationAndNotes = () => {
+  const dispatch = useDispatch();
+  const auth = useAuth();
+  const navigation = useNavigation();
+  const draft = useSelector(selectDraft);
 
-  React.useLayoutEffect(() => {
+  const [vote, setVote] = useState(draft.vote);
+  const [notes, setNotes] = useState(draft.notes);
+
+  useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => <Button title="Save" />,
+      headerRight: () => (
+        <Button
+          title="Save"
+          onPress={() => {
+            dispatch(postObservation(omitBy(draft, isEmpty), auth));
+          }}
+        />
+      ),
     });
-  }, [navigation]);
+  }, [auth, dispatch, draft, navigation]);
 
   return (
     <SafeAreaView>
@@ -38,8 +55,8 @@ const IdentificationAndNotes = ({navigation, route}) => {
                 {label: 'Not Likely', value: -2.0},
                 {label: 'As If!', value: -3.0},
               ]}
-              onValueChange={setConfidence}
-              selectedValue={confidence}
+              onValueChange={setVote}
+              selectedValue={vote}
             />
           </Field>
           <Field>
@@ -48,7 +65,7 @@ const IdentificationAndNotes = ({navigation, route}) => {
               numberOfLines={4}
               value={notes}
               multiline={true}
-              onChange={setNotes}
+              onChangeText={setNotes}
             />
             <Sublabel>
               Please include any additional information you can think of about

@@ -10,29 +10,37 @@ import {
   View,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import dayjs from 'dayjs';
 import {useNavigation, useRoute} from '@react-navigation/core';
 
 import {Row, Field, Label, Sublabel, Input} from '../../components';
 
 import {getElevation, getGeocode} from '../../api/google';
+import {useDispatch, useSelector} from 'react-redux';
+import {selectDraft, updateDraft} from '../../store/draft';
 
 const TimeAndLocation = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const dispatch = useDispatch();
+  const draft = useSelector(selectDraft);
 
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(dayjs(draft.date).toDate());
   const [showDatePicker, setShowDatePicker] = useState(Platform.OS === 'ios');
 
-  const [location, setLocation] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
-  const [altitude, setAltitude] = useState('');
-  const [isCollectionLocation, setIsCollectionLocation] = useState(true);
-  const [gpsHidden, setGpsHidden] = useState(false);
+  const [location, setLocation] = useState(draft.location);
+  const [latitude, setLatitude] = useState(draft.latitude);
+  const [longitude, setLongitude] = useState(draft.longitude);
+  const [altitude, setAltitude] = useState(draft.altitude);
+  const [is_collection_location, setIsCollectionLocation] = useState(
+    draft.is_collection_location,
+  );
+  const [gps_hidden, setGpsHidden] = useState(draft.gps_hidden);
 
   const onChangeDate = (_, selectedDate = date) => {
-    setShowDatePicker(false);
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+    }
     setDate(new Date(selectedDate));
   };
 
@@ -42,12 +50,33 @@ const TimeAndLocation = () => {
         <Button
           title="Next"
           onPress={() => {
+            dispatch(
+              updateDraft({
+                date: dayjs(date).format('YYYYMMDD'),
+                location,
+                latitude,
+                longitude,
+                altitude,
+                is_collection_location,
+                gps_hidden,
+              }),
+            );
             navigation.navigate('Identification and Notes');
           }}
         />
       ),
     });
-  }, [navigation]);
+  }, [
+    altitude,
+    date,
+    dispatch,
+    gps_hidden,
+    is_collection_location,
+    latitude,
+    location,
+    longitude,
+    navigation,
+  ]);
 
   useEffect(() => {
     if (route.params?.region) {
@@ -80,7 +109,7 @@ const TimeAndLocation = () => {
                   onPress={() => setShowDatePicker(true)}
                 />
               )}
-              {showDatePicker && (
+              {(Platform.OS === 'ios' || showDatePicker) && (
                 <DateTimePicker
                   value={date}
                   style={{width: 80, backfaceVisibility: false}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
@@ -129,7 +158,7 @@ const TimeAndLocation = () => {
             <Row>
               <Label>Is this location where it was collected?</Label>
               <Switch
-                value={isCollectionLocation}
+                value={is_collection_location}
                 onValueChange={setIsCollectionLocation}
               />
             </Row>
@@ -137,21 +166,21 @@ const TimeAndLocation = () => {
           <Row>
             <Field>
               <Label>Latitude</Label>
-              <Input value={`${latitude}`} onChange={setLatitude} />
+              <Input value={`${latitude}`} onChangeText={setLatitude} />
             </Field>
             <Field>
               <Label>Longitude</Label>
-              <Input value={`${longitude}`} onChange={setLongitude} />
+              <Input value={`${longitude}`} onChangeText={setLongitude} />
             </Field>
             <Field>
               <Label>Altitude</Label>
-              <Input value={`${altitude}`} onChange={setAltitude} />
+              <Input value={`${altitude}`} onChangeText={setAltitude} />
             </Field>
           </Row>
           <Field>
             <Row>
               <Label>Hide exact coordinates?</Label>
-              <Switch value={gpsHidden} onValueChange={setGpsHidden} />
+              <Switch value={gps_hidden} onValueChange={setGpsHidden} />
             </Row>
           </Field>
         </View>

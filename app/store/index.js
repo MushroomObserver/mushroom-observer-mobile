@@ -10,6 +10,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from './auth';
 import observations from './observations';
 import images from './images';
+import names from './images';
+import draft from './draft';
 
 const mainPersistConfig = {
   key: 'main',
@@ -30,6 +32,8 @@ let rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, auth),
   observations: persistReducer(mainPersistConfig, observations),
   images: persistReducer(mainPersistConfig, images),
+  names: persistReducer(mainPersistConfig, names),
+  draft: persistReducer(mainPersistConfig, draft),
 });
 
 export const store = configureStore({

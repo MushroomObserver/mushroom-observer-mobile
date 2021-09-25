@@ -21,6 +21,7 @@
     "@redux-offline/redux-offline": "^2.6.0-native.1",
     "@reduxjs/toolkit": "^1.6.1",
     "@unimodules/core": "^7.1.1",
+    "dayjs": "^1.10.7",
     "expo-sqlite": "^9.2.1",
     "lodash": "^4.17.21",
     "normalizr": "^3.6.1",

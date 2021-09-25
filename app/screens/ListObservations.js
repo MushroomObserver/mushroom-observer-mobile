@@ -21,14 +21,16 @@ const NoObservations = () => (
 const Observation = ({item}) => {
   return (
     <TouchableOpacity style={styles.observation}>
-      <Image
-        width={90}
-        height={90}
-        resizeMethod="scale"
-        source={{
-          uri: `https://mushroomobserver.org/images/thumb/${item.primary_image?.id}.jpg`,
-        }}
-      />
+      {item.primary_image && (
+        <Image
+          width={90}
+          height={90}
+          resizeMethod="scale"
+          source={{
+            uri: `https://mushroomobserver.org/images/thumb/${item.primary_image.id}.jpg`,
+          }}
+        />
+      )}
       <View style={styles.observationContent}>
         <Text>Observation #{item.id}</Text>
         <Text>Date: {item.date}</Text>

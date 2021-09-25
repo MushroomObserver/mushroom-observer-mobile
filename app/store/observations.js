@@ -10,11 +10,20 @@ const slice = createSlice({
   name: 'observations',
   initialState: adapter.getInitialState(),
   reducers: {
-    observationAdded: adapter.addOne,
-    observationUpdated: adapter.updateOne,
-    observationCreated: adapter.updateOne,
+    observationCreated(state, action) {
+      if (!action.payload.errors) {
+        adapter.addOne(state, action.payload.results);
+      }
+    },
+    observationUpdated(state, action) {
+      if (!action.payload.errors) {
+        adapter.setOne(state, action.payload.results);
+      }
+    },
     observationsLoaded(state, action) {
-      adapter.setMany(state, action.payload.results);
+      if (!action.payload.errors) {
+        adapter.addMany(state, action.payload.results);
+      }
     },
     loadObservations: {
       reducer: (state, action) => {},
@@ -28,7 +37,7 @@ const slice = createSlice({
                 method: 'GET',
                 headers: {
                   Accept: 'application/json',
-                  'Content-Type': 'application/json',
+                  'content-type': 'application/json',
                 },
               },
               commit: {
@@ -36,8 +45,43 @@ const slice = createSlice({
                 meta: {login_name},
               },
               rollback: {
-                type: 'observations/observationsRolledBack',
+                type: 'observations/loadRolledBack',
                 meta: {login_name},
+              },
+            },
+          },
+        };
+      },
+    },
+    postObservation: {
+      reducer: (state, action) => {},
+      prepare: (observation, auth) => {
+        console.log('observation', observation);
+        let body = '';
+        for (const key in observation) {
+          body += `${key}=${observation[key]}&`;
+        }
+        console.log('body', body);
+        return {
+          payload: observation,
+          meta: {
+            offline: {
+              effect: {
+                url: `${API_URL}/api2/observations?api_key=${auth.key}&detail=high`,
+                method: 'POST',
+                body,
+                headers: {
+                  Accept: 'application/json',
+                  'content-type': 'application/x-www-form-urlencoded',
+                },
+              },
+              commit: {
+                type: 'observations/observationCreated',
+                meta: observation,
+              },
+              rollback: {
+                type: 'observations/createRolledBack',
+                meta: observation,
               },
             },
           },
@@ -50,7 +94,6 @@ const slice = createSlice({
 // Extract the action creators object and the reducer
 const {actions, reducer} = slice;
 
-console.log('reducer', reducer);
 // Extract and export each action creator by name
 export const {
   observationAdded,
@@ -58,6 +101,7 @@ export const {
   observationUpdated,
   observationsLoaded,
   loadObservations,
+  postObservation,
 } = actions;
 
 export const {selectAll, selectById, selectEntities, selectIds, selectTotal} =

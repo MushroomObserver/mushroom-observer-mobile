@@ -9,11 +9,16 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 
-import Photos from './PhotoPicker';
 import {Field, Label, Sublabel, Input} from '../../components';
+import PhotoPicker from './PhotoPicker';
+import {useDispatch, useSelector} from 'react-redux';
+import {selectDraft, updateDraft} from '../../store/draft';
 
 const NameAndPhotos = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+  const draft = useSelector(selectDraft);
+  const [name, setName] = useState(draft.name);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -21,14 +26,13 @@ const NameAndPhotos = () => {
         <Button
           title="Next"
           onPress={() => {
+            dispatch(updateDraft({name}));
             navigation.navigate('Time and Location');
           }}
         />
       ),
     });
-  }, [navigation]);
-
-  const [name, setName] = useState();
+  }, [dispatch, name, navigation]);
 
   return (
     <SafeAreaView>
@@ -37,7 +41,7 @@ const NameAndPhotos = () => {
         <View>
           <Field>
             <Label>Name</Label>
-            <Input value={name} onChange={setName} />
+            <Input value={name} onChangeText={setName} />
             <Sublabel>
               The name you would apply to this observation. If you don’t know
               what it is, just leave it blank. If you find a better name in the
@@ -53,7 +57,7 @@ const NameAndPhotos = () => {
               option to add the name or fix the spelling if it’s just a typo.
             </Sublabel>
           </Field>
-          <Photos />
+          <PhotoPicker />
         </View>
       </ScrollView>
     </SafeAreaView>

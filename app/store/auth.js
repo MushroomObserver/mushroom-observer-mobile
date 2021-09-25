@@ -13,7 +13,9 @@ const slice = createSlice({
         user,
         results: [{key}],
       } = action.payload;
+
       const {login_name} = action.meta;
+
       state.user = {id: user, login_name};
       state.key = key;
     },
