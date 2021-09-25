@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from './auth';
 import observations from './observations';
 import images from './images';
-import names from './images';
+import names from './names';
 import draft from './draft';
 
 const mainPersistConfig = {

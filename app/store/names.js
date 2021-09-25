@@ -9,11 +9,14 @@ const slice = createSlice({
   name: 'names',
   initialState: adapter.getInitialState(),
   reducers: {
+    preloadNames: (state, action) => {
+      const names = require('../name_primer.json');
+      adapter.addMany(state, names);
+    },
     namesLoaded: (state, action) => {
-      console.log('names loaded', action.type);
       adapter.addMany(state, action.payload);
     },
-    loadNames: {
+    reloadNames: {
       reducer: (state, action) => {},
       prepare: () => {
         return {
@@ -45,7 +48,7 @@ const slice = createSlice({
 const {actions, reducer} = slice;
 
 // Extract and export each action creator by name
-export const {loadNames} = actions;
+export const {reloadNames, preloadNames} = actions;
 
 export const {selectAll, selectById, selectEntities, selectIds, selectTotal} =
   adapter.getSelectors(state => state.names);

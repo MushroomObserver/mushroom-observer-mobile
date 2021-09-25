@@ -10,7 +10,7 @@ import CreateObservation from './screens/CreateObservation';
 import Settings from './screens/Settings';
 import {useAuth} from './hooks/useAuth';
 import {useDispatch} from 'react-redux';
-import {loadNames} from './store/names';
+import {preloadNames} from './store/names';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,7 +20,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadNames());
+    dispatch(preloadNames());
   });
 
   return (
