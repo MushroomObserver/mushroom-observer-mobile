@@ -12,12 +12,13 @@ const slice = createSlice({
   reducers: {
     observationCreated(state, action) {
       if (!action.payload.errors) {
-        adapter.addOne(state, action.payload.results);
+        console.log(action.payload.results);
+        adapter.addOne(state, action.payload.results[0]);
       }
     },
     observationUpdated(state, action) {
       if (!action.payload.errors) {
-        adapter.setOne(state, action.payload.results);
+        adapter.setOne(state, action.payload.results[0]);
       }
     },
     observationsLoaded(state, action) {

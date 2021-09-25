@@ -35,13 +35,15 @@ const Observation = ({item}) => {
         <Text>Observation #{item.id}</Text>
         <Text>Date: {item.date}</Text>
         <Text numberOfLines={1} ellipsizeMode="tail">
-          {`${item.consensus?.name} ${item.consensus?.author}`}
+          {`${item.consensus?.name} ${
+            item.consensus?.author ? item.consensus.author : ''
+          }`}
         </Text>
         <Text
           style={styles.observationText}
           numberOfLines={1}
           ellipsizeMode="tail">
-          {item.location?.name}
+          {item.location_name}
         </Text>
       </View>
     </TouchableOpacity>
