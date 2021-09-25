@@ -11,7 +11,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import {useDispatch, useSelector} from 'react-redux';
 import {omitBy, isEmpty} from 'lodash';
 import {useNavigation} from '@react-navigation/core';
-import {selectDraft} from '../../store/draft';
+import {clearDraft, selectDraft} from '../../store/draft';
 import {useAuth} from '../../hooks/useAuth';
 import {postObservation} from '../../store/observations';
 import {Field, Label, Sublabel, Input} from '../../components';
@@ -31,6 +31,11 @@ const IdentificationAndNotes = () => {
         <Button
           title="Save"
           onPress={() => {
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'My Observations'}],
+            });
+            dispatch(clearDraft());
             dispatch(postObservation(omitBy(draft, isEmpty), auth));
           }}
         />

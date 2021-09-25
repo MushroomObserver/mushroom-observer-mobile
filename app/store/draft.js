@@ -5,15 +5,15 @@ import {merge} from 'lodash';
 const slice = createSlice({
   name: 'draft',
   initialState: {
-    name: undefined,
+    name: '',
     date: dayjs().format('YYYYMMDD'),
     gps_hidden: false,
     is_collection_location: true,
-    location: undefined,
-    latitude: undefined,
-    longitude: undefined,
-    altitude: undefined,
-    notes: undefined,
+    location: '',
+    latitude: '',
+    longitude: '',
+    altitude: '',
+    notes: '',
     vote: undefined,
   },
   reducers: {

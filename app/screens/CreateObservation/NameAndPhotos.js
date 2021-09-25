@@ -1,5 +1,6 @@
 import React, {useLayoutEffect, useState} from 'react';
 import {
+  Alert,
   Button,
   SafeAreaView,
   ScrollView,
@@ -12,7 +13,7 @@ import {useNavigation} from '@react-navigation/core';
 import {Field, Label, Sublabel, Input} from '../../components';
 import PhotoPicker from './PhotoPicker';
 import {useDispatch, useSelector} from 'react-redux';
-import {selectDraft, updateDraft} from '../../store/draft';
+import {clearDraft, selectDraft, updateDraft} from '../../store/draft';
 
 const NameAndPhotos = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,25 @@ const NameAndPhotos = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerLeft: () => (
+        <View>
+          <Button
+            title="Clear"
+            onPress={() =>
+              Alert.alert('Clear', 'Are you sure?', [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'OK',
+                  onPress: () => dispatch(clearDraft()),
+                },
+              ])
+            }
+          />
+        </View>
+      ),
       headerRight: () => (
         <Button
           title="Next"
