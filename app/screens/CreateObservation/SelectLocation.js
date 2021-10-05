@@ -1,42 +1,62 @@
-import React from 'react';
-import {Button, Dimensions, StyleSheet, Text, View} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import { useNavigation } from '@react-navigation/core';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { Button, Dimensions, StyleSheet, Text, View } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import { useDispatch, useSelector } from 'react-redux';
 
-const {width, height} = Dimensions.get('window');
+import { getElevation, getGeocode } from '../../api/google';
+import { selectDraft, updateDraft } from '../../store/draft';
+
+const { width, height } = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.052;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const SelectLocation = ({
-  navigation,
-  route: {
-    params: {latitude, longitude},
-  },
-}) => {
-  React.useLayoutEffect(() => {
+const SelectLocation = () => {
+  const navigation = useNavigation();
+
+  const draft = useSelector(selectDraft);
+  const dispatch = useDispatch();
+
+  const [region, setRegion] = useState({
+    latitude: draft.latitude,
+    longitude: draft.longitude,
+    latitudeDelta: LATITUDE_DELTA,
+    longitudeDelta: LONGITUDE_DELTA,
+  });
+
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <Button
           title="Select"
-          onPress={() => {
-            // Pass and merge params back to home screen
-            navigation.navigate({
-              name: 'Create Observation',
-              params: {region},
-              merge: true,
-            });
+          onPress={async () => {
+            const altitude = await getElevation(
+              region.latitude,
+              region.longitude,
+            );
+
+            dispatch(
+              updateDraft({
+                latitude: region.latitude,
+                longitude: region.longitude,
+                altitude,
+              }),
+            );
+            navigation.navigate({ name: 'Time and Location', merge: true });
           }}
         />
       ),
     });
-  }, [navigation, region]);
+  }, [dispatch, navigation, region]);
 
-  const [region, setRegion] = React.useState({
-    latitude,
-    longitude,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA,
+  useEffect(() => {
+    const getCoordinates = async () => {
+      const coordinates = await getGeocode(draft.location);
+      console.log(coordinates);
+    };
+    getCoordinates();
   });
 
   return (
@@ -50,7 +70,7 @@ const SelectLocation = ({
       </MapView>
       <View style={[mapStyles.bubble, mapStyles.latlng]}>
         <Text style={mapStyles.centeredText}>
-          {region.latitude.toPrecision(7)},{region.longitude.toPrecision(7)}
+          {region.latitude.toPrecision(5)},{region.longitude.toPrecision(5)}
         </Text>
       </View>
     </View>
@@ -92,6 +112,6 @@ const mapStyles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
   },
-  centeredText: {textAlign: 'center'},
+  centeredText: { textAlign: 'center' },
 });
 export default SelectLocation;

@@ -1,6 +1,7 @@
 import React from 'react';
-import {Image, SafeAreaView, ScrollView, StatusBar} from 'react-native';
-import {Field} from '../components';
+import { Image, SafeAreaView, ScrollView, StatusBar } from 'react-native';
+
+import { Field } from '../components';
 
 const Splash = () => {
   return (
@@ -10,7 +11,7 @@ const Splash = () => {
         <Field>
           <Image
             resizeMode="contain"
-            style={{width: '100%', height: 200}}
+            style={{ width: '100%', height: 200 }}
             source={require('../logo_MO5.png')}
           />
         </Field>

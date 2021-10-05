@@ -1,11 +1,12 @@
-import {useMemo} from 'react';
-import {useSelector} from 'react-redux';
-import {selectCurrentUser, selectKey} from '../store/auth';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+
+import { selectCurrentUser, selectKey } from '../store/auth';
 
 export const useAuth = () => {
   const user = useSelector(selectCurrentUser);
   const key = useSelector(selectKey);
-  return useMemo(() => ({user, key}), [user, key]);
+  return useMemo(() => ({ user, key }), [user, key]);
 };
 
 export const useKey = () => {
@@ -17,4 +18,4 @@ export const useUser = () => {
   const user = useSelector(selectCurrentUser);
   return useMemo(() => user, [user]);
 };
-export default {useAuth, useKey, useUser};
+export default { useAuth, useKey, useUser };

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   FlatList,
   Image,
@@ -8,10 +8,10 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {useUser} from '../hooks/useAuth';
-import {loadObservations, selectAll} from '../store/observations';
+import { useUser } from '../hooks/useAuth';
+import { loadObservations, selectAll } from '../store/observations';
 
 const NoObservations = () => (
   <View style={styles.noObservations}>
@@ -20,7 +20,7 @@ const NoObservations = () => (
   </View>
 );
 
-const Observation = ({item}) => {
+const Observation = ({ item }) => {
   return (
     <TouchableOpacity style={styles.observation}>
       {item.primary_image && (
@@ -67,7 +67,7 @@ const ListObservations = () => {
         data={observations}
         ListEmptyComponent={NoObservations}
         contentContainerStyle={styles.contentContainerStyle}
-        renderItem={({item}) => <Observation item={item} />}
+        renderItem={({ item }) => <Observation item={item} />}
         keyExtractor={item => item?.id}
       />
     </View>

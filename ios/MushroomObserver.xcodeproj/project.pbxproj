@@ -519,11 +519,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-<<<<<<< HEAD
 				CURRENT_PROJECT_VERSION = 6;
-=======
-				CURRENT_PROJECT_VERSION = 5;
->>>>>>> 63efbfb69dcd44913def8c29097313ede72ed598
 				DEVELOPMENT_TEAM = V7M8VK952M;
 				INFOPLIST_FILE = MushroomObserver/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

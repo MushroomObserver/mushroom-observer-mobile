@@ -1,6 +1,6 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
-import {merge} from 'lodash';
+import { merge } from 'lodash';
 
 const slice = createSlice({
   name: 'draft',
@@ -22,7 +22,7 @@ const slice = createSlice({
   },
 });
 
-export const {updateDraft, clearDraft} = slice.actions;
+export const { updateDraft, clearDraft } = slice.actions;
 
 export const selectDraft = state => state.draft;
 

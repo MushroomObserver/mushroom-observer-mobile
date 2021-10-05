@@ -1,5 +1,5 @@
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import Config from 'react-native-config';
-import {createEntityAdapter, createSlice} from '@reduxjs/toolkit';
 
 const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
 const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
@@ -30,7 +30,7 @@ const slice = createSlice({
       reducer: (state, action) => {},
       prepare: login_name => {
         return {
-          payload: {login_name},
+          payload: { login_name },
           meta: {
             offline: {
               effect: {
@@ -43,11 +43,11 @@ const slice = createSlice({
               },
               commit: {
                 type: 'observations/observationsLoaded',
-                meta: {login_name},
+                meta: { login_name },
               },
               rollback: {
                 type: 'observations/loadRolledBack',
-                meta: {login_name},
+                meta: { login_name },
               },
             },
           },
@@ -93,7 +93,7 @@ const slice = createSlice({
 });
 
 // Extract the action creators object and the reducer
-const {actions, reducer} = slice;
+const { actions, reducer } = slice;
 
 // Extract and export each action creator by name
 export const {
@@ -105,7 +105,7 @@ export const {
   postObservation,
 } = actions;
 
-export const {selectAll, selectById, selectEntities, selectIds, selectTotal} =
+export const { selectAll, selectById, selectEntities, selectIds, selectTotal } =
   adapter.getSelectors(state => state.observations);
 // Export the reducer, either as a default or named export
 export default reducer;

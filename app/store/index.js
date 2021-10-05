@@ -1,20 +1,21 @@
-import {configureStore, combineReducers} from '@reduxjs/toolkit';
-import {setupListeners} from '@reduxjs/toolkit/query';
-import {persistReducer} from 'redux-persist';
-import createSensitiveStorage from 'redux-persist-sensitive-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { persistReducer, persistStore } from 'redux-persist';
+import createSensitiveStorage from 'redux-persist-sensitive-storage';
 
 import auth from './auth';
-import observations from './observations';
-import images from './images';
-import names from './names';
-import locations from './locations';
 import draft from './draft';
+import images from './images';
+import locations from './locations';
 import mushroomObserverApi from './mushroomObserver';
+import names from './names';
+import observations from './observations';
 
 const mainPersistConfig = {
   key: 'main',
   storage: AsyncStorage,
+  blacklist: ['auth', mushroomObserverApi.reducerPath],
 };
 
 const sensitiveStorage = createSensitiveStorage({
@@ -27,21 +28,23 @@ const authPersistConfig = {
   storage: sensitiveStorage,
 };
 
-let rootReducer = combineReducers({
+const mainReducer = combineReducers({
   [mushroomObserverApi.reducerPath]: mushroomObserverApi.reducer,
   auth: persistReducer(authPersistConfig, auth),
-  observations: persistReducer(mainPersistConfig, observations),
-  images: persistReducer(mainPersistConfig, images),
-  names: persistReducer(mainPersistConfig, names),
-  locations: persistReducer(mainPersistConfig, locations),
-  draft: persistReducer(mainPersistConfig, draft),
+  observations,
+  images,
+  names,
+  locations,
+  draft,
 });
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistReducer(mainPersistConfig, mainReducer),
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware().concat(mushroomObserverApi.middleware),
   devTools: true,
 });
 
 setupListeners(store.dispatch);
+
+export const persistor = persistStore(store);

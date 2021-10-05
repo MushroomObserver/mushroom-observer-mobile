@@ -18,7 +18,7 @@ export const getElevation = async (latitude, longitude) => {
   );
 
   const {
-    results: [{elevation}],
+    results: [{ elevation }],
   } = await elevationResponse.json();
 
   return elevation;
@@ -41,12 +41,12 @@ export const getGeocode = async location => {
     results: [
       {
         geometry: {
-          location: {lat, lng},
+          location: { lat, lng },
         },
       },
     ],
   } = await geocodeResponse.json();
-  return {latitude: lat, longitude: lng};
+  return { latitude: lat, longitude: lng };
 };
 
 export default {

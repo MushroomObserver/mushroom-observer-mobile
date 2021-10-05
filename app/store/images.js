@@ -1,6 +1,6 @@
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { Platform } from 'react-native';
 import Config from 'react-native-config';
-import {Platform} from 'react-native';
-import {createEntityAdapter, createSlice} from '@reduxjs/toolkit';
 
 const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
 
@@ -73,7 +73,7 @@ const slice = createSlice({
 });
 
 // Extract the action creators object and the reducer
-const {actions, reducer} = slice;
+const { actions, reducer } = slice;
 
 // Extract and export each action creator by name
 export const {
@@ -84,7 +84,7 @@ export const {
   postImage,
 } = actions;
 
-export const {selectAll, selectById, selectEntities, selectIds, selectTotal} =
+export const { selectAll, selectById, selectEntities, selectIds, selectTotal } =
   adapter.getSelectors(state => state.images);
 // Export the reducer, either as a default or named export
 export default reducer;

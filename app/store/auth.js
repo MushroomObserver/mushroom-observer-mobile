@@ -1,13 +1,13 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const slice = createSlice({
   name: 'auth',
-  initialState: {user: undefined, key: undefined},
+  initialState: { user: undefined, key: undefined },
   reducers: {
     loginSuccess: (state, action) => {
-      const {id, login_name, key} = action.payload;
+      const { id, login_name, key } = action.payload;
 
-      state.user = {id, login_name};
+      state.user = { id, login_name };
       state.key = key;
     },
     logout: state => {
@@ -17,7 +17,7 @@ const slice = createSlice({
   },
 });
 
-export const {loginSuccess, logout} = slice.actions;
+export const { loginSuccess, logout } = slice.actions;
 
 export const selectCurrentUser = state => state.auth.user;
 

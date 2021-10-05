@@ -1,17 +1,19 @@
-import React, {useEffect} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {connectActionSheet} from '@expo/react-native-action-sheet';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import Login from './screens/Login';
-import ListObservations from './screens/ListObservations';
+import { useDispatch } from 'react-redux';
+
+import { useAuth } from './hooks/useAuth';
 import CreateObservation from './screens/CreateObservation';
+import ListObservations from './screens/ListObservations';
+import Login from './screens/Login';
+import Register from './screens/Register';
 import Settings from './screens/Settings';
-import {useAuth} from './hooks/useAuth';
-import {useDispatch} from 'react-redux';
-import {preloadNames} from './store/names';
-import {preloadLocations} from './store/locations';
+import { preloadLocations } from './store/locations';
+import { preloadNames } from './store/names';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,11 +38,18 @@ const App = () => {
               title: 'Mushroom Observer',
             }}
           />
+          <Stack.Screen
+            name="Register"
+            component={Register}
+            options={{
+              title: 'Mushroom Observer',
+            }}
+          />
         </Stack.Navigator>
       ) : (
         <Tab.Navigator
-          screenOptions={({route}) => ({
-            tabBarIcon: ({size, color}) => {
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ size, color }) => {
               switch (route.name) {
                 case 'My Observations':
                   return <Icon name="list" size={size} color={color} />;
@@ -55,7 +64,7 @@ const App = () => {
           <Tab.Screen
             name="Create Observation"
             component={CreateObservation}
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Tab.Screen name="Settings" component={Settings} />
         </Tab.Navigator>

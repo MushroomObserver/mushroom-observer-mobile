@@ -1,4 +1,6 @@
-import React, {useState, useLayoutEffect} from 'react';
+import { useNavigation } from '@react-navigation/core';
+import { isEmpty, omitBy } from 'lodash';
+import React, { useLayoutEffect, useState } from 'react';
 import {
   Button,
   SafeAreaView,
@@ -8,14 +10,13 @@ import {
   View,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import {useDispatch, useSelector} from 'react-redux';
-import {omitBy, isEmpty} from 'lodash';
-import {useNavigation} from '@react-navigation/core';
-import {clearDraft, selectDraft} from '../../store/draft';
-import {useAuth} from '../../hooks/useAuth';
-import {Field, Label, Sublabel, Input} from '../../components';
-import {usePostObservationMutation} from '../../store/mushroomObserver';
-import {selectKey} from '../../store/auth';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Field, Input, Label, Sublabel } from '../../components';
+import { useAuth } from '../../hooks/useAuth';
+import { selectKey } from '../../store/auth';
+import { clearDraft, selectDraft } from '../../store/draft';
+import { usePostObservationMutation } from '../../store/mushroomObserver';
 
 const IdentificationAndNotes = () => {
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const IdentificationAndNotes = () => {
   const [notes, setNotes] = useState(draft.notes);
   const [
     postObservation, // This is the mutation trigger
-    {data}, // This is the destructured mutation result
+    { data }, // This is the destructured mutation result
   ] = usePostObservationMutation();
 
   useLayoutEffect(() => {
@@ -44,7 +45,7 @@ const IdentificationAndNotes = () => {
             // dispatch(clearDraft());
             const observation = omitBy(draft, isEmpty);
             console.log(observation);
-            postObservation({observation, key});
+            postObservation({ observation, key });
           }}
         />
       ),
@@ -62,12 +63,12 @@ const IdentificationAndNotes = () => {
             <RNPickerSelect
               style={pickerSelectStyles}
               items={[
-                {label: "I'd Call It That", value: 3.0},
-                {label: 'Promising', value: 2.0},
-                {label: 'Could Be', value: 1.0},
-                {label: 'Doubtful', value: -1.0},
-                {label: 'Not Likely', value: -2.0},
-                {label: 'As If!', value: -3.0},
+                { label: "I'd Call It That", value: 3.0 },
+                { label: 'Promising', value: 2.0 },
+                { label: 'Could Be', value: 1.0 },
+                { label: 'Doubtful', value: -1.0 },
+                { label: 'Not Likely', value: -2.0 },
+                { label: 'As If!', value: -3.0 },
               ]}
               onValueChange={setVote}
               selectedValue={vote}

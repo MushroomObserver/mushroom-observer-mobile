@@ -1,13 +1,13 @@
-import {schema} from 'normalizr';
+import { schema } from 'normalizr';
 
 const userProcessStrategy = (value, parent, key) => {
   switch (key) {
     case 'owner':
-      return {...value, observations: [parent.id]};
+      return { ...value, observations: [parent.id] };
     case 'commenter':
-      return {...value, comments: [parent.id]};
+      return { ...value, comments: [parent.id] };
     default:
-      return {...value};
+      return { ...value };
   }
 };
 
@@ -34,7 +34,7 @@ const naming = new schema.Entity(
   {},
   {
     processStrategy: (value, parent, key) => {
-      return {...value, observation: parent.id};
+      return { ...value, observation: parent.id };
     },
   },
 );
@@ -45,7 +45,7 @@ const image = new schema.Entity(
   },
   {
     processStrategy: (value, parent, key) => {
-      return {...value, observation: parent.id};
+      return { ...value, observation: parent.id };
     },
   },
 );
@@ -57,7 +57,7 @@ const comment = new schema.Entity(
   },
   {
     processStrategy: (value, parent, key) => {
-      return {...value, observation: parent.id};
+      return { ...value, observation: parent.id };
     },
   },
 );

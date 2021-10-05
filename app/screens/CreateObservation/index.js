@@ -1,13 +1,11 @@
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-import SelectLocation from './SelectLocation';
-import NameAndPhotos from './NameAndPhotos';
-import Name from './Name';
-import TimeAndLocation from './TimeAndLocation';
-import IdentificationAndNotes from './IdentificationAndNotes';
 import EditPhoto from '../EditPhoto';
+import IdentificationAndNotes from './IdentificationAndNotes';
+import NameAndPhotos from './NameAndPhotos';
+import SelectLocation from './SelectLocation';
+import TimeAndLocation from './TimeAndLocation';
 
 const Stack = createNativeStackNavigator();
 

@@ -1,3 +1,5 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation, useRoute } from '@react-navigation/core';
 import React from 'react';
 import {
   Button,
@@ -9,11 +11,9 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 
-import {Row, Field, Label, Sublabel, Input} from '../components';
-import {useNavigation, useRoute} from '@react-navigation/core';
+import { Field, Input, Label, Row, Sublabel } from '../components';
 
 const EditPhoto = props => {
   const navigation = useNavigation();
@@ -44,9 +44,9 @@ const EditPhoto = props => {
         <View>
           <Field>
             <Image
-              style={{width: '100%', height: 300, borderRadius: 10}}
+              style={{ width: '100%', height: 300, borderRadius: 10 }}
               resizeMethod="scale"
-              source={{uri: route.params.uri}}
+              source={{ uri: route.params.uri }}
             />
           </Field>
           <Field>
@@ -65,7 +65,7 @@ const EditPhoto = props => {
               {showDatePicker && (
                 <DateTimePicker
                   value={when}
-                  style={{width: 80, backfaceVisibility: false}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
+                  style={{ width: 80, backfaceVisibility: false }} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
                   maximumDate={new Date()}
                   mode="date"
                   display="default"
@@ -80,12 +80,12 @@ const EditPhoto = props => {
             <RNPickerSelect
               style={pickerSelectStyles}
               items={[
-                {label: 'Creative Commons Non-commercial v3.0', value: 3.0},
+                { label: 'Creative Commons Non-commercial v3.0', value: 3.0 },
                 {
                   label: 'Creative Commons Wikipedia Compatible v3.0',
                   value: 2.0,
                 },
-                {label: 'Public Domain', value: 1.0},
+                { label: 'Public Domain', value: 1.0 },
               ]}
               onValueChange={setLicense}
               value={license}

@@ -1,23 +1,21 @@
-import React, {useLayoutEffect, useEffect, useState} from 'react';
+import { useNavigation, useRoute } from '@react-navigation/core';
+import dayjs from 'dayjs';
+import { filter } from 'lodash-es';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StatusBar } from 'react-native';
 import {
   Button,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
+  DateTimePicker,
+  Picker,
   Switch,
   Text,
+  TextField,
   View,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import dayjs from 'dayjs';
-import {useNavigation, useRoute} from '@react-navigation/core';
+} from 'react-native-ui-lib';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {Row, Field, Label, Sublabel, Input} from '../../components';
-
-import {getElevation, getGeocode} from '../../api/google';
-import {useDispatch, useSelector} from 'react-redux';
-import {selectDraft, updateDraft} from '../../store/draft';
+import { selectDraft, updateDraft } from '../../store/draft';
+import { selectAll } from '../../store/locations';
 
 const TimeAndLocation = () => {
   const navigation = useNavigation();
@@ -26,21 +24,21 @@ const TimeAndLocation = () => {
   const draft = useSelector(selectDraft);
 
   const [date, setDate] = useState(dayjs(draft.date).toDate());
-  const [showDatePicker, setShowDatePicker] = useState(Platform.OS === 'ios');
 
+  const [query, setQuery] = useState('');
+  const locations = useSelector(selectAll);
   const [location, setLocation] = useState(draft.location);
+
   const [latitude, setLatitude] = useState(draft.latitude);
   const [longitude, setLongitude] = useState(draft.longitude);
   const [altitude, setAltitude] = useState(draft.altitude);
+
   const [is_collection_location, setIsCollectionLocation] = useState(
     draft.is_collection_location,
   );
   const [gps_hidden, setGpsHidden] = useState(draft.gps_hidden);
 
   const onChangeDate = (_, selectedDate = date) => {
-    if (Platform.OS === 'android') {
-      setShowDatePicker(false);
-    }
     setDate(new Date(selectedDate));
   };
 
@@ -48,12 +46,13 @@ const TimeAndLocation = () => {
     navigation.setOptions({
       headerRight: () => (
         <Button
-          title="Next"
+          link
+          label="Next"
           onPress={() => {
             dispatch(
               updateDraft({
                 date: dayjs(date).format('YYYYMMDD'),
-                location,
+                location: location.value,
                 latitude,
                 longitude,
                 altitude,
@@ -79,110 +78,115 @@ const TimeAndLocation = () => {
   ]);
 
   useEffect(() => {
-    if (route.params?.region) {
-      const region = route.params.region;
-      setLatitude(region.latitude);
-      setLongitude(region.longitude);
-
-      const fetchAltitude = async () => {
-        const newAltitude = await getElevation(
-          region.latitude,
-          region.longitude,
-        );
-        setAltitude(newAltitude);
-      };
-      fetchAltitude();
-    }
-  }, [route.params?.region]);
+    // if (route.params?.merge) {
+    //   const region = route.params.region;
+    //   setLatitude(region.latitude);
+    //   setLongitude(region.longitude);
+    //   const fetchAltitude = async () => {
+    //     const newAltitude = await getElevation(
+    //       region.latitude,
+    //       region.longitude,
+    //     );
+    //     setAltitude(newAltitude);
+    //   };
+    //   fetchAltitude();
+    // }
+  }, [route.params.merge]);
 
   return (
     <SafeAreaView>
       <StatusBar />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View>
-          <Field>
-            <Row>
-              <Label>When</Label>
-              {Platform.OS === 'android' && (
-                <Button
-                  title={date.toLocaleDateString('en-US')}
-                  onPress={() => setShowDatePicker(true)}
+        <View padding-30>
+          <DateTimePicker
+            title={'Date'}
+            value={date}
+            maximumDate={new Date()}
+            mode="date"
+            display="default"
+            onChange={onChangeDate}
+          />
+          <Picker
+            showSearch
+            title="Location"
+            value={location}
+            onChange={setLocation}
+            onSearchChange={setQuery}
+            listProps={{
+              data: filter(locations, n => n.name.startsWith(query)),
+              renderItem: ({ item }) => (
+                <Picker.Item
+                  key={item.id}
+                  value={item.name}
+                  label={item.name}
                 />
-              )}
-              {(Platform.OS === 'ios' || showDatePicker) && (
-                <DateTimePicker
-                  value={date}
-                  style={{width: 80, backfaceVisibility: false}} // Fix for https://github.com/react-native-datetimepicker/datetimepicker/issues/339
-                  maximumDate={new Date()}
-                  mode="date"
-                  display="default"
-                  onChange={onChangeDate}
-                />
-              )}
-            </Row>
-          </Field>
-          <Field>
-            <Label>Where (required)</Label>
-            <Row>
-              <Input value={location} onChangeText={setLocation} />
-              <Button
-                title="Locate"
-                disabled={!(location?.length > 0)}
-                onPress={async () => {
-                  const coordinates = await getGeocode(location);
-                  navigation.navigate('Select Location', coordinates);
-                }}
+              ),
+            }}
+          />
+          <Button
+            label="Locate"
+            disabled={!location}
+            onPress={() => navigation.navigate('Select Location')}
+          />
+          <Text>
+            Where the observation was made. In the US this should be at least
+            accurate to the county. Examples:
+          </Text>
+          <Text>
+            <Text style={{ fontStyle: 'italic' }}>
+              Albion, Mendocino Co., California, USA
+            </Text>
+          </Text>
+          <Text>
+            <Text style={{ fontStyle: 'italic' }}>
+              Hotel Parque dos Coqueiros, Aracaju, Sergipe, Brazil
+            </Text>
+          </Text>
+          <Text>
+            <Text style={{ fontWeight: 'bold' }}>Use the Locate Button</Text> to
+            bring this location up on the map. Then click to add a marker and
+            drag it to the specific Latitude & Longitude.
+          </Text>
+          <View spread row centerV>
+            <Text>Is this location where it was collected?</Text>
+            <Switch
+              value={is_collection_location}
+              onValueChange={setIsCollectionLocation}
+            />
+          </View>
+          <View spread row>
+            <View flex>
+              <TextField
+                title="Latitude"
+                value={`${latitude}`}
+                maxLength={5}
+                keyboardType="numeric"
+                onChangeText={setLatitude}
               />
-            </Row>
-            <Sublabel>
-              Where the observation was made. In the US this should be at least
-              accurate to the county. Examples:
-            </Sublabel>
-            <Sublabel>
-              <Text style={{fontStyle: 'italic'}}>
-                Albion, Mendocino Co., California, USA
-              </Text>
-            </Sublabel>
-            <Sublabel>
-              <Text style={{fontStyle: 'italic'}}>
-                Hotel Parque dos Coqueiros, Aracaju, Sergipe, Brazil
-              </Text>
-            </Sublabel>
-            <Sublabel>
-              <Text style={{fontWeight: 'bold'}}>Use the Locate Button</Text> to
-              bring this location up on the map. Then click to add a marker and
-              drag it to the specific Latitude & Longitude.
-            </Sublabel>
-          </Field>
-          <Field>
-            <Row>
-              <Label>Is this location where it was collected?</Label>
-              <Switch
-                value={is_collection_location}
-                onValueChange={setIsCollectionLocation}
+            </View>
+            <View flex marginH-30>
+              <TextField
+                title="Longitude"
+                value={`${longitude}`}
+                maxLength={5}
+                keyboardType="numeric"
+                onChangeText={setLongitude}
               />
-            </Row>
-          </Field>
-          <Row>
-            <Field>
-              <Label>Latitude</Label>
-              <Input value={`${latitude}`} onChangeText={setLatitude} />
-            </Field>
-            <Field>
-              <Label>Longitude</Label>
-              <Input value={`${longitude}`} onChangeText={setLongitude} />
-            </Field>
-            <Field>
-              <Label>Altitude</Label>
-              <Input value={`${altitude}`} onChangeText={setAltitude} />
-            </Field>
-          </Row>
-          <Field>
-            <Row>
-              <Label>Hide exact coordinates?</Label>
-              <Switch value={gps_hidden} onValueChange={setGpsHidden} />
-            </Row>
-          </Field>
+            </View>
+            <View flex>
+              <TextField
+                title="Altitude"
+                value={`${altitude}`}
+                maxLength={5}
+                keyboardType="numeric"
+                onChangeText={setAltitude}
+              />
+            </View>
+          </View>
+          <View spread row centerV>
+            <Text>Hide exact coordinates?</Text>
+            <Switch value={gps_hidden} onValueChange={setGpsHidden} />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

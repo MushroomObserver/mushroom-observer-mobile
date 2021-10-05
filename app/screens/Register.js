@@ -1,37 +1,43 @@
-import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
 import {
   Button,
-  Image,
   KeyboardAwareScrollView,
-  Text,
   TextField,
   View,
 } from 'react-native-ui-lib';
 import { useDispatch } from 'react-redux';
 
 import { loginSuccess } from '../store/auth';
-import { useGetApiKeyForUserMutation } from '../store/mushroomObserver';
-
-const Login = () => {
-  const navigation = useNavigation();
+import { usePostUserMutation } from '../store/mushroomObserver';
+const Register = () => {
   const dispatch = useDispatch();
-  const [username, onChangeUsername] = useState();
-  const [password, onChangePassword] = useState();
-  const [error, setError] = useState();
-  const usernameInput = useRef();
-  const passwordInput = useRef();
 
-  const [getApiKeyForUser, { data, isLoading }] = useGetApiKeyForUserMutation();
+  const emailInput = useRef();
+  const [email, setEmail] = useState();
+
+  const usernameInput = useRef();
+  const [username, setUsername] = useState();
+
+  const passwordInput = useRef();
+  const [password, setPassword] = useState();
+
+  const [error, setError] = useState();
+
+  const [postUser, { data, isLoading }] = usePostUserMutation();
 
   useEffect(() => {
     if (!data?.errors && data?.results?.[0]) {
       const {
         user,
-        results: [{ key }],
+        results: [
+          {
+            login_name,
+            api_keys: [{ key }],
+          },
+        ],
       } = data;
-      dispatch(loginSuccess({ login_name: username, id: user, key }));
+      dispatch(loginSuccess({ login_name, id: user, key }));
     } else if (data?.errors) {
       setError('Incorrect username or password');
     }
@@ -45,17 +51,31 @@ const Login = () => {
         keyboardDismissMode="interactive"
         keyboardShouldPersistTaps="always"
         getTextInputRefs={() => {
-          return [usernameInput, passwordInput];
+          return [emailInput, usernameInput, passwordInput];
         }}>
         <View padding-30>
-          <Image
-            resizeMode="contain"
-            style={{ width: '100%', height: 200 }}
-            source={require('../logo_MO5.png')}
+          <TextField
+            ref={emailInput}
+            autoFocus
+            autoCorrect={false}
+            autoCapitalize="none"
+            title="Email"
+            textContentType="email"
+            autoCompleteType="email"
+            returnKeyType="next"
+            enablesReturnKeyAutomatically
+            onChangeText={setEmail}
+            onSubmitEditing={() => {
+              usernameInput.current.focus();
+            }}
+            blurOnSubmit={false}
+            value={email}
+            maxLength={80}
+            validate={['required', 'email']}
+            errorMessage={['This field is required', 'Email is invalid']}
           />
           <TextField
             ref={usernameInput}
-            autoFocus
             autoCorrect={false}
             autoCapitalize="none"
             title="Username"
@@ -63,13 +83,15 @@ const Login = () => {
             autoCompleteType="username"
             returnKeyType="next"
             enablesReturnKeyAutomatically
-            onChangeText={onChangeUsername}
+            onChangeText={setUsername}
             onSubmitEditing={() => {
               passwordInput.current.focus();
             }}
             blurOnSubmit={false}
             value={username}
+            maxLength={80}
             validate="required"
+            errorMessage="This field is required"
           />
           <TextField
             ref={passwordInput}
@@ -81,23 +103,17 @@ const Login = () => {
             returnKeyType="done"
             enablesReturnKeyAutomatically
             secureTextEntry
-            onChangeText={onChangePassword}
-            onSubmitEditing={() =>
-              getApiKeyForUser({ login_name: username, password })
-            }
+            onChangeText={setPassword}
+            onSubmitEditing={() => postUser({ email, username, password })}
             value={password}
+            maxLength={80}
             validate="required"
-            error={error}
+            errorMessage="This field is required"
           />
-          <Button
-            label="Login"
-            disabled={!username || !password || isLoading}
-            onPress={() => getApiKeyForUser({ login_name: username, password })}
-          />
-          <Text center>or</Text>
           <Button
             label="Register"
-            onPress={() => navigation.navigate('Register')}
+            disabled={!email || !username || !password || isLoading}
+            onPress={() => postUser({ email, username, password })}
           />
         </View>
       </KeyboardAwareScrollView>
@@ -105,4 +121,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

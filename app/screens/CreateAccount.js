@@ -1,10 +1,11 @@
 import React from 'react';
-import {Button, SafeAreaView, ScrollView, StatusBar} from 'react-native';
+import { Button, SafeAreaView, ScrollView, StatusBar } from 'react-native';
+
+import { Field, Input, Label, Row } from '../components';
 import UserContext from '../components/UserContext';
-import {Row, Label, Field, Input} from '../components';
 
 const Login = () => {
-  const {login} = React.useContext(UserContext);
+  const { login } = React.useContext(UserContext);
 
   const [username, onChangeUsername] = React.useState(null);
 

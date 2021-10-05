@@ -1,14 +1,14 @@
-import React, {useState} from 'react';
-import {Button, View, Dimensions, StyleSheet, Platform} from 'react-native';
-import Carousel, {ParallaxImage} from 'react-native-snap-carousel';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {useActionSheet} from '@expo/react-native-action-sheet';
-import {useNavigation} from '@react-navigation/core';
-import {Field, Row, Label} from '../../components';
-import {useKey} from '../../hooks/useAuth';
-import {usePostImageMutation} from '../../store/mushroomObserver';
+import { useActionSheet } from '@expo/react-native-action-sheet';
+import { useNavigation } from '@react-navigation/core';
+import React, { useState } from 'react';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { Button, GridView, Image, View } from 'react-native-ui-lib';
 
-const {width: screenWidth} = Dimensions.get('window');
+import { useKey } from '../../hooks/useAuth';
+import { usePostImageMutation } from '../../store/mushroomObserver';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const PhotoPicker = props => {
   const key = useKey();
@@ -17,22 +17,17 @@ const PhotoPicker = props => {
   const SELECTION_LIMIT = 10;
   const [photos, setPhotos] = useState([]);
   const [selected, setSelected] = useState(0);
-  const {showActionSheetWithOptions} = useActionSheet();
+  const { showActionSheetWithOptions } = useActionSheet();
 
-  const [postImage, {data, isLoading}] = usePostImageMutation();
+  const [postImage, { data, isLoading }] = usePostImageMutation();
 
-  const addPhotos = async ({didCancel, assets}) => {
+  const addPhotos = async ({ didCancel, assets }) => {
     if (!didCancel) {
       const newPhotos = photos.concat(assets);
-      console.log(assets[0]);
-      const {uri, type, fileSize, fileName} = assets[0];
-      console.log(assets[0]);
-      postImage({uri, name: fileName, length: fileSize, type, key});
       setPhotos(newPhotos);
     }
   };
 
-  console.log(data);
   const removePhoto = () => {
     const newPhotos = photos.filter((_, index) => index !== selected);
     setPhotos(newPhotos);
@@ -45,11 +40,12 @@ const PhotoPicker = props => {
     navigation.navigate('Edit Photo', photos[selected]);
   };
 
-  const renderItem = ({item}, parallaxProps) => {
+  const renderItem = ({ item }, parallaxProps) => {
     return (
       <View style={carouselStyles.item}>
-        <ParallaxImage
-          source={{uri: item?.uri}}
+        <Image
+          aspectRatio={1}
+          source={{ uri: item?.uri }}
           resizeMode="contain"
           containerStyle={carouselStyles.imageContainer}
           style={carouselStyles.image}
@@ -61,61 +57,67 @@ const PhotoPicker = props => {
 
   return (
     <View>
-      <Field>
-        <Row>
-          <Label>Photos</Label>
-          <Button
-            title="Add Photos"
-            onPress={() =>
-              showActionSheetWithOptions(
-                {
-                  options: ['Camera', 'Gallery', 'Cancel'],
-                  cancelButtonIndex: 2,
-                },
-                selectedIndex => {
-                  switch (selectedIndex) {
-                    case 0:
-                      launchCamera(
-                        {
-                          mediaType: 'photo',
-                          saveToPhotos: true,
-                        },
-                        addPhotos,
-                      );
-                      break;
-                    case 1:
-                      launchImageLibrary(
-                        {
-                          mediaType: 'photo',
-                          selectionLimit: SELECTION_LIMIT - photos.length,
-                        },
-                        addPhotos,
-                      );
-                      break;
-                    default:
-                      break;
-                  }
-                },
-              )
-            }
-            disabled={photos && photos.length === SELECTION_LIMIT}
-          />
-        </Row>
-      </Field>
+      <Button
+        label="Add Photos"
+        outline
+        onPress={() =>
+          showActionSheetWithOptions(
+            {
+              options: ['Camera', 'Gallery', 'Cancel'],
+              cancelButtonIndex: 2,
+            },
+            selectedIndex => {
+              switch (selectedIndex) {
+                case 0:
+                  launchCamera(
+                    {
+                      mediaType: 'photo',
+                      saveToPhotos: true,
+                    },
+                    addPhotos,
+                  );
+                  break;
+                case 1:
+                  launchImageLibrary(
+                    {
+                      mediaType: 'photo',
+                      selectionLimit: SELECTION_LIMIT - photos.length,
+                    },
+                    addPhotos,
+                  );
+                  break;
+                default:
+                  break;
+              }
+            },
+          )
+        }
+        disabled={photos && photos.length === SELECTION_LIMIT}
+      />
       {photos.length > 0 && (
-        <View style={carouselStyles.container}>
-          <Carousel
-            sliderWidth={screenWidth}
-            sliderHeight={300}
-            itemWidth={screenWidth - 60}
-            data={photos}
-            renderItem={renderItem}
-            hasParallaxImages={true}
-            onSnapToItem={setSelected}
+        <View>
+          <GridView
+            numColumns={4}
+            keepItemSize
+            viewWidth={300}
+            items={photos.map(photo => {
+              console.log(photo);
+              return {
+                imageProps: {
+                  source: { uri: photo.uri },
+                },
+                itemSize: { height: 90 },
+                title: 'Title',
+                subtitle: 'subtitle',
+                description: 'smtg',
+                descriptionLines: 2,
+                alignToStart: true,
+              };
+            })}
           />
           <View style={carouselStyles.buttonContainer}>
-            <Button title="Remove" onPress={removePhoto} />
-            <Button title="Edit" onPress={editPhoto} />
+            <Button outline label="Remove" onPress={removePhoto} />
+            <Button outline label="Edit" onPress={editPhoto} />
           </View>
         </View>
       )}
@@ -136,12 +138,11 @@ const carouselStyles = StyleSheet.create({
     alignItems: 'center',
   },
   item: {
-    width: screenWidth - 60,
     height: 300,
   },
   imageContainer: {
     flex: 1,
-    marginBottom: Platform.select({ios: 0, android: 1}), // Prevent a random Android rendering issue
+    marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
     backgroundColor: 'white',
     borderRadius: 8,
   },

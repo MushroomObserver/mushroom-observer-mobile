@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import {
   Alert,
@@ -7,11 +8,11 @@ import {
   StatusBar,
   View,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/core';
-import {useDispatch} from 'react-redux';
-import {Row, Field, Label, Sublabel} from '../components';
-import {useAuth} from '../hooks/useAuth';
-import {logout} from '../store/auth';
+import { useDispatch } from 'react-redux';
+
+import { Field, Label, Row, Sublabel } from '../components';
+import { useAuth } from '../hooks/useAuth';
+import { logout } from '../store/auth';
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -21,7 +22,7 @@ const Settings = () => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <View style={{marginRight: 15}}>
+        <View style={{ marginRight: 15 }}>
           <Button
             title="Logout"
             onPress={() =>

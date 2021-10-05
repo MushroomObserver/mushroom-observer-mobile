@@ -1,32 +1,28 @@
-import React, {useLayoutEffect, useState} from 'react';
-import {
-  Alert,
-  Button,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  Text,
-  View,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/core';
+import { filter } from 'lodash-es';
+import React, { useLayoutEffect, useState } from 'react';
+import { Alert, SafeAreaView, ScrollView, StatusBar } from 'react-native';
+import { Button, Picker, Text, View } from 'react-native-ui-lib';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {Field, Label, Sublabel, Input} from '../../components';
-import PhotoPicker from './PhotoPicker';
-import {useDispatch, useSelector} from 'react-redux';
-import {clearDraft, selectDraft, updateDraft} from '../../store/draft';
+import { clearDraft, selectDraft, updateDraft } from '../../store/draft';
+import { selectAll } from '../../store/names';
 
 const NameAndPhotos = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const draft = useSelector(selectDraft);
+  const [query, setQuery] = useState('');
   const [name, setName] = useState(draft.name);
+  const names = useSelector(selectAll);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
         <View>
           <Button
-            title="Clear"
+            link
+            label="Clear"
             onPress={() =>
               Alert.alert('Clear', 'Are you sure?', [
                 {
@@ -44,9 +40,10 @@ const NameAndPhotos = () => {
       ),
       headerRight: () => (
         <Button
-          title="Next"
+          link
+          label="Next"
           onPress={() => {
-            dispatch(updateDraft({name}));
+            dispatch(updateDraft({ name }));
             navigation.navigate('Time and Location');
           }}
         />
@@ -59,25 +56,43 @@ const NameAndPhotos = () => {
       <StatusBar />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View>
-          <Field>
-            <Label>Name</Label>
-            <Input value={name} onChangeText={setName} />
-            <Sublabel>
+          {/* <PhotoPicker /> */}
+          <View padding-30>
+            <Picker
+              showSearch
+              title="Name"
+              value={name}
+              onChange={setName}
+              onSearchChange={setQuery}
+              listProps={{
+                data: filter(names, n => n.text_name.startsWith(query)),
+                renderItem: ({ item }) => {
+                  return (
+                    <Picker.Item
+                      key={item.id}
+                      value={item.text_name}
+                      label={item.text_name}
+                      disabled={item.deprecated}
+                    />
+                  );
+                },
+              }}
+            />
+            <Text>
               The name you would apply to this observation. If you don’t know
               what it is, just leave it blank. If you find a better name in the
               future, you can always propose a name later.
-            </Sublabel>
-            <Sublabel>
-              <Text style={{fontWeight: 'bold'}}>
+            </Text>
+            <Text>
+              <Text style={{ fontWeight: 'bold' }}>
                 Scientific names are currently required,
               </Text>{' '}
               but do not include any author information. If multiple names
               apply, you will be given the option to select between them. If the
               name is not recognized in the database, then you will be given the
               option to add the name or fix the spelling if it’s just a typo.
-            </Sublabel>
-          </Field>
-          <PhotoPicker />
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
