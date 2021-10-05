@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useDispatch, useSelector} from 'react-redux';
+
+import {useUser} from '../hooks/useAuth';
 import {loadObservations, selectAll} from '../store/observations';
 
 const NoObservations = () => (
@@ -35,13 +37,15 @@ const Observation = ({item}) => {
         <Text>Observation #{item.id}</Text>
         <Text>Date: {item.date}</Text>
         <Text numberOfLines={1} ellipsizeMode="tail">
-          {`${item.consensus?.name} ${item.consensus?.author}`}
+          {`${item.consensus?.name} ${
+            item.consensus?.author ? item.consensus.author : ''
+          }`}
         </Text>
         <Text
           style={styles.observationText}
           numberOfLines={1}
           ellipsizeMode="tail">
-          {item.location?.name}
+          {item.location_name}
         </Text>
       </View>
     </TouchableOpacity>
@@ -50,10 +54,11 @@ const Observation = ({item}) => {
 
 const ListObservations = () => {
   const dispatch = useDispatch();
+  const user = useSelector(useUser);
   const observations = useSelector(selectAll);
 
   useEffect(() => {
-    dispatch(loadObservations('oliviacpu'));
+    // dispatch(loadObservations(user.login_name));
   }, [dispatch]);
 
   return (

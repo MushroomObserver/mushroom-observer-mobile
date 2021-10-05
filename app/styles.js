@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   field: {
-    flex: 1,
     margin: 10,
   },
   label: {
@@ -27,7 +26,7 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   input: {
-    flex: 1,
+    width: '100%',
     margin: 5,
     borderWidth: 1,
     padding: 5,

@@ -5,10 +5,13 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useActionSheet} from '@expo/react-native-action-sheet';
 import {useNavigation} from '@react-navigation/core';
 import {Field, Row, Label} from '../../components';
+import {useKey} from '../../hooks/useAuth';
+import {usePostImageMutation} from '../../store/mushroomObserver';
 
 const {width: screenWidth} = Dimensions.get('window');
 
 const PhotoPicker = props => {
+  const key = useKey();
   const navigation = useNavigation();
 
   const SELECTION_LIMIT = 10;
@@ -16,13 +19,20 @@ const PhotoPicker = props => {
   const [selected, setSelected] = useState(0);
   const {showActionSheetWithOptions} = useActionSheet();
 
-  const addPhotos = ({didCancel, assets}) => {
+  const [postImage, {data, isLoading}] = usePostImageMutation();
+
+  const addPhotos = async ({didCancel, assets}) => {
     if (!didCancel) {
       const newPhotos = photos.concat(assets);
+      console.log(assets[0]);
+      const {uri, type, fileSize, fileName} = assets[0];
+      console.log(assets[0]);
+      postImage({uri, name: fileName, length: fileSize, type, key});
       setPhotos(newPhotos);
     }
   };
 
+  console.log(data);
   const removePhoto = () => {
     const newPhotos = photos.filter((_, index) => index !== selected);
     setPhotos(newPhotos);
@@ -66,7 +76,10 @@ const PhotoPicker = props => {
                   switch (selectedIndex) {
                     case 0:
                       launchCamera(
-                        {mediaType: 'photo', saveToPhotos: true},
+                        {
+                          mediaType: 'photo',
+                          saveToPhotos: true,
+                        },
                         addPhotos,
                       );
                       break;

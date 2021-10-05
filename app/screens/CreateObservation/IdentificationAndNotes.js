@@ -13,17 +13,23 @@ import {omitBy, isEmpty} from 'lodash';
 import {useNavigation} from '@react-navigation/core';
 import {clearDraft, selectDraft} from '../../store/draft';
 import {useAuth} from '../../hooks/useAuth';
-import {postObservation} from '../../store/observations';
 import {Field, Label, Sublabel, Input} from '../../components';
+import {usePostObservationMutation} from '../../store/mushroomObserver';
+import {selectKey} from '../../store/auth';
 
 const IdentificationAndNotes = () => {
   const dispatch = useDispatch();
   const auth = useAuth();
   const navigation = useNavigation();
   const draft = useSelector(selectDraft);
+  const key = useSelector(selectKey);
 
   const [vote, setVote] = useState(draft.vote);
   const [notes, setNotes] = useState(draft.notes);
+  const [
+    postObservation, // This is the mutation trigger
+    {data}, // This is the destructured mutation result
+  ] = usePostObservationMutation();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -31,18 +37,21 @@ const IdentificationAndNotes = () => {
         <Button
           title="Save"
           onPress={() => {
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'My Observations'}],
-            });
-            dispatch(clearDraft());
-            dispatch(postObservation(omitBy(draft, isEmpty), auth));
+            // navigation.reset({
+            //   index: 0,
+            //   routes: [{name: 'My Observations'}],
+            // });
+            // dispatch(clearDraft());
+            const observation = omitBy(draft, isEmpty);
+            console.log(observation);
+            postObservation({observation, key});
           }}
         />
       ),
     });
-  }, [auth, dispatch, draft, navigation]);
+  }, [auth, dispatch, draft, navigation, postObservation, key]);
 
+  console.log(data);
   return (
     <SafeAreaView>
       <StatusBar />

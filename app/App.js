@@ -11,6 +11,7 @@ import Settings from './screens/Settings';
 import {useAuth} from './hooks/useAuth';
 import {useDispatch} from 'react-redux';
 import {preloadNames} from './store/names';
+import {preloadLocations} from './store/locations';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,6 +22,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(preloadNames());
+    dispatch(preloadLocations());
   });
 
   return (

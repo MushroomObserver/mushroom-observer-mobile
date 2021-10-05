@@ -1,4 +1,4 @@
-import React, {useState, createRef} from 'react';
+import React, {useState, createRef, useEffect} from 'react';
 import {
   Button,
   Image,
@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 
 import {useDispatch} from 'react-redux';
-import {login} from '../store/auth';
+import {login, loginSuccess} from '../store/auth';
+import {useGetApiKeyForUserMutation} from '../store/mushroomObserver';
 import {Label, Field} from '../components';
 import styles from '../styles';
 
@@ -37,7 +38,18 @@ const Login = () => {
   const [password, onChangePassword] = useState(null);
   const passwordInput = createRef(null);
 
-  const submitLogin = () => dispatch(login(username, password));
+  const [getApiKeyForUser, {data, isLoading}] = useGetApiKeyForUserMutation();
+
+  useEffect(() => {
+    if (!data?.error && data?.results?.[0]) {
+      const {
+        user,
+        results: [{key}],
+      } = data;
+      dispatch(loginSuccess({login_name: username, id: user, key}));
+    }
+  });
+
   return (
     <SafeAreaView>
       <StatusBar />
@@ -81,14 +93,16 @@ const Login = () => {
             enablesReturnKeyAutomatically
             secureTextEntry
             onChangeText={onChangePassword}
-            onSubmitEditing={submitLogin}
+            onSubmitEditing={() =>
+              getApiKeyForUser({login_name: username, password})
+            }
             value={password}
           />
         </Field>
         <Button
           title="Login"
-          disabled={!username || !password}
-          onPress={submitLogin}
+          disabled={!username || !password || isLoading}
+          onPress={() => getApiKeyForUser({login_name: username, password})}
         />
       </ScrollView>
     </SafeAreaView>
