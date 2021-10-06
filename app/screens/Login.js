@@ -49,12 +49,7 @@ const Login = () => {
           return [usernameInput, passwordInput];
         }}>
         <View padding-30>
-          <Image
-            marginB-15
-            resizeMode="contain"
-            style={{ width: '100%', height: 225 }}
-            source={require('../logo.png')}
-          />
+          <Image marginB-15 logo />
           <TextField
             ref={usernameInput}
             autoFocus

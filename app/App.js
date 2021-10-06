@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch } from 'react-redux';
 
-import { useAuth } from './hooks/useAuth';
+import { useIsLogout, useUser } from './hooks/useAuth';
 import IdentificationAndNotes from './screens/CreateObservation/IdentificationAndNotes';
 import NameAndPhotos from './screens/CreateObservation/NameAndPhotos';
 import SelectLocation from './screens/CreateObservation/SelectLocation';
@@ -57,25 +57,29 @@ const Home = () => (
   </Stack.Navigator>
 );
 
-const LoginOrRegister = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="Login"
-      component={Login}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="Register"
-      component={Register}
-      options={{
-        title: 'Register',
-      }}
-    />
-  </Stack.Navigator>
-);
+const LoginOrRegister = () => {
+  const isLogout = useIsLogout();
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }}
+        animationTypeForReplace={isLogout ? 'pop' : 'push'}
+      />
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{
+          title: 'Register',
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 
 const App = () => {
-  const auth = useAuth();
+  const user = useUser();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -85,7 +89,7 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      {!auth.user ? <LoginOrRegister /> : <Home />}
+      {!user ? <LoginOrRegister /> : <Home />}
     </NavigationContainer>
   );
 };

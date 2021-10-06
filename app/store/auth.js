@@ -9,8 +9,10 @@ const slice = createSlice({
 
       state.user = { id, login_name };
       state.key = key;
+      state.isLogout = false;
     },
     logout: state => {
+      state.isLogout = true;
       state.user = undefined;
       state.key = undefined;
     },
@@ -19,8 +21,10 @@ const slice = createSlice({
 
 export const { loginSuccess, logout } = slice.actions;
 
-export const selectCurrentUser = state => state.auth.user;
+const selectCurrentUser = state => state.auth.user;
+const selectKey = state => state.auth.key;
+const selectIsLogout = state => state.auth.isLogout;
 
-export const selectKey = state => state.auth.key;
+export { selectCurrentUser, selectIsLogout, selectKey };
 
 export default slice.reducer;

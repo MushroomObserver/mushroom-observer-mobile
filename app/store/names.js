@@ -1,7 +1,4 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import Config from 'react-native-config';
-
-const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
 
 const adapter = createEntityAdapter();
 
@@ -10,36 +7,11 @@ const slice = createSlice({
   initialState: adapter.getInitialState(),
   reducers: {
     preloadNames: (state, action) => {
-      const names = require('../name_primer.json');
+      const names = require('./name_primer.json');
       adapter.addMany(state, names);
     },
     namesLoaded: (state, action) => {
       adapter.addMany(state, action.payload);
-    },
-    reloadNames: {
-      reducer: (state, action) => {},
-      prepare: () => {
-        return {
-          meta: {
-            offline: {
-              effect: {
-                url: `${API_URL}/ajax/name_primer`,
-                method: 'GET',
-                headers: {
-                  Accept: 'application/json',
-                  'content-type': 'application/json',
-                },
-              },
-              commit: {
-                type: 'names/namesLoaded',
-              },
-              rollback: {
-                type: 'names/loadRolledBack',
-              },
-            },
-          },
-        };
-      },
     },
   },
 });

@@ -1,7 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { persistReducer, persistStore } from 'redux-persist';
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  persistReducer,
+  persistStore,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from 'redux-persist';
 import createSensitiveStorage from 'redux-persist-sensitive-storage';
 
 import auth from './auth';
@@ -15,6 +24,7 @@ import observations from './observations';
 
 const mainPersistConfig = {
   key: 'main',
+  version: 1,
   storage: AsyncStorage,
   blacklist: ['auth', mushroomObserverApi.reducerPath, googleApi.reducerPath],
 };
@@ -43,7 +53,11 @@ const mainReducer = combineReducers({
 export const store = configureStore({
   reducer: persistReducer(mainPersistConfig, mainReducer),
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(mushroomObserverApi.middleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(mushroomObserverApi.middleware),
   devTools: true,
 });
 
