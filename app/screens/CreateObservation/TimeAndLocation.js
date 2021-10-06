@@ -1,8 +1,8 @@
 import { useNavigation, useRoute } from '@react-navigation/core';
 import dayjs from 'dayjs';
 import { filter } from 'lodash-es';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar } from 'react-native';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Button as NativeButton, ScrollView } from 'react-native';
 import {
   Button,
   DateTimePicker,
@@ -22,6 +22,7 @@ const TimeAndLocation = () => {
   const route = useRoute();
   const dispatch = useDispatch();
   const draft = useSelector(selectDraft);
+  const locationRef = useRef();
 
   const [date, setDate] = useState(dayjs(draft.date).toDate());
 
@@ -45,10 +46,9 @@ const TimeAndLocation = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Button
-          link
+        <NativeButton
           disabled={!location}
-          label="Next"
+          title="Next"
           onPress={() => {
             dispatch(
               updateDraft({
@@ -95,8 +95,7 @@ const TimeAndLocation = () => {
   }, [route.params?.merge]);
 
   return (
-    <SafeAreaView>
-      <StatusBar />
+    <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View padding-30>
           <DateTimePicker
@@ -108,10 +107,13 @@ const TimeAndLocation = () => {
             onChange={onChangeDate}
           />
           <Picker
+            ref={locationRef}
             showSearch
             title="Location"
             value={{ label: location, value: location }}
-            onChange={item => setLocation(item.value)}
+            onChange={item => {
+              setLocation(item.value);
+            }}
             onSearchChange={setQuery}
             listProps={{
               data: filter(locations, n => n.name.startsWith(query)),
@@ -123,10 +125,14 @@ const TimeAndLocation = () => {
                 />
               ),
             }}
+            validate="required"
+            errorMessage="This field is required"
           />
           <Button
+            marginB-15
             label="Locate"
             disabled={!location}
+            size={Button.sizes.medium}
             onPress={() => {
               dispatch(
                 updateDraft({
@@ -142,26 +148,24 @@ const TimeAndLocation = () => {
               navigation.navigate('Select Location');
             }}
           />
-          <Text>
+          <Text marginB-15>
             Where the observation was made. In the US this should be at least
             accurate to the county. Examples:
           </Text>
-          <Text>
+          <View marginB-15>
             <Text style={{ fontStyle: 'italic' }}>
               Albion, Mendocino Co., California, USA
             </Text>
-          </Text>
-          <Text>
             <Text style={{ fontStyle: 'italic' }}>
               Hotel Parque dos Coqueiros, Aracaju, Sergipe, Brazil
             </Text>
-          </Text>
+          </View>
           <Text>
             <Text style={{ fontWeight: 'bold' }}>Use the Locate Button</Text> to
             bring this location up on the map. Then click to add a marker and
             drag it to the specific Latitude & Longitude.
           </Text>
-          <View spread row centerV>
+          <View marginV-15 spread row centerV>
             <Text>Is this location where it was collected?</Text>
             <Switch
               value={is_collection_location}
@@ -203,7 +207,7 @@ const TimeAndLocation = () => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

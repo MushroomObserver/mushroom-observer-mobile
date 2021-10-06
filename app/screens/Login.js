@@ -40,8 +40,7 @@ const Login = () => {
   }, [data, dispatch, username]);
 
   return (
-    <SafeAreaView>
-      <StatusBar />
+    <View flex>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         keyboardDismissMode="interactive"
@@ -51,8 +50,9 @@ const Login = () => {
         }}>
         <View padding-30>
           <Image
+            marginB-15
             resizeMode="contain"
-            style={{ width: '100%' }}
+            style={{ width: '100%', height: 225 }}
             source={require('../logo.png')}
           />
           <TextField
@@ -96,8 +96,11 @@ const Login = () => {
             disabled={!username || !password || isLoading}
             onPress={() => getApiKeyForUser({ login_name: username, password })}
           />
-          <Text center>or</Text>
+          <Text marginV-15 center>
+            or
+          </Text>
           <Button
+            outline
             label="Register"
             onPress={() => navigation.navigate('Register')}
           />
@@ -111,7 +114,7 @@ const Login = () => {
           overlay
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

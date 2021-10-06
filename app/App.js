@@ -22,7 +22,7 @@ import { preloadNames } from './store/names';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const Tabs = () => (
+const HomeTabs = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       tabBarIcon: ({ size, color }) => {
@@ -39,6 +39,41 @@ const Tabs = () => (
   </Tab.Navigator>
 );
 
+const Home = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Home"
+      component={HomeTabs}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen name="Name and Photos" component={NameAndPhotos} />
+    <Stack.Screen name="Time and Location" component={TimeAndLocation} />
+    <Stack.Screen name="Select Location" component={SelectLocation} />
+    <Stack.Screen
+      name="Identification and Notes"
+      component={IdentificationAndNotes}
+    />
+    <Stack.Screen name="Edit Photo" component={EditPhoto} />
+  </Stack.Navigator>
+);
+
+const LoginOrRegister = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Login"
+      component={Login}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Register"
+      component={Register}
+      options={{
+        title: 'Register',
+      }}
+    />
+  </Stack.Navigator>
+);
+
 const App = () => {
   const auth = useAuth();
   const dispatch = useDispatch();
@@ -50,40 +85,7 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      {!auth.user ? (
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{
-              title: 'Mushroom Observer',
-            }}
-          />
-          <Stack.Screen
-            name="Register"
-            component={Register}
-            options={{
-              title: 'Mushroom Observer',
-            }}
-          />
-        </Stack.Navigator>
-      ) : (
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Home"
-            component={Tabs}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Name and Photos" component={NameAndPhotos} />
-          <Stack.Screen name="Time and Location" component={TimeAndLocation} />
-          <Stack.Screen name="Select Location" component={SelectLocation} />
-          <Stack.Screen
-            name="Identification and Notes"
-            component={IdentificationAndNotes}
-          />
-          <Stack.Screen name="Edit Photo" component={EditPhoto} />
-        </Stack.Navigator>
-      )}
+      {!auth.user ? <LoginOrRegister /> : <Home />}
     </NavigationContainer>
   );
 };

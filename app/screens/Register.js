@@ -24,8 +24,6 @@ const Register = () => {
   const passwordInput = useRef();
   const [password, setPassword] = useState();
 
-  const [error, setError] = useState();
-
   const [postUser, { data, isLoading }] = usePostUserMutation();
 
   useEffect(() => {
@@ -40,14 +38,11 @@ const Register = () => {
         ],
       } = data;
       dispatch(loginSuccess({ login_name, id: user, key }));
-    } else if (data?.errors) {
-      setError('Incorrect username or password');
     }
   }, [data, dispatch, username]);
 
   return (
-    <SafeAreaView>
-      <StatusBar />
+    <View flex>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         keyboardDismissMode="interactive"
@@ -62,8 +57,6 @@ const Register = () => {
             autoCorrect={false}
             autoCapitalize="none"
             title="Email"
-            textContentType="email"
-            autoCompleteType="email"
             returnKeyType="next"
             enablesReturnKeyAutomatically
             onChangeText={setEmail}
@@ -126,7 +119,7 @@ const Register = () => {
           overlay
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

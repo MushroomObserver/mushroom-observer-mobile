@@ -1,18 +1,10 @@
 import { useNavigation } from '@react-navigation/core';
 import { isEmpty, omitBy } from 'lodash';
 import React, { useLayoutEffect, useState } from 'react';
-import {
-  Button,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
+import { Button, ScrollView, StyleSheet } from 'react-native';
+import { Picker, Text, TextField, View } from 'react-native-ui-lib';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Field, Input, Label, Sublabel } from '../../components';
 import { useAuth } from '../../hooks/useAuth';
 import { selectKey } from '../../store/auth';
 import { clearDraft, selectDraft } from '../../store/draft';
@@ -38,61 +30,49 @@ const IdentificationAndNotes = () => {
         <Button
           title="Save"
           onPress={() => {
-            // navigation.reset({
-            //   index: 0,
-            //   routes: [{name: 'My Observations'}],
-            // });
-            // dispatch(clearDraft());
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'My Observations' }],
+            });
+            dispatch(clearDraft());
             const observation = omitBy(draft, isEmpty);
             console.log(observation);
-            postObservation({ observation, key });
+            // postObservation({ observation, key });
           }}
         />
       ),
     });
   }, [auth, dispatch, draft, navigation, postObservation, key]);
 
-  console.log(data);
   return (
-    <SafeAreaView>
-      <StatusBar />
+    <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View>
-          <Field>
-            <Label>Confidence</Label>
-            <RNPickerSelect
-              style={pickerSelectStyles}
-              items={[
-                { label: "I'd Call It That", value: 3.0 },
-                { label: 'Promising', value: 2.0 },
-                { label: 'Could Be', value: 1.0 },
-                { label: 'Doubtful', value: -1.0 },
-                { label: 'Not Likely', value: -2.0 },
-                { label: 'As If!', value: -3.0 },
-              ]}
-              onValueChange={setVote}
-              selectedValue={vote}
-            />
-          </Field>
-          <Field>
-            <Label>Notes</Label>
-            <Input
-              numberOfLines={4}
-              value={notes}
-              multiline={true}
-              onChangeText={setNotes}
-            />
-            <Sublabel>
-              Please include any additional information you can think of about
-              this observation that isn’t clear from the photographs, e.g.,
-              habitat, substrate or nearby trees; distinctive texture, scent,
-              taste, staining or bruising; results of chemical or microscopic
-              analyses, etc.
-            </Sublabel>
-          </Field>
+        <View flex padding-30>
+          <Picker title="Confidence" onChange={setVote} value={vote}>
+            <Picker.Item value={3.0} label="I'd Call It That" />
+            <Picker.Item value={2.0} label="Promising" />
+            <Picker.Item value={1.0} label="Could Be" />
+            <Picker.Item value={-1.0} label="Doubtful" />
+            <Picker.Item value={-2.0} label="Not Likely" />
+            <Picker.Item value={-3.0} label="As If!" />
+          </Picker>
+          <TextField
+            title="Notes"
+            value={notes}
+            onChangeText={setNotes}
+            expandable
+            multiline
+          />
+          <Text>
+            Please include any additional information you can think of about
+            this observation that isn’t clear from the photographs, e.g.,
+            habitat, substrate or nearby trees; distinctive texture, scent,
+            taste, staining or bruising; results of chemical or microscopic
+            analyses, etc.
+          </Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

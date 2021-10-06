@@ -18,7 +18,7 @@ const slice = createSlice({
   },
   reducers: {
     updateDraft: (state, action) => merge(state, action.payload),
-    clearDraft: (state, action) => ({}),
+    clearDraft: () => ({}),
   },
 });
 

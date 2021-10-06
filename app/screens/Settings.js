@@ -1,16 +1,9 @@
 import { useNavigation } from '@react-navigation/core';
-import React from 'react';
-import {
-  Alert,
-  Button,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  View,
-} from 'react-native';
+import React, { useLayoutEffect } from 'react';
+import { Alert, Button, ScrollView } from 'react-native';
+import { Text, View } from 'react-native-ui-lib';
 import { useDispatch } from 'react-redux';
 
-import { Field, Label, Row, Sublabel } from '../components';
 import { useAuth } from '../hooks/useAuth';
 import { logout } from '../store/auth';
 
@@ -19,10 +12,10 @@ const Settings = () => {
   const dispatch = useDispatch();
   const auth = useAuth();
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <View style={{ marginRight: 15 }}>
+        <View marginR-15>
           <Button
             title="Logout"
             onPress={() =>
@@ -44,26 +37,20 @@ const Settings = () => {
   }, [dispatch, navigation]);
 
   return (
-    <SafeAreaView>
-      <StatusBar />
+    <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <Field>
-          <Row>
-            <Label>Logged in as</Label>
-            <Sublabel>{auth.user.login_name}</Sublabel>
-          </Row>
-        </Field>
-        <Field>
-          <Row>
-            <Label>Current API key</Label>
-            <Sublabel>{`********************${auth.key.substring(
+        <View padding-30>
+          <Text marginB-15>Logged in as {auth.user.login_name}</Text>
+          <Text>
+            Current API key:{' '}
+            {`********************${auth.key.substring(
               auth.key.length - 4,
               auth.key.length,
-            )}`}</Sublabel>
-          </Row>
-        </Field>
+            )}`}
+          </Text>
+        </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

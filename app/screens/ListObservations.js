@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { Colors, FloatingButton, Image, Text, View } from 'react-native-ui-lib';
+import { FloatingButton, Image, Text, View } from 'react-native-ui-lib';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 

@@ -46,7 +46,6 @@ const mushroomObserverApi = createApi({
           uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
           type: type,
           name: name,
-          // path: path,
         });
 
         return {

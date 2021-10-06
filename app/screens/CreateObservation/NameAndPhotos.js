@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import { filter } from 'lodash-es';
 import React, { useLayoutEffect, useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, StatusBar } from 'react-native';
+import { Alert, Button as NativeButton, ScrollView } from 'react-native';
 import { Button, Picker, Text, View } from 'react-native-ui-lib';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -21,9 +21,8 @@ const NameAndPhotos = () => {
     navigation.setOptions({
       headerLeft: () => (
         <View>
-          <Button
-            link
-            label="Cancel"
+          <NativeButton
+            title="Cancel"
             onPress={() =>
               Alert.alert('Discard Observation', 'Are you sure?', [
                 {
@@ -43,9 +42,8 @@ const NameAndPhotos = () => {
         </View>
       ),
       headerRight: () => (
-        <Button
-          link
-          label="Next"
+        <NativeButton
+          title="Next"
           onPress={() => {
             dispatch(updateDraft({ name }));
             navigation.navigate('Time and Location');
@@ -56,10 +54,9 @@ const NameAndPhotos = () => {
   }, [dispatch, name, navigation]);
 
   return (
-    <SafeAreaView>
-      <StatusBar />
+    <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View flexG padding-30>
+        <View flex padding-30>
           <PhotoPicker />
           <Picker
             showSearch
@@ -97,7 +94,7 @@ const NameAndPhotos = () => {
           </Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

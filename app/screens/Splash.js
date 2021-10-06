@@ -1,22 +1,15 @@
 import React from 'react';
-import { Image, SafeAreaView, ScrollView, StatusBar } from 'react-native';
-
-import { Field } from '../components';
+import { Image, View } from 'react-native-ui-lib';
 
 const Splash = () => {
   return (
-    <SafeAreaView>
-      <StatusBar />
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <Field>
-          <Image
-            resizeMode="contain"
-            style={{ width: '100%', height: 200 }}
-            source={require('../logo.png')}
-          />
-        </Field>
-      </ScrollView>
-    </SafeAreaView>
+    <View flex center>
+      <Image
+        resizeMode="contain"
+        style={{ width: '100%', height: 225 }}
+        source={require('../logo.png')}
+      />
+    </View>
   );
 };
 

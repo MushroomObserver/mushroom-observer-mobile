@@ -1,14 +1,14 @@
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { map } from 'lodash-es';
 import React, { useState } from 'react';
-import { Dimensions, StyleSheet } from 'react-native';
+import { Alert, Dimensions, StyleSheet } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { Button, Carousel, Image, View } from 'react-native-ui-lib';
+import { Button, Carousel, GridView, Image, View } from 'react-native-ui-lib';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const PhotoPicker = () => {
-  const SELECTION_LIMIT = 10;
+  const SELECTION_LIMIT = 12;
   const [photos, setPhotos] = useState([]);
   const { showActionSheetWithOptions } = useActionSheet();
 
@@ -22,30 +22,26 @@ const PhotoPicker = () => {
   return (
     <View flexG>
       {photos.length > 0 && (
-        <Carousel
-          pageWidth={screenWidth}
-          containerStyle={{ height: 250 }}
-          pageControlPosition={Carousel.pageControlPositions.UNDER}
-          allowAccessibleLayout>
-          {photos &&
-            map(photos, (item, index) => (
-              <Image
-                key={index}
-                overlayType={Image.overlayTypes.BOTTOM}
-                style={{
-                  ...StyleSheet.absoluteFillObject,
-                  resizeMode: 'cover',
-                }}
-                source={{
-                  uri: item.uri,
-                }}
-              />
-            ))}
-        </Carousel>
+        <View marginB-15>
+          <GridView
+            items={photos.map((photo, index) => ({
+              index,
+              imageProps: {
+                source: photo,
+              },
+              onPress: value => {
+                console.log(value);
+              },
+            }))}
+            viewWidth={screenWidth - 60}
+            numColumns={3}
+          />
+        </View>
       )}
       <Button
+        marginB-15
         label="Add Photos"
-        outline
+        size={Button.sizes.medium}
         onPress={() =>
           showActionSheetWithOptions(
             {
