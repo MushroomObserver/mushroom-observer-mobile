@@ -1,9 +1,10 @@
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { useNavigation } from '@react-navigation/core';
-import React, { useState } from 'react';
+import { map } from 'lodash-es';
+import React, { useRef, useState } from 'react';
 import { Dimensions, Platform, StyleSheet } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { Button, GridView, Image, View } from 'react-native-ui-lib';
+import { Button, Carousel, Image, View } from 'react-native-ui-lib';
 
 import { useKey } from '../../hooks/useAuth';
 import { usePostImageMutation } from '../../store/mushroomObserver';
@@ -18,6 +19,7 @@ const PhotoPicker = props => {
   const [photos, setPhotos] = useState([]);
   const [selected, setSelected] = useState(0);
   const { showActionSheetWithOptions } = useActionSheet();
+  const viewRef = useRef();
 
   const [postImage, { data, isLoading }] = usePostImageMutation();
 
@@ -40,23 +42,8 @@ const PhotoPicker = props => {
     navigation.navigate('Edit Photo', photos[selected]);
   };
 
-  const renderItem = ({ item }, parallaxProps) => {
-    return (
-      <View style={carouselStyles.item}>
-        <Image
-          aspectRatio={1}
-          source={{ uri: item?.uri }}
-          resizeMode="contain"
-          containerStyle={carouselStyles.imageContainer}
-          style={carouselStyles.image}
-          {...parallaxProps}
-        />
-      </View>
-    );
-  };
-
   return (
-    <View>
+    <View flexG ref={viewRef}>
       <Button
         label="Add Photos"
         outline
@@ -94,33 +81,30 @@ const PhotoPicker = props => {
         }
         disabled={photos && photos.length === SELECTION_LIMIT}
       />
-      {photos.length > 0 && (
-        <View>
-          <GridView
-            numColumns={4}
-            keepItemSize
-            viewWidth={300}
-            items={photos.map(photo => {
-              console.log(photo);
-              return {
-                imageProps: {
-                  source: { uri: photo.uri },
-                },
-                itemSize: { height: 90 },
-                title: 'Title',
-                subtitle: 'subtitle',
-                description: 'smtg',
-                descriptionLines: 2,
-                alignToStart: true,
-              };
-            })}
-          />
-          <View style={carouselStyles.buttonContainer}>
-            <Button outline label="Remove" onPress={removePhoto} />
-            <Button outline label="Edit" onPress={editPhoto} />
-          </View>
-        </View>
-      )}
+
+      <Carousel
+        pageWidth={screenWidth}
+        containerStyle={{ height: 250 }}
+        pageControlPosition={Carousel.pageControlPositions.OVER}
+        allowAccessibleLayout>
+        {photos &&
+          map(photos, (item, index) => (
+            <View flex centerV key={index}>
+              <Image
+                overlayType={Image.overlayTypes.BOTTOM}
+                style={{ flex: 1 }}
+                source={{
+                  uri: item.uri,
+                }}
+              />
+            </View>
+          ))}
+      </Carousel>
+
+      <View style={carouselStyles.buttonContainer}>
+        <Button outline label="Remove" onPress={removePhoto} />
+        <Button outline label="Edit" onPress={editPhoto} />
+      </View>
     </View>
   );
 };

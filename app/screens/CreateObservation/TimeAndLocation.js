@@ -47,12 +47,13 @@ const TimeAndLocation = () => {
       headerRight: () => (
         <Button
           link
+          disabled={!location}
           label="Next"
           onPress={() => {
             dispatch(
               updateDraft({
                 date: dayjs(date).format('YYYYMMDD'),
-                location: location.value,
+                location,
                 latitude,
                 longitude,
                 altitude,
@@ -91,7 +92,7 @@ const TimeAndLocation = () => {
     //   };
     //   fetchAltitude();
     // }
-  }, [route.params.merge]);
+  }, [route.params?.merge]);
 
   return (
     <SafeAreaView>
@@ -110,7 +111,7 @@ const TimeAndLocation = () => {
             showSearch
             title="Location"
             value={location}
-            onChange={setLocation}
+            onChange={item => setLocation(item.value)}
             onSearchChange={setQuery}
             listProps={{
               data: filter(locations, n => n.name.startsWith(query)),
@@ -126,7 +127,20 @@ const TimeAndLocation = () => {
           <Button
             label="Locate"
             disabled={!location}
-            onPress={() => navigation.navigate('Select Location')}
+            onPress={() => {
+              dispatch(
+                updateDraft({
+                  date: dayjs(date).format('YYYYMMDD'),
+                  location,
+                  latitude,
+                  longitude,
+                  altitude,
+                  is_collection_location,
+                  gps_hidden,
+                }),
+              );
+              navigation.navigate('Select Location');
+            }}
           />
           <Text>
             Where the observation was made. In the US this should be at least
@@ -158,7 +172,7 @@ const TimeAndLocation = () => {
             <View flex>
               <TextField
                 title="Latitude"
-                value={`${latitude}`}
+                value={latitude}
                 maxLength={5}
                 keyboardType="numeric"
                 onChangeText={setLatitude}
@@ -167,7 +181,7 @@ const TimeAndLocation = () => {
             <View flex marginH-30>
               <TextField
                 title="Longitude"
-                value={`${longitude}`}
+                value={longitude}
                 maxLength={5}
                 keyboardType="numeric"
                 onChangeText={setLongitude}
@@ -176,7 +190,7 @@ const TimeAndLocation = () => {
             <View flex>
               <TextField
                 title="Altitude"
-                value={`${altitude}`}
+                value={altitude}
                 maxLength={5}
                 keyboardType="numeric"
                 onChangeText={setAltitude}

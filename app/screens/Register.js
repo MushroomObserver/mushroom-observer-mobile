@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
 import {
   Button,
+  Colors,
   KeyboardAwareScrollView,
+  LoaderScreen,
   TextField,
   View,
 } from 'react-native-ui-lib';
@@ -102,7 +104,6 @@ const Register = () => {
             autoCompleteType="password"
             returnKeyType="done"
             enablesReturnKeyAutomatically
-            secureTextEntry
             onChangeText={setPassword}
             onSubmitEditing={() => postUser({ email, username, password })}
             value={password}
@@ -117,6 +118,14 @@ const Register = () => {
           />
         </View>
       </KeyboardAwareScrollView>
+      {isLoading && (
+        <LoaderScreen
+          color={Colors.blue30}
+          backgroundColor={Colors.grey50}
+          message="Loading..."
+          overlay
+        />
+      )}
     </SafeAreaView>
   );
 };

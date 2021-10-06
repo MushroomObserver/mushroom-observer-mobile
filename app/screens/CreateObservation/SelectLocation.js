@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { Button, Dimensions, StyleSheet, Text, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getElevation, getGeocode } from '../../api/google';
 import { selectDraft, updateDraft } from '../../store/draft';
+import { useGeocodeQuery } from '../../store/google';
 
 const { width, height } = Dimensions.get('window');
 
@@ -18,10 +18,23 @@ const SelectLocation = () => {
 
   const draft = useSelector(selectDraft);
   const dispatch = useDispatch();
+  const {
+    data: {
+      results: [
+        {
+          geometry: {
+            location: { lat, lng },
+          },
+        },
+      ],
+    },
+    error,
+    isLoading,
+  } = useGeocodeQuery(draft.location.value);
 
   const [region, setRegion] = useState({
-    latitude: draft.latitude,
-    longitude: draft.longitude,
+    latitude: lat,
+    longitude: lng,
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
   });
@@ -32,32 +45,18 @@ const SelectLocation = () => {
         <Button
           title="Select"
           onPress={async () => {
-            const altitude = await getElevation(
-              region.latitude,
-              region.longitude,
-            );
-
             dispatch(
               updateDraft({
                 latitude: region.latitude,
                 longitude: region.longitude,
-                altitude,
               }),
             );
-            navigation.navigate({ name: 'Time and Location', merge: true });
+            navigation.navigate('Time and Location');
           }}
         />
       ),
     });
   }, [dispatch, navigation, region]);
-
-  useEffect(() => {
-    const getCoordinates = async () => {
-      const coordinates = await getGeocode(draft.location);
-      console.log(coordinates);
-    };
-    getCoordinates();
-  });
 
   return (
     <View style={mapStyles.container}>
@@ -70,7 +69,7 @@ const SelectLocation = () => {
       </MapView>
       <View style={[mapStyles.bubble, mapStyles.latlng]}>
         <Text style={mapStyles.centeredText}>
-          {region.latitude.toPrecision(5)},{region.longitude.toPrecision(5)}
+          {region.latitude?.toPrecision(5)},{region.longitude?.toPrecision(5)}
         </Text>
       </View>
     </View>

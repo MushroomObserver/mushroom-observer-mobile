@@ -6,6 +6,7 @@ import createSensitiveStorage from 'redux-persist-sensitive-storage';
 
 import auth from './auth';
 import draft from './draft';
+import googleApi from './google';
 import images from './images';
 import locations from './locations';
 import mushroomObserverApi from './mushroomObserver';
@@ -15,7 +16,7 @@ import observations from './observations';
 const mainPersistConfig = {
   key: 'main',
   storage: AsyncStorage,
-  blacklist: ['auth', mushroomObserverApi.reducerPath],
+  blacklist: ['auth', mushroomObserverApi.reducerPath, googleApi.reducerPath],
 };
 
 const sensitiveStorage = createSensitiveStorage({
@@ -30,6 +31,7 @@ const authPersistConfig = {
 
 const mainReducer = combineReducers({
   [mushroomObserverApi.reducerPath]: mushroomObserverApi.reducer,
+  [googleApi.reducerPath]: googleApi.reducer,
   auth: persistReducer(authPersistConfig, auth),
   observations,
   images,

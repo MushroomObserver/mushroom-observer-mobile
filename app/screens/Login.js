@@ -3,8 +3,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
 import {
   Button,
+  Colors,
   Image,
   KeyboardAwareScrollView,
+  LoaderScreen,
   Text,
   TextField,
   View,
@@ -101,6 +103,14 @@ const Login = () => {
           />
         </View>
       </KeyboardAwareScrollView>
+      {isLoading && (
+        <LoaderScreen
+          color={Colors.blue30}
+          backgroundColor={Colors.grey50}
+          message="Loading..."
+          overlay
+        />
+      )}
     </SafeAreaView>
   );
 };
