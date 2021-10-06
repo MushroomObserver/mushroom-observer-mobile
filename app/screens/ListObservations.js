@@ -1,17 +1,12 @@
+import { useNavigation } from '@react-navigation/core';
 import React, { useEffect } from 'react';
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { Colors, FloatingButton, Image, Text, View } from 'react-native-ui-lib';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useUser } from '../hooks/useAuth';
-import { loadObservations, selectAll } from '../store/observations';
+import { selectAll } from '../store/observations';
 
 const NoObservations = () => (
   <View style={styles.noObservations}>
@@ -54,6 +49,7 @@ const Observation = ({ item }) => {
 
 const ListObservations = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const user = useSelector(useUser);
   const observations = useSelector(selectAll);
 
@@ -69,6 +65,19 @@ const ListObservations = () => {
         contentContainerStyle={styles.contentContainerStyle}
         renderItem={({ item }) => <Observation item={item} />}
         keyExtractor={item => item?.id}
+      />
+      <FloatingButton
+        visible
+        button={{
+          label: 'Create Observation',
+          onPress: () => navigation.navigate('Name and Photos'),
+          iconSource: () => (
+            <View marginR-10>
+              <Icon name="eye" size={25} color="white" />
+            </View>
+          ),
+        }}
+        hideBackgroundOverlay
       />
     </View>
   );

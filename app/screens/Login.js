@@ -52,8 +52,8 @@ const Login = () => {
         <View padding-30>
           <Image
             resizeMode="contain"
-            style={{ width: '100%', height: 200 }}
-            source={require('../logo_MO5.png')}
+            style={{ width: '100%' }}
+            source={require('../logo.png')}
           />
           <TextField
             ref={usernameInput}

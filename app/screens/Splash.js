@@ -12,7 +12,7 @@ const Splash = () => {
           <Image
             resizeMode="contain"
             style={{ width: '100%', height: 200 }}
-            source={require('../logo_MO5.png')}
+            source={require('../logo.png')}
           />
         </Field>
       </ScrollView>

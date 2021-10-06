@@ -30,7 +30,7 @@ const SelectLocation = () => {
     },
     error,
     isLoading,
-  } = useGeocodeQuery(draft.location.value);
+  } = useGeocodeQuery(draft.location);
 
   const [region, setRegion] = useState({
     latitude: lat,

@@ -110,7 +110,7 @@ const TimeAndLocation = () => {
           <Picker
             showSearch
             title="Location"
-            value={location}
+            value={{ label: location, value: location }}
             onChange={item => setLocation(item.value)}
             onSearchChange={setQuery}
             listProps={{

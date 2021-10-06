@@ -23,16 +23,19 @@ const NameAndPhotos = () => {
         <View>
           <Button
             link
-            label="Clear"
+            label="Cancel"
             onPress={() =>
-              Alert.alert('Clear', 'Are you sure?', [
+              Alert.alert('Discard Observation', 'Are you sure?', [
                 {
                   text: 'Cancel',
                   style: 'cancel',
                 },
                 {
                   text: 'OK',
-                  onPress: () => dispatch(clearDraft()),
+                  onPress: () => {
+                    dispatch(clearDraft());
+                    navigation.navigate('Home');
+                  },
                 },
               ])
             }
@@ -61,7 +64,7 @@ const NameAndPhotos = () => {
           <Picker
             showSearch
             title="Name"
-            value={name}
+            value={{ label: name, value: name }}
             onChange={item => setName(item.value)}
             onSearchChange={setQuery}
             listProps={{
