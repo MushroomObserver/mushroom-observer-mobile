@@ -46,14 +46,16 @@ const Home = () => (
       component={HomeTabs}
       options={{ headerShown: false }}
     />
-    <Stack.Screen name="Name and Photos" component={NameAndPhotos} />
-    <Stack.Screen name="Time and Location" component={TimeAndLocation} />
-    <Stack.Screen name="Select Location" component={SelectLocation} />
-    <Stack.Screen
-      name="Identification and Notes"
-      component={IdentificationAndNotes}
-    />
-    <Stack.Screen name="Edit Photo" component={EditPhoto} />
+    <Stack.Group screenOptions={{ presentation: 'card' }}>
+      <Stack.Screen name="Name and Photos" component={NameAndPhotos} />
+      <Stack.Screen name="Time and Location" component={TimeAndLocation} />
+      <Stack.Screen name="Select Location" component={SelectLocation} />
+      <Stack.Screen
+        name="Identification and Notes"
+        component={IdentificationAndNotes}
+      />
+      <Stack.Screen name="Edit Photo" component={EditPhoto} />
+    </Stack.Group>
   </Stack.Navigator>
 );
 
