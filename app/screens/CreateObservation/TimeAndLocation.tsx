@@ -1,7 +1,7 @@
 import { useNavigation, useRoute } from '@react-navigation/core';
 import dayjs from 'dayjs';
 import { filter } from 'lodash-es';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Button as NativeButton, ScrollView } from 'react-native';
 import {
   Button,
@@ -77,22 +77,6 @@ const TimeAndLocation = () => {
     longitude,
     navigation,
   ]);
-
-  useEffect(() => {
-    // if (route.params?.merge) {
-    //   const region = route.params.region;
-    //   setLatitude(region.latitude);
-    //   setLongitude(region.longitude);
-    //   const fetchAltitude = async () => {
-    //     const newAltitude = await getElevation(
-    //       region.latitude,
-    //       region.longitude,
-    //     );
-    //     setAltitude(newAltitude);
-    //   };
-    //   fetchAltitude();
-    // }
-  }, [route.params?.merge]);
 
   return (
     <View flex>

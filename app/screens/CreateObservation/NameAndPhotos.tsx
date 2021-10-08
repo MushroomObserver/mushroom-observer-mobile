@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import { filter } from 'lodash-es';
 import React, { useLayoutEffect, useState } from 'react';
 import { Alert, Button as NativeButton, ScrollView } from 'react-native';
-import { Button, Picker, Text, View } from 'react-native-ui-lib';
+import { Picker, Text, View } from 'react-native-ui-lib';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { clearDraft, selectDraft, updateDraft } from '../../store/draft';
@@ -32,8 +32,8 @@ const NameAndPhotos = () => {
                 {
                   text: 'OK',
                   onPress: () => {
-                    dispatch(clearDraft());
-                    navigation.navigate('Home');
+                    dispatch(clearDraft(undefined));
+                    navigation.navigate('Home', { screen: 'My Observations' });
                   },
                 },
               ])

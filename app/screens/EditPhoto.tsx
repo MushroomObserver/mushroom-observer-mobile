@@ -4,7 +4,7 @@ import React from 'react';
 import { Button as NativeButton, ScrollView } from 'react-native';
 import { Image, Picker, Text, TextField, View } from 'react-native-ui-lib';
 
-const EditPhoto = props => {
+const EditPhoto = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [copyrightHolder, setCopyrightHolder] = React.useState('');
@@ -18,7 +18,7 @@ const EditPhoto = props => {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => <NativeButton title="Save" />,
+      headerRight: () => <NativeButton title="Save" onPress={() => {}} />,
     });
   }, [navigation, route]);
 
@@ -37,7 +37,6 @@ const EditPhoto = props => {
             onChange={setCopyrightHolder}
           />
           <DateTimePicker
-            title={'Date'}
             value={when}
             maximumDate={new Date()}
             mode="date"

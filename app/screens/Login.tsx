@@ -1,11 +1,10 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useRef, useState } from 'react';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { ScrollView } from 'react-native';
 import {
   Button,
   Colors,
   Image,
-  KeyboardAwareScrollView,
   LoaderScreen,
   Text,
   TextField,
@@ -21,9 +20,9 @@ const Login = () => {
   const dispatch = useDispatch();
   const [username, onChangeUsername] = useState();
   const [password, onChangePassword] = useState();
-  const [error, setError] = useState();
-  const usernameInput = useRef();
-  const passwordInput = useRef();
+  const [error, setError] = useState<string>();
+  const usernameInput = useRef<typeof TextField>();
+  const passwordInput = useRef<typeof TextField>();
 
   const [getApiKeyForUser, { data, isLoading }] = useGetApiKeyForUserMutation();
 
@@ -41,13 +40,7 @@ const Login = () => {
 
   return (
     <View flex>
-      <KeyboardAwareScrollView
-        showsVerticalScrollIndicator={false}
-        keyboardDismissMode="interactive"
-        keyboardShouldPersistTaps="always"
-        getTextInputRefs={() => {
-          return [usernameInput, passwordInput];
-        }}>
+      <ScrollView>
         <View padding-30>
           <Image marginB-15 logo />
           <TextField
@@ -100,7 +93,7 @@ const Login = () => {
             onPress={() => navigation.navigate('Register')}
           />
         </View>
-      </KeyboardAwareScrollView>
+      </ScrollView>
       {isLoading && (
         <LoaderScreen
           color={Colors.blue30}

@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { ScrollView } from 'react-native';
 import {
   Button,
   Colors,
-  KeyboardAwareScrollView,
+  Keyboard,
   LoaderScreen,
   TextField,
   View,
@@ -15,13 +15,13 @@ import { usePostUserMutation } from '../store/mushroomObserver';
 const Register = () => {
   const dispatch = useDispatch();
 
-  const emailInput = useRef();
+  const emailInput = useRef<typeof TextField>();
   const [email, setEmail] = useState();
 
-  const usernameInput = useRef();
+  const usernameInput = useRef<typeof TextField>();
   const [username, setUsername] = useState();
 
-  const passwordInput = useRef();
+  const passwordInput = useRef<typeof TextField>();
   const [password, setPassword] = useState();
 
   const [postUser, { data, isLoading }] = usePostUserMutation();
@@ -43,13 +43,7 @@ const Register = () => {
 
   return (
     <View flex>
-      <KeyboardAwareScrollView
-        showsVerticalScrollIndicator={false}
-        keyboardDismissMode="interactive"
-        keyboardShouldPersistTaps="always"
-        getTextInputRefs={() => {
-          return [emailInput, usernameInput, passwordInput];
-        }}>
+      <ScrollView>
         <View padding-30>
           <TextField
             ref={emailInput}
@@ -110,7 +104,7 @@ const Register = () => {
             onPress={() => postUser({ email, username, password })}
           />
         </View>
-      </KeyboardAwareScrollView>
+      </ScrollView>
       {isLoading && (
         <LoaderScreen
           color={Colors.blue30}

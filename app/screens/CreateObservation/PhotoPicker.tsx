@@ -1,9 +1,13 @@
 import { useActionSheet } from '@expo/react-native-action-sheet';
-import { map } from 'lodash-es';
 import React, { useState } from 'react';
-import { Alert, Dimensions, StyleSheet } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { Button, Carousel, GridView, Image, View } from 'react-native-ui-lib';
+import { Dimensions } from 'react-native';
+import {
+  Callback,
+  ImagePickerResponse,
+  launchCamera,
+  launchImageLibrary,
+} from 'react-native-image-picker';
+import { Button, GridView, View } from 'react-native-ui-lib';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -12,7 +16,10 @@ const PhotoPicker = () => {
   const [photos, setPhotos] = useState([]);
   const { showActionSheetWithOptions } = useActionSheet();
 
-  const addPhotos = async ({ didCancel, assets }) => {
+  const addPhotos: Callback = async ({
+    didCancel,
+    assets,
+  }: ImagePickerResponse) => {
     if (!didCancel) {
       const newPhotos = photos.concat(assets);
       setPhotos(newPhotos);

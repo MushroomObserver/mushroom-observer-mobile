@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import { isEmpty, omitBy } from 'lodash';
 import React, { useLayoutEffect, useState } from 'react';
-import { Button, ScrollView, StyleSheet } from 'react-native';
+import { Button, ScrollView } from 'react-native';
 import { Picker, Text, TextField, View } from 'react-native-ui-lib';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -32,9 +32,9 @@ const IdentificationAndNotes = () => {
           onPress={() => {
             navigation.reset({
               index: 0,
-              routes: [{ name: 'My Observations' }],
+              routes: [{ name: 'Home' }],
             });
-            dispatch(clearDraft());
+            dispatch(clearDraft(null));
             const observation = omitBy(draft, isEmpty);
             console.log(observation);
             // postObservation({ observation, key });
@@ -75,19 +75,5 @@ const IdentificationAndNotes = () => {
     </View>
   );
 };
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    color: '#007bff',
-    margin: 8,
-    fontSize: 18,
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    fontSize: 18,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-});
 
 export default IdentificationAndNotes;

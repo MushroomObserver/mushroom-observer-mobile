@@ -1,6 +1,5 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { Platform } from 'react-native';
 import Config from 'react-native-config';
 
 const API_URL = 'https://maps.googleapis.com/maps/api/';

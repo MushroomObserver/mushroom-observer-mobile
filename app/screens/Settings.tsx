@@ -34,7 +34,7 @@ const Settings = () => {
         </View>
       ),
     });
-  }, [dispatch, navigation]);
+  });
 
   return (
     <View flex>

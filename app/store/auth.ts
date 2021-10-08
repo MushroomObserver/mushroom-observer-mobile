@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const slice = createSlice({
   name: 'auth',
-  initialState: { user: undefined, key: undefined },
+  initialState: { user: undefined, key: undefined, isLogout: false },
   reducers: {
     loginSuccess: (state, action) => {
       const { id, login_name, key } = action.payload;

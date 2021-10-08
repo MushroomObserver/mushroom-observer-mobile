@@ -36,10 +36,7 @@ const Observation = ({ item }) => {
             item.consensus?.author ? item.consensus.author : ''
           }`}
         </Text>
-        <Text
-          style={styles.observationText}
-          numberOfLines={1}
-          ellipsizeMode="tail">
+        <Text numberOfLines={1} ellipsizeMode="tail">
           {item.location_name}
         </Text>
       </View>
@@ -70,7 +67,7 @@ const ListObservations = () => {
         visible
         button={{
           label: 'Create Observation',
-          onPress: () => navigation.navigate('Name and Photos'),
+          onPress: () => navigation.navigate({ key: 'Name and Photos' }),
           iconSource: () => (
             <View marginR-10>
               <Icon name="eye" size={25} color="white" />
