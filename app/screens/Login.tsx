@@ -1,3 +1,5 @@
+import { loginSuccess } from '../store/auth';
+import { useGetApiKeyForUserMutation } from '../store/mushroomObserver';
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView } from 'react-native';
@@ -12,21 +14,26 @@ import {
 } from 'react-native-ui-lib';
 import { useDispatch } from 'react-redux';
 
-import { loginSuccess } from '../store/auth';
-import { useGetApiKeyForUserMutation } from '../store/mushroomObserver';
-
 const Login = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [username, onChangeUsername] = useState();
   const [password, onChangePassword] = useState();
-  const [error, setError] = useState<string>();
+  const [hasError, setHasError] = useState<string>();
   const usernameInput = useRef<typeof TextField>();
   const passwordInput = useRef<typeof TextField>();
 
-  const [getApiKeyForUser, { data, isLoading }] = useGetApiKeyForUserMutation();
+  const [getApiKeyForUser, { status, data, isLoading, error }] =
+    useGetApiKeyForUserMutation();
+  const submitLogin = () => {
+    if (!isLoading) {
+      getApiKeyForUser({ login_name: username, password });
+    }
+  };
 
   useEffect(() => {
+    console.log(status, data, error);
+
     if (!data?.errors && data?.results?.[0]) {
       const {
         user,
@@ -34,7 +41,7 @@ const Login = () => {
       } = data;
       dispatch(loginSuccess({ login_name: username, id: user, key }));
     } else if (data?.errors) {
-      setError('Incorrect username or password');
+      setHasError('Incorrect username or password');
     }
   }, [data, dispatch, username]);
 
@@ -72,17 +79,15 @@ const Login = () => {
             enablesReturnKeyAutomatically
             secureTextEntry
             onChangeText={onChangePassword}
-            onSubmitEditing={() =>
-              getApiKeyForUser({ login_name: username, password })
-            }
+            onSubmitEditing={submitLogin}
             value={password}
             validate="required"
-            error={error}
+            error={hasError}
           />
           <Button
             label="Login"
             disabled={!username || !password || isLoading}
-            onPress={() => getApiKeyForUser({ login_name: username, password })}
+            onPress={submitLogin}
           />
           <Text marginV-15 center>
             or

@@ -1,12 +1,11 @@
+import { useUser } from '../hooks/useAuth';
+import { selectAll } from '../store/observations';
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { FloatingButton, Image, Text, View } from 'react-native-ui-lib';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { useUser } from '../hooks/useAuth';
-import { selectAll } from '../store/observations';
 
 const NoObservations = () => (
   <View style={styles.noObservations}>
@@ -67,7 +66,7 @@ const ListObservations = () => {
         visible
         button={{
           label: 'Create Observation',
-          onPress: () => navigation.navigate({ key: 'Name and Photos' }),
+          onPress: () => navigation.navigate('Name and Photos'),
           iconSource: () => (
             <View marginR-10>
               <Icon name="eye" size={25} color="white" />

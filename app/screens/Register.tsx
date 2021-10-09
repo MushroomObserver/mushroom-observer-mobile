@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 
 import { loginSuccess } from '../store/auth';
 import { usePostUserMutation } from '../store/mushroomObserver';
+
 const Register = () => {
   const dispatch = useDispatch();
 

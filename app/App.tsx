@@ -1,18 +1,3 @@
-import { connectActionSheet } from '@expo/react-native-action-sheet';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {
-  useFlipper,
-  useReduxDevToolsExtension,
-} from '@react-navigation/devtools';
-import {
-  NavigationContainer,
-  useNavigationContainerRef,
-} from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect } from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useDispatch } from 'react-redux';
-
 import { useIsLogout, useUser } from './hooks/useAuth';
 import IdentificationAndNotes from './screens/CreateObservation/IdentificationAndNotes';
 import NameAndPhotos from './screens/CreateObservation/NameAndPhotos';
@@ -26,6 +11,17 @@ import Settings from './screens/Settings';
 import { preloadLocations } from './store/locations';
 import { preloadNames } from './store/names';
 import { LoginStackParamList } from './types';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useReduxDevToolsExtension } from '@react-navigation/devtools';
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useEffect } from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useDispatch } from 'react-redux';
 
 const { Navigator: LoginStackNavigator, Screen: LoginStackScreen } =
   createNativeStackNavigator<LoginStackParamList>();
@@ -108,7 +104,6 @@ const App = () => {
   const dispatch = useDispatch();
   const navigationRef = useNavigationContainerRef();
 
-  useFlipper(navigationRef);
   useReduxDevToolsExtension(navigationRef);
 
   useEffect(() => {

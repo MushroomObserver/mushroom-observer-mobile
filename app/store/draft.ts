@@ -1,6 +1,7 @@
 import { createSlice, SliceCaseReducers } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 import { merge } from 'lodash';
+
 import { Observation } from '../types';
 
 const slice = createSlice<Observation, SliceCaseReducers<Observation>, 'draft'>(

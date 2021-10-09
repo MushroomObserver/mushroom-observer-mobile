@@ -207,7 +207,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1300;
 					};
 				};
 			};
@@ -430,7 +430,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 70911A7137EB4485D1619005 /* Pods-MushroomObserver-MushroomObserverTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = V7M8VK952M;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -459,7 +458,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FF27E6479DD529652A6D91D2 /* Pods-MushroomObserver-MushroomObserverTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = V7M8VK952M;
@@ -497,6 +495,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LD_VERIFY_BITCODE = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -505,6 +504,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.mushroomobserver.mobile;
 				PRODUCT_NAME = MushroomObserver;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "MushroomObserver-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -526,6 +526,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LD_VERIFY_BITCODE = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -534,6 +535,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.mushroomobserver.mobile;
 				PRODUCT_NAME = MushroomObserver;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "MushroomObserver-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

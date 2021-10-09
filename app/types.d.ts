@@ -36,6 +36,16 @@ declare global {
   }
 }
 
+interface License {
+  label: string;
+  value: number;
+}
+
+export interface Location {
+  label: string;
+  value: number;
+}
+
 export interface Observation {
   id: number;
   name: string;

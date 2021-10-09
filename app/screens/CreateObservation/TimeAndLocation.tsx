@@ -19,10 +19,8 @@ import { selectAll } from '../../store/locations';
 
 const TimeAndLocation = () => {
   const navigation = useNavigation();
-  const route = useRoute();
   const dispatch = useDispatch();
   const draft = useSelector(selectDraft);
-  const locationRef = useRef();
 
   const [date, setDate] = useState(dayjs(draft.date).toDate());
 
@@ -91,7 +89,6 @@ const TimeAndLocation = () => {
             onChange={onChangeDate}
           />
           <Picker
-            ref={locationRef}
             showSearch
             title="Location"
             value={{ label: location, value: location }}

@@ -5,7 +5,7 @@ import Config from 'react-native-config';
 
 const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
 const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
-
+console.log(API_URL, API_KEY);
 const mushroomObserverApi = createApi({
   reducerPath: 'mushroomObserverApi',
   baseQuery: fetchBaseQuery({ baseUrl: `${API_URL}/api2/` }),
