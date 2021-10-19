@@ -50,6 +50,7 @@ const ListObservations = () => {
   const observations = useSelector(selectAll);
 
   useEffect(() => {
+    console.log(observations);
     // dispatch(loadObservations(user.login_name));
   }, [dispatch]);
 

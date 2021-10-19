@@ -1,14 +1,21 @@
-import { useNavigation } from '@react-navigation/core';
-import { isEmpty, omitBy } from 'lodash';
-import React, { useLayoutEffect, useState } from 'react';
-import { Button, ScrollView } from 'react-native';
-import { Picker, Text, TextField, View } from 'react-native-ui-lib';
-import { useDispatch, useSelector } from 'react-redux';
-
 import { useAuth } from '../../hooks/useAuth';
 import { selectKey } from '../../store/auth';
 import { clearDraft, selectDraft } from '../../store/draft';
 import { usePostObservationMutation } from '../../store/mushroomObserver';
+import { addObservation } from '../../store/observations';
+import { useNavigation } from '@react-navigation/core';
+import { isEmpty, omitBy } from 'lodash';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { Alert, Button, ScrollView } from 'react-native';
+import {
+  Colors,
+  Picker,
+  Text,
+  Toast,
+  TextField,
+  View,
+} from 'react-native-ui-lib';
+import { useDispatch, useSelector } from 'react-redux';
 
 const IdentificationAndNotes = () => {
   const dispatch = useDispatch();
@@ -23,6 +30,8 @@ const IdentificationAndNotes = () => {
     postObservation, // This is the mutation trigger
     { data }, // This is the destructured mutation result
   ] = usePostObservationMutation();
+  const [showToast, setShowToast] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(undefined);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -30,19 +39,29 @@ const IdentificationAndNotes = () => {
         <Button
           title="Save"
           onPress={() => {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Home' }],
-            });
-            dispatch(clearDraft(null));
             const observation = omitBy(draft, isEmpty);
-            console.log(observation);
-            // postObservation({ observation, key });
+            postObservation({ observation, key });
           }}
         />
       ),
     });
   }, [auth, dispatch, draft, navigation, postObservation, key]);
+
+  useEffect(() => {
+    if (data?.results) {
+      dispatch(clearDraft(undefined));
+      dispatch(addObservation(data.results[0]));
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    }
+
+    if (data?.errors) {
+      setShowToast(true);
+      setErrorMessage(data.errors[0].details);
+    }
+  });
 
   return (
     <View flex>
@@ -72,6 +91,15 @@ const IdentificationAndNotes = () => {
           </Text>
         </View>
       </ScrollView>
+      <Toast
+        backgroundColor={Colors.red30}
+        position="top"
+        visible={showToast}
+        message={errorMessage}
+        // autoDismiss={3000}
+        showDismiss
+        onDismiss={() => setShowToast(false)}
+      />
     </View>
   );
 };
