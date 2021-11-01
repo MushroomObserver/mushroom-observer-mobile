@@ -32,8 +32,6 @@ const Login = () => {
   };
 
   useEffect(() => {
-    console.log(status, data, error);
-
     if (!data?.errors && data?.results?.[0]) {
       const {
         user,
