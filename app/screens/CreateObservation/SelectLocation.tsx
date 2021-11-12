@@ -1,11 +1,10 @@
+import { selectDraft, updateDraft } from '../../store/draft';
+import { useGeocodeQuery } from '../../store/google';
 import { useNavigation } from '@react-navigation/core';
 import React, { useLayoutEffect, useState } from 'react';
 import { Button, Dimensions, StyleSheet, Text, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { selectDraft, updateDraft } from '../../store/draft';
-import { useGeocodeQuery } from '../../store/google';
 
 const { width, height } = Dimensions.get('window');
 
@@ -62,7 +61,8 @@ const SelectLocation = () => {
         provider="google"
         style={mapStyles.map}
         initialRegion={region}
-        onRegionChange={setRegion}>
+        onRegionChange={setRegion}
+      >
         <Marker coordinate={region} />
       </MapView>
       <View style={[mapStyles.bubble, mapStyles.latlng]}>

@@ -5,10 +5,14 @@ import Config from 'react-native-config';
 
 const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
 const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
-console.log(API_URL, API_KEY);
+
 const mushroomObserverApi = createApi({
   reducerPath: 'mushroomObserverApi',
-  baseQuery: fetchBaseQuery({ baseUrl: `${API_URL}/api2/` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${API_URL}/api2/`,
+    validateStatus: (response, result) =>
+      response.status === 200 && !result.errors,
+  }),
   endpoints: builder => ({
     getApiKeyForUser: builder.mutation({
       query: ({ login_name, password }) => ({
@@ -53,7 +57,7 @@ const mushroomObserverApi = createApi({
           method: 'POST',
           body: formData,
           headers: {
-            // 'Content-Type': 'image/jpeg',
+            'Content-Type': type,
             Accept: 'application/json',
           },
         };

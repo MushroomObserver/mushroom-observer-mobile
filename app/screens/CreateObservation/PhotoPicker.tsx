@@ -1,3 +1,5 @@
+import { useKey } from '../../hooks/useAuth';
+import { usePostImageMutation } from '../../store/mushroomObserver';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import React, { useState } from 'react';
 import { Dimensions } from 'react-native';
@@ -13,8 +15,13 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const PhotoPicker = () => {
   const SELECTION_LIMIT = 12;
+  const key = useKey();
   const [photos, setPhotos] = useState([]);
   const { showActionSheetWithOptions } = useActionSheet();
+  const [
+    postImage, // This is the mutation trigger
+    result, // This is the destructured mutation result
+  ] = usePostImageMutation();
 
   const addPhotos: Callback = async ({
     didCancel,
@@ -22,10 +29,16 @@ const PhotoPicker = () => {
   }: ImagePickerResponse) => {
     if (!didCancel) {
       const newPhotos = photos.concat(assets);
+      postImage({
+        uri: assets[0].uri,
+        name: assets[0].fileName,
+        type: assets[0].type,
+        key,
+      });
       setPhotos(newPhotos);
     }
   };
-
+  console.log(result?.data?.errors);
   return (
     <View flexG>
       {photos.length > 0 && (

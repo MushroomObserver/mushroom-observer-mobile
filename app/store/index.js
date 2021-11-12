@@ -1,3 +1,11 @@
+import auth from './auth';
+import draft from './draft';
+import googleApi from './google';
+import images from './images';
+import locations from './locations';
+import mushroomObserverApi from './mushroomObserver';
+import names from './names';
+import observations from './observations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
@@ -12,15 +20,6 @@ import {
   REHYDRATE,
 } from 'redux-persist';
 import createSensitiveStorage from 'redux-persist-sensitive-storage';
-
-import auth from './auth';
-import draft from './draft';
-import googleApi from './google';
-import images from './images';
-import locations from './locations';
-import mushroomObserverApi from './mushroomObserver';
-import names from './names';
-import observations from './observations';
 
 const mainPersistConfig = {
   key: 'main',

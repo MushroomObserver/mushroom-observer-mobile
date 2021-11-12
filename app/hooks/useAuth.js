@@ -1,7 +1,6 @@
+import { selectCurrentUser, selectIsLogout, selectKey } from '../store/auth';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-
-import { selectCurrentUser, selectIsLogout, selectKey } from '../store/auth';
 
 export const useAuth = () => {
   const user = useSelector(selectCurrentUser);

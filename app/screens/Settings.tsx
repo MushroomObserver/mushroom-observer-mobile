@@ -1,11 +1,10 @@
+import { useAuth } from '../hooks/useAuth';
+import { logout } from '../store/auth';
 import { useNavigation } from '@react-navigation/core';
 import React, { useLayoutEffect } from 'react';
 import { Alert, Button, ScrollView } from 'react-native';
 import { Text, View } from 'react-native-ui-lib';
 import { useDispatch } from 'react-redux';
-
-import { useAuth } from '../hooks/useAuth';
-import { logout } from '../store/auth';
 
 const Settings = () => {
   const navigation = useNavigation();

@@ -43,6 +43,7 @@ const Login = () => {
     }
   }, [data, dispatch, username]);
 
+  console.log(error);
   return (
     <View flex>
       <ScrollView>

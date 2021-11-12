@@ -1,13 +1,12 @@
+import { clearDraft, selectDraft, updateDraft } from '../../store/draft';
+import { selectAll } from '../../store/names';
+import PhotoPicker from './PhotoPicker';
 import { useNavigation } from '@react-navigation/core';
 import { filter } from 'lodash-es';
 import React, { useLayoutEffect, useState } from 'react';
 import { Alert, Button as NativeButton, ScrollView } from 'react-native';
 import { Picker, Text, View } from 'react-native-ui-lib';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { clearDraft, selectDraft, updateDraft } from '../../store/draft';
-import { selectAll } from '../../store/names';
-import PhotoPicker from './PhotoPicker';
 
 const NameAndPhotos = () => {
   const dispatch = useDispatch();

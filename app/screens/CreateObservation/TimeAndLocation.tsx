@@ -1,3 +1,5 @@
+import { selectDraft, updateDraft } from '../../store/draft';
+import { selectAll } from '../../store/locations';
 import { useNavigation, useRoute } from '@react-navigation/core';
 import dayjs from 'dayjs';
 import { filter } from 'lodash-es';
@@ -13,9 +15,6 @@ import {
   View,
 } from 'react-native-ui-lib';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { selectDraft, updateDraft } from '../../store/draft';
-import { selectAll } from '../../store/locations';
 
 const TimeAndLocation = () => {
   const navigation = useNavigation();

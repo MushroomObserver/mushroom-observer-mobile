@@ -1,3 +1,5 @@
+import { loginSuccess } from '../store/auth';
+import { usePostUserMutation } from '../store/mushroomObserver';
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView } from 'react-native';
 import {
@@ -9,9 +11,6 @@ import {
   View,
 } from 'react-native-ui-lib';
 import { useDispatch } from 'react-redux';
-
-import { loginSuccess } from '../store/auth';
-import { usePostUserMutation } from '../store/mushroomObserver';
 
 const Register = () => {
   const dispatch = useDispatch();
