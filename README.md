@@ -19,8 +19,8 @@ This is the Mushroom Observer mobile application. It is a React Native app for i
 
 ## Development
 
-- Run `npx react-native start` to start the build server
-- In another terminal instance, run `npx react-native run-android` to start the app on an Android emulator or run `npx react-native run-ios` to start the app in an iOS simulator
+- Run `npm start` to start the build server
+- In another terminal instance, run `npm run android-dev` to start the app on an Android emulator or run `npm run ios-dev` to start the app in an iOS simulator
 - Changes should be reflected after a file save
 
 ## Reference Material

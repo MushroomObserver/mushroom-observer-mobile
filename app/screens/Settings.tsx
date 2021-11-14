@@ -1,4 +1,5 @@
 import { useAuth } from '../hooks/useAuth';
+import { persistor, store } from '../store';
 import { logout } from '../store/auth';
 import { useNavigation } from '@react-navigation/core';
 import React, { useLayoutEffect } from 'react';
@@ -25,7 +26,10 @@ const Settings = () => {
                 },
                 {
                   text: 'OK',
-                  onPress: () => dispatch(logout()),
+                  onPress: () => {
+                    persistor.purge();
+                    dispatch(logout());
+                  },
                 },
               ])
             }

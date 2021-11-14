@@ -63,14 +63,15 @@ const NameAndPhotos = () => {
             value={{ label: name, value: name }}
             onChange={item => setName(item.value)}
             onSearchChange={setQuery}
+            searchPlaceholder={query}
             listProps={{
               data: filter(names, n => n.text_name.startsWith(query)),
               renderItem: ({ item }) => {
                 return (
                   <Picker.Item
                     key={item.id}
-                    value={item.text_name}
-                    label={item.text_name}
+                    value={item.text_name + ' ' + item.author}
+                    label={item.text_name + ' ' + item.author}
                     disabled={item.deprecated}
                   />
                 );

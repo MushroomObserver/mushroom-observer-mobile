@@ -1,6 +1,6 @@
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { ForwardedStackScreenProps } from 'react-navigation-props-mapper';
 
 export type LoginStackParamList = {
   Login: undefined;
@@ -28,44 +28,22 @@ export type HomeStackParamList = {
   'Select Location': undefined;
   'Identification and Notes': undefined;
   'Edit Photo': undefined;
+  'View Observation': { id: number };
+  'Edit Observation': { id: number };
 };
+
+type ForwardedViewObservationProps = ForwardedStackScreenProps<
+  HomeStackParamList,
+  'View Observation'
+>;
+
+type ForwardedEditObservationProps = ForwardedStackScreenProps<
+  HomeStackParamList,
+  'Edit Observation'
+>;
 
 declare global {
   namespace ReactNavigation {
     interface RootParamList extends LoginStackParamList, HomeStackParamList {}
   }
-}
-
-interface License {
-  label: string;
-  value: number;
-}
-
-export interface Location {
-  label: string;
-  value: number;
-}
-
-export interface Observation {
-  id: number;
-  name: string;
-  date: string;
-  gpsHidden: boolean;
-  isCollectionLocation: boolean;
-  location: number;
-  latitude: number;
-  longitude: number;
-  altitude: number;
-  notes: string;
-  vote: number;
-  isUploaded: boolean;
-  hasChanges: boolean;
-}
-
-export interface Image {
-  id: number;
-  copyrightHolder: string;
-  date: string;
-  license: number;
-  notes: string;
 }

@@ -12,7 +12,7 @@ const EditPhoto = () => {
   const [license, setLicense] = React.useState('');
   const [notes, setNotes] = React.useState('');
 
-  const onChangeWhen = (_, selectedDate = when) => {
+  const onChangeWhen = (_: Event, selectedDate = when) => {
     setWhen(new Date(selectedDate));
   };
 

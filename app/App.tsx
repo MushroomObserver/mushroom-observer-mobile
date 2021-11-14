@@ -3,14 +3,16 @@ import IdentificationAndNotes from './screens/CreateObservation/IdentificationAn
 import NameAndPhotos from './screens/CreateObservation/NameAndPhotos';
 import SelectLocation from './screens/CreateObservation/SelectLocation';
 import TimeAndLocation from './screens/CreateObservation/TimeAndLocation';
+import EditObservation from './screens/EditObservation';
 import EditPhoto from './screens/EditPhoto';
 import ListObservations from './screens/ListObservations';
 import Login from './screens/Login';
 import Register from './screens/Register';
 import Settings from './screens/Settings';
+import ViewObservation from './screens/ViewObservation';
 import { preloadLocations } from './store/locations';
 import { preloadNames } from './store/names';
-import { LoginStackParamList } from './types';
+import { LoginStackParamList } from './types/navigation';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useReduxDevToolsExtension } from '@react-navigation/devtools';
@@ -94,8 +96,10 @@ const HomeStack = () => (
         name="Identification and Notes"
         component={IdentificationAndNotes}
       />
-      <HomeStackScreen name="Edit Photo" component={EditPhoto} />
     </HomeStackGroup>
+    <HomeStackScreen name="View Observation" component={ViewObservation} />
+    <HomeStackScreen name="Edit Observation" component={EditObservation} />
+    <HomeStackScreen name="Edit Photo" component={EditPhoto} />
   </HomeStackNavigator>
 );
 

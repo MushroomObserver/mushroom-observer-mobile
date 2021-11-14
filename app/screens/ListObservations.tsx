@@ -1,9 +1,17 @@
-import { useUser } from '../hooks/useAuth';
-import { selectAll } from '../store/observations';
+import { useKey, useUser } from '../hooks/useAuth';
+import { useGetObservationsQuery } from '../store/mushroomObserver';
+import { addObservations, selectAll } from '../store/observations';
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { FloatingButton, Image, Text, View } from 'react-native-ui-lib';
+import {
+  Colors,
+  FloatingButton,
+  Image,
+  LoaderScreen,
+  Text,
+  View,
+} from 'react-native-ui-lib';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,8 +23,13 @@ const NoObservations = () => (
 );
 
 const Observation = ({ item }) => {
+  const navigation = useNavigation();
+
   return (
-    <TouchableOpacity style={styles.observation}>
+    <TouchableOpacity
+      style={styles.observation}
+      onPress={() => navigation.navigate('View Observation', { id: item.id })}
+    >
       {item.primary_image && (
         <Image
           width={90}
@@ -47,11 +60,19 @@ const ListObservations = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const user = useSelector(useUser);
+  const key = useSelector(useKey);
   const observations = useSelector(selectAll);
+  const { data, isLoading } = useGetObservationsQuery({
+    api_key: key,
+    user: user.login_name,
+    detail: 'high',
+  });
 
   useEffect(() => {
-    // dispatch(loadObservations(user.login_name));
-  }, [dispatch]);
+    if (data) {
+      dispatch(addObservations(data.results));
+    }
+  });
 
   return (
     <View style={styles.container}>

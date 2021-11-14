@@ -40,7 +40,7 @@ const IdentificationAndNotes = () => {
           title="Save"
           onPress={() => {
             const observation = omitBy(draft, isEmpty);
-            postObservation({ observation, key });
+            postObservation({ ...observation, key });
           }}
         />
       ),
@@ -48,6 +48,7 @@ const IdentificationAndNotes = () => {
   }, [auth, dispatch, draft, navigation, postObservation, key]);
 
   useEffect(() => {
+    console.log(data);
     if (data?.results) {
       dispatch(clearDraft(undefined));
       dispatch(addObservation(data.results[0]));

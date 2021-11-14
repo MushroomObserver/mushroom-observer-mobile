@@ -49,8 +49,15 @@ const mainReducer = combineReducers({
   draft,
 });
 
+const rootReducer = (state, action) => {
+  if (action.type === 'auth/logout') {
+    return mainReducer(undefined, action);
+  }
+  return mainReducer(state, action);
+};
+
 export const store = configureStore({
-  reducer: persistReducer(mainPersistConfig, mainReducer),
+  reducer: persistReducer(mainPersistConfig, rootReducer),
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {

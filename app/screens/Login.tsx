@@ -1,8 +1,9 @@
-import { loginSuccess } from '../store/auth';
+import { loginSuccess as loginSuccessAction } from '../store/auth';
 import { useGetApiKeyForUserMutation } from '../store/mushroomObserver';
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView } from 'react-native';
+import Config from 'react-native-config';
 import {
   Button,
   Colors,
@@ -12,38 +13,42 @@ import {
   TextField,
   View,
 } from 'react-native-ui-lib';
-import { useDispatch } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 
-const Login = () => {
+const Login = ({ loginSuccess }: PropsFromRedux) => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const [username, onChangeUsername] = useState();
-  const [password, onChangePassword] = useState();
-  const [hasError, setHasError] = useState<string>();
+  const [username, onChangeUsername] = useState('');
+  const [password, onChangePassword] = useState('');
+  const [hasError, setHasError] = useState<string | undefined>();
   const usernameInput = useRef<typeof TextField>();
   const passwordInput = useRef<typeof TextField>();
 
-  const [getApiKeyForUser, { status, data, isLoading, error }] =
-    useGetApiKeyForUserMutation();
+  const [getApiKeyForUser, response] = useGetApiKeyForUserMutation();
+
   const submitLogin = () => {
-    if (!isLoading) {
-      getApiKeyForUser({ login_name: username, password });
+    if (!response.isLoading) {
+      getApiKeyForUser({
+        api_key: Config.MUSHROOM_OBSERVER_API_KEY,
+        for_user: username,
+        password,
+        app: 'Mushroom Observer Mobile',
+        detail: 'high',
+      });
     }
   };
 
   useEffect(() => {
-    if (!data?.errors && data?.results?.[0]) {
+    if (response.data && response.data?.results) {
       const {
         user,
         results: [{ key }],
-      } = data;
-      dispatch(loginSuccess({ login_name: username, id: user, key }));
-    } else if (data?.errors) {
+      } = response.data;
+      loginSuccess({ login_name: username, id: user, key });
+    } else if (response.error) {
       setHasError('Incorrect username or password');
     }
-  }, [data, dispatch, username]);
+  }, [response, username]);
 
-  console.log(error);
   return (
     <View flex>
       <ScrollView>
@@ -85,7 +90,7 @@ const Login = () => {
           />
           <Button
             label="Login"
-            disabled={!username || !password || isLoading}
+            disabled={!username || !password || response.isLoading}
             onPress={submitLogin}
           />
           <Text marginV-15 center>
@@ -98,7 +103,7 @@ const Login = () => {
           />
         </View>
       </ScrollView>
-      {isLoading && (
+      {response.isLoading && (
         <LoaderScreen
           color={Colors.blue30}
           backgroundColor={Colors.grey50}
@@ -110,4 +115,12 @@ const Login = () => {
   );
 };
 
-export default Login;
+const mapDispatchToProps = {
+  loginSuccess: loginSuccessAction,
+};
+
+const connector = connect(null, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(Login);

@@ -10,6 +10,7 @@ const slice = createSlice({
     addImage: adapter.addOne,
     removeImage: adapter.removeOne,
     updateImage: adapter.updateOne,
+    updateImages: adapter.updateMany,
   },
 });
 
