@@ -22,7 +22,7 @@ const IdentificationAndNotes = () => {
   const auth = useAuth();
   const navigation = useNavigation();
   const draft = useSelector(selectDraft);
-  const key = useSelector(selectKey);
+  const api_key = useSelector(selectKey);
 
   const [vote, setVote] = useState(draft.vote);
   const [notes, setNotes] = useState(draft.notes);
@@ -40,12 +40,12 @@ const IdentificationAndNotes = () => {
           title="Save"
           onPress={() => {
             const observation = omitBy(draft, isEmpty);
-            postObservation({ ...observation, key });
+            postObservation({ ...observation, api_key });
           }}
         />
       ),
     });
-  }, [auth, dispatch, draft, navigation, postObservation, key]);
+  }, [auth, dispatch, draft, navigation, postObservation, api_key]);
 
   useEffect(() => {
     console.log(data);

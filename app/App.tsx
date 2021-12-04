@@ -10,6 +10,7 @@ import Login from './screens/Login';
 import Register from './screens/Register';
 import Settings from './screens/Settings';
 import ViewObservation from './screens/ViewObservation';
+import ViewPhoto from './screens/ViewPhoto';
 import { preloadLocations } from './store/locations';
 import { preloadNames } from './store/names';
 import { LoginStackParamList } from './types/navigation';
@@ -99,6 +100,7 @@ const HomeStack = () => (
     </HomeStackGroup>
     <HomeStackScreen name="View Observation" component={ViewObservation} />
     <HomeStackScreen name="Edit Observation" component={EditObservation} />
+    <HomeStackScreen name="View Photo" component={ViewPhoto} />
     <HomeStackScreen name="Edit Photo" component={EditPhoto} />
   </HomeStackNavigator>
 );

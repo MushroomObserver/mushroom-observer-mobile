@@ -2,12 +2,13 @@ import {
   ApiKeyForUserRequestParams,
   ApiKeyResult,
   ApiResponse,
+  GetImageRequestParams,
   GetObservationsRequestParams,
   PostObservationRequestParams,
   PostUserRequestParams,
   UserResult,
 } from '../types/api';
-import { Observation } from '../types/store';
+import { Image, Observation } from '../types/store';
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { Platform } from 'react-native';
@@ -20,10 +21,14 @@ const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
  * This is only used to encode query params that have been typed
  * so the 'any' type is fine just here. Otherwise we like types.
  */
-const encodeQueryParams = (object: any) =>
-  Object.keys(object)
+const encodeQueryParams = (object: any) => {
+  console.log('before', object);
+  const string = Object.keys(object)
     .map(key => `${key}=${encodeURIComponent(object[key])}`)
     .join('&');
+  console.log('after', string);
+  return string;
+};
 
 const createValidateStatus =
   <ApiResult>() =>
@@ -71,7 +76,6 @@ const mushroomObserverApi = createApi({
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-
         validateStatus: createValidateStatus<Observation>(),
       }),
     }),
@@ -87,8 +91,19 @@ const mushroomObserverApi = createApi({
             'Content-Type': 'application/x-www-form-urlencoded',
             Accept: 'application/json',
           },
+          validateStatus: createValidateStatus<Observation>(),
         };
       },
+    }),
+    getImages: builder.query<Image, GetImageRequestParams>({
+      query: params => ({
+        url: `images?${encodeQueryParams(params)}`,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        validateStatus: createValidateStatus<Image>(),
+      }),
     }),
     postImage: builder.mutation({
       query: ({ uri, name, type, key }) => {
@@ -116,6 +131,7 @@ export const {
   useGetApiKeyForUserMutation,
   useGetObservationsQuery,
   usePostObservationMutation,
+  useGetImagesQuery,
   usePostImageMutation,
   usePostUserMutation,
 } = mushroomObserverApi;

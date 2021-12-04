@@ -6,11 +6,18 @@ import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import React, { useLayoutEffect } from 'react';
 import { Button as NativeButton, Dimensions, ScrollView } from 'react-native';
-import { GridView, Image, Text, View } from 'react-native-ui-lib';
+import {
+  GridView,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native-ui-lib';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect } from 'react-redux';
 
 dayjs.extend(LocalizedFormat);
+
 interface ViewObservationProps {
   id: number;
   observation: Observation;
@@ -41,7 +48,15 @@ const ViewObservation = ({ id, observation }: ViewObservationProps) => {
             Observation #{observation.id}
           </Text>
           {observation.primary_image && (
-            <View marginT-15 center>
+            <TouchableOpacity
+              marginT-15
+              center
+              onPress={() =>
+                navigation.navigate('View Photo', {
+                  id: observation.primary_image.id,
+                })
+              }
+            >
               <Image
                 width="100%"
                 height={220}
@@ -50,7 +65,7 @@ const ViewObservation = ({ id, observation }: ViewObservationProps) => {
                   uri: `https://mushroomobserver.org/images/320/${observation.primary_image.id}.jpg`,
                 }}
               />
-            </View>
+            </TouchableOpacity>
           )}
           {observation.images && observation.images.length > 0 && (
             <View marginV-15>

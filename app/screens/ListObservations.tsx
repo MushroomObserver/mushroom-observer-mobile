@@ -24,13 +24,12 @@ const NoObservations = () => (
 
 const Observation = ({ item }) => {
   const navigation = useNavigation();
-
   return (
     <TouchableOpacity
       style={styles.observation}
       onPress={() => navigation.navigate('View Observation', { id: item.id })}
     >
-      {item.primary_image && (
+      {item?.primary_image && (
         <Image
           width={90}
           height={90}
@@ -40,18 +39,20 @@ const Observation = ({ item }) => {
           }}
         />
       )}
-      <View style={styles.observationContent}>
-        <Text>Observation #{item.id}</Text>
-        <Text>Date: {item.date}</Text>
-        <Text numberOfLines={1} ellipsizeMode="tail">
-          {`${item.consensus?.name} ${
-            item.consensus?.author ? item.consensus.author : ''
-          }`}
-        </Text>
-        <Text numberOfLines={1} ellipsizeMode="tail">
-          {item.location_name}
-        </Text>
-      </View>
+      {item && (
+        <View style={styles.observationContent}>
+          <Text>Observation #{item.id}</Text>
+          <Text>Date: {item.date}</Text>
+          <Text numberOfLines={1} ellipsizeMode="tail">
+            {`${item.consensus?.name} ${
+              item.consensus?.author ? item.consensus.author : ''
+            }`}
+          </Text>
+          <Text numberOfLines={1} ellipsizeMode="tail">
+            {item.location_name}
+          </Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 };
@@ -70,6 +71,7 @@ const ListObservations = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       dispatch(addObservations(data.results));
     }
   });

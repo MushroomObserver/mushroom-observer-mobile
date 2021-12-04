@@ -1,3 +1,4 @@
+import { Image, Observation } from '../types/store';
 import { schema } from 'normalizr';
 
 const userProcessStrategy = (value, parent, key) => {
@@ -38,7 +39,7 @@ const naming = new schema.Entity(
     },
   },
 );
-const image = new schema.Entity(
+const image = new schema.Entity<Image>(
   'images',
   {
     owner: user,
@@ -61,7 +62,8 @@ const comment = new schema.Entity(
     },
   },
 );
-const observation = new schema.Entity('observations', {
+
+const observation = new schema.Entity<Observation>('observations', {
   owner: user,
   images: [image],
   primary_image: image,

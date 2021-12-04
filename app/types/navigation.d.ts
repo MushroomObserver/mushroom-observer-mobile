@@ -27,9 +27,10 @@ export type HomeStackParamList = {
   'Time and Location': undefined;
   'Select Location': undefined;
   'Identification and Notes': undefined;
-  'Edit Photo': undefined;
   'View Observation': { id: number };
   'Edit Observation': { id: number };
+  'View Photo': { id: number };
+  'Edit Photo': { id: number };
 };
 
 type ForwardedViewObservationProps = ForwardedStackScreenProps<
@@ -40,6 +41,16 @@ type ForwardedViewObservationProps = ForwardedStackScreenProps<
 type ForwardedEditObservationProps = ForwardedStackScreenProps<
   HomeStackParamList,
   'Edit Observation'
+>;
+
+type ForwardedViewPhotoProps = ForwardedStackScreenProps<
+  HomeStackParamList,
+  'View Photo'
+>;
+
+type ForwardedEditPhotoProps = ForwardedStackScreenProps<
+  HomeStackParamList,
+  'Edit Photo'
 >;
 
 declare global {
