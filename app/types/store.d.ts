@@ -59,6 +59,7 @@ export interface Image {
   id: number;
   copyrightHolder: string;
   date: string;
+  files: string[];
   license: number;
   notes: string;
 }

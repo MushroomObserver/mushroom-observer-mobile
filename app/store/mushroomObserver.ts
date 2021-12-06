@@ -22,11 +22,9 @@ const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
  * so the 'any' type is fine just here. Otherwise we like types.
  */
 const encodeQueryParams = (object: any) => {
-  console.log('before', object);
   const string = Object.keys(object)
     .map(key => `${key}=${encodeURIComponent(object[key])}`)
     .join('&');
-  console.log('after', string);
   return string;
 };
 
@@ -95,6 +93,16 @@ const mushroomObserverApi = createApi({
         };
       },
     }),
+    deleteObservation: builder.mutation({
+      query: params => ({
+        url: `observations?${encodeQueryParams(params)}`,
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }),
+    }),
     getImages: builder.query<Image, GetImageRequestParams>({
       query: params => ({
         url: `images?${encodeQueryParams(params)}`,
@@ -103,6 +111,16 @@ const mushroomObserverApi = createApi({
           Accept: 'application/json',
         },
         validateStatus: createValidateStatus<Image>(),
+      }),
+    }),
+    deleteImage: builder.mutation({
+      query: params => ({
+        url: `images?${encodeQueryParams(params)}`,
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
       }),
     }),
     postImage: builder.mutation({
@@ -129,11 +147,13 @@ const mushroomObserverApi = createApi({
 
 export const {
   useGetApiKeyForUserMutation,
+  usePostUserMutation,
   useGetObservationsQuery,
   usePostObservationMutation,
+  useDeleteObservationMutation,
   useGetImagesQuery,
   usePostImageMutation,
-  usePostUserMutation,
+  useDeleteImageMutation,
 } = mushroomObserverApi;
 
 export default mushroomObserverApi;

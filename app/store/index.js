@@ -1,5 +1,7 @@
 import auth from './auth';
 import draft from './draft';
+import draftImages from './draftImages';
+import draftObservations from './draftObservations';
 import googleApi from './google';
 import images from './images';
 import locations from './locations';
@@ -42,7 +44,9 @@ const mainReducer = combineReducers({
   [mushroomObserverApi.reducerPath]: mushroomObserverApi.reducer,
   [googleApi.reducerPath]: googleApi.reducer,
   auth: persistReducer(authPersistConfig, auth),
+  draftObservations,
   observations,
+  draftImages,
   images,
   names,
   locations,

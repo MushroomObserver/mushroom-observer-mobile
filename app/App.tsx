@@ -5,6 +5,7 @@ import SelectLocation from './screens/CreateObservation/SelectLocation';
 import TimeAndLocation from './screens/CreateObservation/TimeAndLocation';
 import EditObservation from './screens/EditObservation';
 import EditPhoto from './screens/EditPhoto';
+import ListDrafts from './screens/ListDrafts';
 import ListObservations from './screens/ListObservations';
 import Login from './screens/Login';
 import Register from './screens/Register';
@@ -66,7 +67,16 @@ const HomeTabs = () => (
       component={ListObservations}
       options={{
         tabBarIcon: ({ color, size }) => (
-          <Icon name="list" size={size} color={color} />
+          <Icon name="list-alt" size={size} color={color} />
+        ),
+      }}
+    />
+    <HomeTabsScreen
+      name="My Drafts"
+      component={ListDrafts}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="clipboard-list" size={size} color={color} />
         ),
       }}
     />

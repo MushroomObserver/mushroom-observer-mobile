@@ -82,7 +82,6 @@ const TimeAndLocation = () => {
           <DateTimePicker
             title={'Date'}
             value={date}
-            maximumDate={new Date()}
             mode="date"
             display="default"
             onChange={onChangeDate}

@@ -17,6 +17,7 @@ const initialState = {
   vote: undefined,
   isUploaded: false,
   hasChanges: false,
+  photos: undefined,
 };
 
 const slice = createSlice({

@@ -1,4 +1,11 @@
-import { selectById } from '../store/observations';
+import ConfirmButton from '../components/ConfirmButton';
+import Photo from '../components/Photo';
+import { useKey } from '../hooks/useAuth';
+import { useDeleteObservationMutation } from '../store/mushroomObserver';
+import {
+  removeObservation as removeObservationAction,
+  selectById,
+} from '../store/observations';
 import { ForwardedViewObservationProps } from '../types/navigation';
 import { Observation } from '../types/store';
 import { useNavigation, useRoute } from '@react-navigation/core';
@@ -6,13 +13,7 @@ import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import React, { useLayoutEffect } from 'react';
 import { Button as NativeButton, Dimensions, ScrollView } from 'react-native';
-import {
-  GridView,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native-ui-lib';
+import { GridView, Text, TouchableOpacity, View } from 'react-native-ui-lib';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect } from 'react-redux';
 
@@ -25,17 +26,24 @@ interface ViewObservationProps {
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const ViewObservation = ({ id, observation }: ViewObservationProps) => {
+const ViewObservation = ({
+  id,
+  observation,
+  removeObservation,
+}: ForwardedViewObservationProps) => {
   const navigation = useNavigation();
   const route = useRoute();
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      title: `Observation #${id}`,
       headerRight: () => (
-        <NativeButton
-          title="Edit"
-          onPress={() => navigation.navigate('Edit Observation', { id })}
-        />
+        <>
+          <NativeButton
+            title="Edit"
+            onPress={() => navigation.navigate('Edit Observation', { id })}
+          />
+        </>
       ),
     });
   }, [navigation, route]);
@@ -43,13 +51,9 @@ const ViewObservation = ({ id, observation }: ViewObservationProps) => {
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View padding-15>
-          <Text text60 center>
-            Observation #{observation.id}
-          </Text>
+        <View flex padding-15>
           {observation.primary_image && (
             <TouchableOpacity
-              marginT-15
               center
               onPress={() =>
                 navigation.navigate('View Photo', {
@@ -57,13 +61,10 @@ const ViewObservation = ({ id, observation }: ViewObservationProps) => {
                 })
               }
             >
-              <Image
-                width="100%"
+              <Photo
+                id={observation.primary_image.id}
+                width={screenWidth - 30}
                 height={220}
-                resizeMethod="auto"
-                source={{
-                  uri: `https://mushroomobserver.org/images/320/${observation.primary_image.id}.jpg`,
-                }}
               />
             </TouchableOpacity>
           )}
@@ -72,9 +73,14 @@ const ViewObservation = ({ id, observation }: ViewObservationProps) => {
               <GridView
                 items={observation.images.map(
                   (image: object, index: number) => {
-                    console.log(observation.images);
                     return {
+                      id: image.id,
                       index,
+                      onPress: props => {
+                        navigation.navigate('View Photo', {
+                          id: props.id,
+                        });
+                      },
                       imageProps: {
                         source: {
                           uri: `https://mushroomobserver.org/images/thumb/${image.id}.jpg`,
@@ -135,7 +141,14 @@ const mapStateToProps = (state: any, ownProps: ViewObservationProps) => ({
   observation: selectById(state, ownProps.id),
 });
 
-const ConnectedViewObservation = connect(mapStateToProps)(ViewObservation);
+const mapDispatchToProps = {
+  removeObservation: removeObservationAction,
+};
+
+const ConnectedViewObservation = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ViewObservation);
 
 export default withForwardedNavigationParams<ForwardedViewObservationProps>()(
   ConnectedViewObservation,

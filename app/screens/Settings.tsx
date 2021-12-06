@@ -1,9 +1,10 @@
+import ConfirmButton from '../components/ConfirmButton';
 import { useAuth } from '../hooks/useAuth';
-import { persistor, store } from '../store';
+import { persistor } from '../store';
 import { logout } from '../store/auth';
 import { useNavigation } from '@react-navigation/core';
 import React, { useLayoutEffect } from 'react';
-import { Alert, Button, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { Text, View } from 'react-native-ui-lib';
 import { useDispatch } from 'react-redux';
 
@@ -16,23 +17,14 @@ const Settings = () => {
     navigation.setOptions({
       headerRight: () => (
         <View marginR-15>
-          <Button
-            title="Logout"
-            onPress={() =>
-              Alert.alert('Logout', 'Are you sure?', [
-                {
-                  text: 'Cancel',
-                  style: 'cancel',
-                },
-                {
-                  text: 'OK',
-                  onPress: () => {
-                    persistor.purge();
-                    dispatch(logout());
-                  },
-                },
-              ])
-            }
+          <ConfirmButton
+            buttonTitle="Logout"
+            alertTitle="Logout"
+            alertMessage="Are you sure?"
+            onConfirm={() => {
+              persistor.purge();
+              dispatch(logout());
+            }}
           />
         </View>
       ),

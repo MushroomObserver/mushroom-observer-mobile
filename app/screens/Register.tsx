@@ -16,13 +16,13 @@ const Register = () => {
   const dispatch = useDispatch();
 
   const emailInput = useRef<typeof TextField>();
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState('');
 
   const usernameInput = useRef<typeof TextField>();
-  const [username, setUsername] = useState();
+  const [username, setUsername] = useState('');
 
   const passwordInput = useRef<typeof TextField>();
-  const [password, setPassword] = useState();
+  const [password, setPassword] = useState('');
 
   const [postUser, { data, isLoading }] = usePostUserMutation();
 
@@ -92,7 +92,9 @@ const Register = () => {
             returnKeyType="done"
             enablesReturnKeyAutomatically
             onChangeText={setPassword}
-            onSubmitEditing={() => postUser({ email, username, password })}
+            onSubmitEditing={() =>
+              postUser({ email, login: username, password })
+            }
             value={password}
             maxLength={80}
             validate="required"
@@ -101,7 +103,7 @@ const Register = () => {
           <Button
             label="Register"
             disabled={!email || !username || !password || isLoading}
-            onPress={() => postUser({ email, username, password })}
+            onPress={() => postUser({ email, login: username, password })}
           />
         </View>
       </ScrollView>

@@ -48,7 +48,6 @@ const IdentificationAndNotes = () => {
   }, [auth, dispatch, draft, navigation, postObservation, api_key]);
 
   useEffect(() => {
-    console.log(data);
     if (data?.results) {
       dispatch(clearDraft(undefined));
       dispatch(addObservation(data.results[0]));
