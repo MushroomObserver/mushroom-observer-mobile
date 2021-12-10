@@ -1,9 +1,14 @@
-import { selectDraft, updateDraft } from '../../store/draft';
+import {
+  selectById,
+  updateDraftObservation as updateDraftObservationAction,
+  removeDraftObservation as removeDraftObservationAction,
+} from '../../store/draftObservations';
 import { selectAll } from '../../store/locations';
-import { useNavigation, useRoute } from '@react-navigation/core';
+import { ForwardedTimeAndLocationProps } from '../../types/navigation';
+import { useNavigation } from '@react-navigation/core';
 import dayjs from 'dayjs';
 import { filter } from 'lodash-es';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { Button as NativeButton, ScrollView } from 'react-native';
 import {
   Button,
@@ -14,29 +19,37 @@ import {
   TextField,
   View,
 } from 'react-native-ui-lib';
-import { useDispatch, useSelector } from 'react-redux';
+import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
+import { connect, ConnectedProps } from 'react-redux';
 
-const TimeAndLocation = () => {
+interface TimeAndLocationProps extends PropsFromRedux {
+  id: string;
+  draftObservation: any;
+}
+
+const TimeAndLocation = ({
+  id,
+  locations,
+  draftObservation,
+  updateDraftObservation,
+}: TimeAndLocationProps) => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const draft = useSelector(selectDraft);
 
-  const [date, setDate] = useState(dayjs(draft.date).toDate());
+  const [date, setDate] = useState(dayjs(draftObservation.date).toDate());
 
   const [query, setQuery] = useState('');
-  const locations = useSelector(selectAll);
-  const [location, setLocation] = useState(draft.location);
+  const [location, setLocation] = useState(draftObservation.location);
 
-  const [latitude, setLatitude] = useState(draft.latitude);
-  const [longitude, setLongitude] = useState(draft.longitude);
-  const [altitude, setAltitude] = useState(draft.altitude);
+  const [latitude, setLatitude] = useState(draftObservation.latitude);
+  const [longitude, setLongitude] = useState(draftObservation.longitude);
+  const [altitude, setAltitude] = useState(draftObservation.altitude);
 
   const [is_collection_location, setIsCollectionLocation] = useState(
-    draft.is_collection_location,
+    draftObservation.is_collection_location,
   );
-  const [gps_hidden, setGpsHidden] = useState(draft.gps_hidden);
+  const [gps_hidden, setGpsHidden] = useState(draftObservation.gps_hidden);
 
-  const onChangeDate = (_, selectedDate = date) => {
+  const onChangeDate = (_: any, selectedDate = date) => {
     setDate(new Date(selectedDate));
   };
 
@@ -47,18 +60,16 @@ const TimeAndLocation = () => {
           disabled={!location}
           title="Next"
           onPress={() => {
-            dispatch(
-              updateDraft({
-                date: dayjs(date).format('YYYYMMDD'),
-                location,
-                latitude,
-                longitude,
-                altitude,
-                is_collection_location,
-                gps_hidden,
-              }),
-            );
-            navigation.navigate('Identification and Notes');
+            updateDraftObservation({
+              date: dayjs(date).format('YYYYMMDD'),
+              location,
+              latitude,
+              longitude,
+              altitude,
+              is_collection_location,
+              gps_hidden,
+            });
+            navigation.navigate('Identification and Notes', { id });
           }}
         />
       ),
@@ -66,7 +77,6 @@ const TimeAndLocation = () => {
   }, [
     altitude,
     date,
-    dispatch,
     gps_hidden,
     is_collection_location,
     latitude,
@@ -113,18 +123,16 @@ const TimeAndLocation = () => {
             disabled={!location}
             size={Button.sizes.medium}
             onPress={() => {
-              dispatch(
-                updateDraft({
-                  date: dayjs(date).format('YYYYMMDD'),
-                  location,
-                  latitude,
-                  longitude,
-                  altitude,
-                  is_collection_location,
-                  gps_hidden,
-                }),
-              );
-              navigation.navigate('Select Location');
+              updateDraftObservation({
+                date: dayjs(date).format('YYYYMMDD'),
+                location,
+                latitude,
+                longitude,
+                altitude,
+                is_collection_location,
+                gps_hidden,
+              });
+              navigation.navigate('Select Location', { id });
             }}
           />
           <Text marginB-15>
@@ -190,4 +198,22 @@ const TimeAndLocation = () => {
   );
 };
 
-export default TimeAndLocation;
+const mapStateToProps = (state: any, ownProps: any) => ({
+  locations: selectAll(state),
+  draftObservation: selectById(state, ownProps.id),
+});
+
+const mapDispatchToProps = {
+  updateDraftObservation: updateDraftObservationAction,
+  removeDraftObservation: removeDraftObservationAction,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+const ConnectedTimeAndLocation = connector(TimeAndLocation);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default withForwardedNavigationParams<ForwardedTimeAndLocationProps>()(
+  ConnectedTimeAndLocation,
+);

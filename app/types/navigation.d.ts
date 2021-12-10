@@ -37,6 +37,11 @@ type ForwardedNameAndPhotosProps = ForwardedStackScreenProps<
   'Name and Photos'
 >;
 
+type ForwardedTimeAndLocationProps = ForwardedStackScreenProps<
+  HomeStackParamList,
+  'Time and Location'
+>;
+
 type ForwardedViewObservationProps = ForwardedStackScreenProps<
   HomeStackParamList,
   'View Observation'

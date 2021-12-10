@@ -1,4 +1,3 @@
-import draft from '../../store/draft';
 import {
   selectById,
   updateDraftObservation as updateDraftObservationAction,
