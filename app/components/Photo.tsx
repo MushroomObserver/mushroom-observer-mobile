@@ -12,10 +12,25 @@ interface PhotoProps {
   photo?: ImageType;
   width: number;
   height: number;
+  borderRadius?: number;
+  borderTopLeftRadius?: number;
+  borderTopRightRadius?: number;
+  borderBottomRightRadius?: number;
+  borderBottomLeftRadius?: number;
   onPress?: Function;
 }
 
-const Photo = ({ id, photo, width, height }: PhotoProps) => {
+const Photo = ({
+  id,
+  photo,
+  width,
+  height,
+  borderRadius,
+  borderTopLeftRadius,
+  borderTopRightRadius,
+  borderBottomRightRadius,
+  borderBottomLeftRadius,
+}: PhotoProps) => {
   const dispatch = useDispatch();
   const apiKey = useKey();
 
@@ -32,13 +47,22 @@ const Photo = ({ id, photo, width, height }: PhotoProps) => {
   });
 
   return isLoading ? (
-    <View flex center style={{ width, height }}>
+    <View center style={{ width, height }}>
       <ActivityIndicator />
     </View>
   ) : (
     <ProgressiveImage
       animationDuration={500}
-      style={{ resizeMode: 'cover', width, height }}
+      style={{
+        resizeMode: 'cover',
+        width,
+        height,
+        borderRadius,
+        borderTopLeftRadius,
+        borderTopRightRadius,
+        borderBottomRightRadius,
+        borderBottomLeftRadius,
+      }}
       resizeMethod="auto"
       loader={<ActivityIndicator />}
       thumbnailSource={{ uri: photo?.files[0] }}

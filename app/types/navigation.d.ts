@@ -23,15 +23,19 @@ export type HomeTabParamList = {
 
 export type HomeStackParamList = {
   Home: NavigatorScreenParams<HomeTabParamList>;
-  'Name and Photos': undefined;
-  'Time and Location': undefined;
-  'Select Location': undefined;
-  'Identification and Notes': undefined;
-  'View Observation': { id: number };
-  'Edit Observation': { id: number };
-  'View Photo': { id: number };
-  'Edit Photo': { id: number };
+  'Name and Photos': { id: string };
+  'Time and Location': { id: string };
+  'Select Location': { id: string };
+  'Identification and Notes': { id: string };
+  'View Observation': { id: string };
+  'Edit Observation': { id: string };
+  'View Photo': { id: string };
+  'Edit Photo': { id: string };
 };
+type ForwardedNameAndPhotosProps = ForwardedStackScreenProps<
+  HomeStackParamList,
+  'Name and Photos'
+>;
 
 type ForwardedViewObservationProps = ForwardedStackScreenProps<
   HomeStackParamList,

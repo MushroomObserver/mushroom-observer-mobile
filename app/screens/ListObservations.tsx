@@ -1,11 +1,13 @@
 import Photo from '../components/Photo';
 import { useKey, useUser } from '../hooks/useAuth';
+import { addDraftObservation } from '../store/draftObservations';
 import { useGetObservationsQuery } from '../store/mushroomObserver';
 import { addObservations, selectAll } from '../store/observations';
 import { useNavigation } from '@react-navigation/core';
+import { nanoid } from '@reduxjs/toolkit';
 import React, { useEffect } from 'react';
-import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { FloatingButton, Text, View } from 'react-native-ui-lib';
+import { FlatList, StyleSheet } from 'react-native';
+import { Card, FloatingButton, Text, View } from 'react-native-ui-lib';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -19,11 +21,16 @@ const NoObservations = () => (
 const Observation = ({ item }) => {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity
-      style={styles.observation}
+    <Card
+      flex
+      row
+      marginT-10
+      marginH-10
+      borderRadius={10}
+      enableShadow
       onPress={() => navigation.navigate('View Observation', { id: item.id })}
     >
-      <View flex flexG>
+      <View flex flexG padding-7>
         <Text>Observation #{item.id}</Text>
         <Text>Date: {item.date}</Text>
         <Text numberOfLines={1} ellipsizeMode="tail">
@@ -35,12 +42,16 @@ const Observation = ({ item }) => {
           {item.location_name}
         </Text>
       </View>
-      <View width={90} height={90}>
-        {item?.primary_image && (
-          <Photo id={item.primary_image.id} width={90} height={90} />
-        )}
-      </View>
-    </TouchableOpacity>
+      {item?.primary_image && (
+        <Photo
+          id={item.primary_image.id}
+          width={90}
+          height={90}
+          borderTopRightRadius={10}
+          borderBottomRightRadius={10}
+        />
+      )}
+    </Card>
   );
 };
 
@@ -75,7 +86,11 @@ const ListObservations = () => {
         visible
         button={{
           label: 'Create Observation',
-          onPress: () => navigation.navigate('Name and Photos'),
+          onPress: () => {
+            const id = nanoid();
+            dispatch(addDraftObservation({ id }));
+            navigation.navigate('Name and Photos', { id });
+          },
           iconSource: () => (
             <View marginR-10>
               <Icon name="eye" size={25} color="white" />
@@ -96,16 +111,6 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     flexGrow: 1,
-  },
-  observation: {
-    flex: 1,
-    flexDirection: 'row',
-    borderRadius: 5,
-    borderColor: 'whitesmoke',
-    borderWidth: 1,
-    backgroundColor: 'white',
-    margin: 10,
-    padding: 7,
   },
 });
 

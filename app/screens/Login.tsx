@@ -38,6 +38,7 @@ const Login = ({ loginSuccess }: PropsFromRedux) => {
   };
 
   useEffect(() => {
+    console.log(response);
     if (response.data && response.data?.results) {
       const {
         user,

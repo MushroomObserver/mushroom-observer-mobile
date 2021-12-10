@@ -1,7 +1,4 @@
-import ConfirmButton from '../components/ConfirmButton';
 import Photo from '../components/Photo';
-import { useKey } from '../hooks/useAuth';
-import { useDeleteObservationMutation } from '../store/mushroomObserver';
 import {
   removeObservation as removeObservationAction,
   selectById,
@@ -11,9 +8,10 @@ import { Observation } from '../types/store';
 import { useNavigation, useRoute } from '@react-navigation/core';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
+import { concat } from 'lodash';
 import React, { useLayoutEffect } from 'react';
 import { Button as NativeButton, Dimensions, ScrollView } from 'react-native';
-import { GridView, Text, TouchableOpacity, View } from 'react-native-ui-lib';
+import { Carousel, Text, TouchableOpacity, View } from 'react-native-ui-lib';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect } from 'react-redux';
 
@@ -29,7 +27,6 @@ const { width: screenWidth } = Dimensions.get('window');
 const ViewObservation = ({
   id,
   observation,
-  removeObservation,
 }: ForwardedViewObservationProps) => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -51,49 +48,36 @@ const ViewObservation = ({
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View flex padding-15>
-          {observation.primary_image && (
-            <TouchableOpacity
-              center
-              onPress={() =>
-                navigation.navigate('View Photo', {
-                  id: observation.primary_image.id,
-                })
-              }
-            >
-              <Photo
-                id={observation.primary_image.id}
-                width={screenWidth - 30}
-                height={220}
-              />
-            </TouchableOpacity>
-          )}
-          {observation.images && observation.images.length > 0 && (
-            <View marginV-15>
-              <GridView
-                items={observation.images.map(
-                  (image: object, index: number) => {
-                    return {
+        {observation.primary_image && (
+          <Carousel
+            showCounter
+            horizontal
+            containerMarginHorizontal={10}
+            containerPaddingVertical={10}
+            allowAccessibleLayout
+            pageControlPosition={Carousel.pageControlPositions.OVER}
+          >
+            {concat(observation.primary_image, observation.images).map(
+              (image: object) => (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('View Photo', {
                       id: image.id,
-                      index,
-                      onPress: props => {
-                        navigation.navigate('View Photo', {
-                          id: props.id,
-                        });
-                      },
-                      imageProps: {
-                        source: {
-                          uri: `https://mushroomobserver.org/images/thumb/${image.id}.jpg`,
-                        },
-                      },
-                    };
-                  },
-                )}
-                viewWidth={screenWidth - 60}
-                numColumns={3}
-              />
-            </View>
-          )}
+                    })
+                  }
+                >
+                  <Photo
+                    id={image.id}
+                    width={screenWidth - 20}
+                    height={220}
+                    borderRadius={10}
+                  />
+                </TouchableOpacity>
+              ),
+            )}
+          </Carousel>
+        )}
+        <View flex paddingH-15>
           <Text text70H>
             Date: <Text text70>{dayjs(observation.date).format('ll')}</Text>
           </Text>

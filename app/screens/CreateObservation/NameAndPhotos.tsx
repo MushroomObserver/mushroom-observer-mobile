@@ -1,19 +1,35 @@
-import { clearDraft, selectDraft, updateDraft } from '../../store/draft';
+import draft from '../../store/draft';
+import {
+  selectById,
+  updateDraftObservation as updateDraftObservationAction,
+  removeDraftObservation as removeDraftObservationAction,
+} from '../../store/draftObservations';
 import { selectAll } from '../../store/names';
+import { ForwardedNameAndPhotosProps } from '../../types/navigation';
 import PhotoPicker from './PhotoPicker';
 import { useNavigation } from '@react-navigation/core';
 import { filter } from 'lodash-es';
 import React, { useLayoutEffect, useState } from 'react';
 import { Alert, Button as NativeButton, ScrollView } from 'react-native';
 import { Picker, Text, View } from 'react-native-ui-lib';
-import { useDispatch, useSelector } from 'react-redux';
+import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
+import { connect, ConnectedProps, useDispatch, useSelector } from 'react-redux';
 
-const NameAndPhotos = () => {
+interface NameAndPhotosProps extends PropsFromRedux {
+  id: string;
+  draftObservation: any;
+}
+
+const NameAndPhotos = ({
+  id,
+  draftObservation,
+  updateDraftObservation,
+  removeDraftObservation,
+}: NameAndPhotosProps) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const draft = useSelector(selectDraft);
   const [query, setQuery] = useState('');
-  const [name, setName] = useState(draft.name);
+  const [name, setName] = useState(draftObservation?.name);
   const names = useSelector(selectAll);
 
   useLayoutEffect(() => {
@@ -31,7 +47,7 @@ const NameAndPhotos = () => {
                 {
                   text: 'OK',
                   onPress: () => {
-                    dispatch(clearDraft(undefined));
+                    removeDraftObservation(id);
                     navigation.navigate('Home', { screen: 'My Observations' });
                   },
                 },
@@ -44,8 +60,8 @@ const NameAndPhotos = () => {
         <NativeButton
           title="Next"
           onPress={() => {
-            dispatch(updateDraft({ name }));
-            navigation.navigate('Time and Location');
+            updateDraftObservation({ ...draftObservation, name });
+            navigation.navigate('Time and Location', { id });
           }}
         />
       ),
@@ -61,7 +77,9 @@ const NameAndPhotos = () => {
             showSearch
             title="Name"
             value={{ label: name, value: name }}
-            onChange={item => setName(item.value)}
+            onChange={item => {
+              setName(item.value);
+            }}
             onSearchChange={setQuery}
             searchPlaceholder={query}
             listProps={{
@@ -98,4 +116,21 @@ const NameAndPhotos = () => {
   );
 };
 
-export default NameAndPhotos;
+const mapStateToProps = (state: any, ownProps: any) => ({
+  draftObservation: selectById(state, ownProps.id),
+});
+
+const mapDispatchToProps = {
+  updateDraftObservation: updateDraftObservationAction,
+  removeDraftObservation: removeDraftObservationAction,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+const ConnectedNameAndPhotos = connector(NameAndPhotos);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default withForwardedNavigationParams<ForwardedNameAndPhotosProps>()(
+  ConnectedNameAndPhotos,
+);
