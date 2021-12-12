@@ -29,6 +29,5 @@ export default () => {
         </PersistGate>
       </Provider>
     </ActionSheetProvider>
-
   );
 };

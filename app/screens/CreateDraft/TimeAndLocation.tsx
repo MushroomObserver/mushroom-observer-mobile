@@ -1,7 +1,6 @@
 import {
   selectById,
   updateDraftObservation as updateDraftObservationAction,
-  removeDraftObservation as removeDraftObservationAction,
 } from '../../store/draftObservations';
 import { selectAll } from '../../store/locations';
 import { ForwardedTimeAndLocationProps } from '../../types/navigation';
@@ -61,13 +60,16 @@ const TimeAndLocation = ({
           title="Next"
           onPress={() => {
             updateDraftObservation({
-              date: dayjs(date).format('YYYYMMDD'),
-              location,
-              latitude,
-              longitude,
-              altitude,
-              is_collection_location,
-              gps_hidden,
+              id,
+              changes: {
+                date: dayjs(date).format('YYYYMMDD'),
+                location,
+                latitude,
+                longitude,
+                altitude,
+                is_collection_location,
+                gps_hidden,
+              },
             });
             navigation.navigate('Identification and Notes', { id });
           }}
@@ -124,13 +126,16 @@ const TimeAndLocation = ({
             size={Button.sizes.medium}
             onPress={() => {
               updateDraftObservation({
-                date: dayjs(date).format('YYYYMMDD'),
-                location,
-                latitude,
-                longitude,
-                altitude,
-                is_collection_location,
-                gps_hidden,
+                id,
+                changes: {
+                  date: dayjs(date).format('YYYYMMDD'),
+                  location,
+                  latitude,
+                  longitude,
+                  altitude,
+                  is_collection_location,
+                  gps_hidden,
+                },
               });
               navigation.navigate('Select Location', { id });
             }}
@@ -205,7 +210,6 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 
 const mapDispatchToProps = {
   updateDraftObservation: updateDraftObservationAction,
-  removeDraftObservation: removeDraftObservationAction,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

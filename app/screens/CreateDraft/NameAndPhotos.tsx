@@ -38,19 +38,31 @@ const NameAndPhotos = ({
           <NativeButton
             title="Cancel"
             onPress={() =>
-              Alert.alert('Discard Observation', 'Are you sure?', [
-                {
-                  text: 'Cancel',
-                  style: 'cancel',
-                },
-                {
-                  text: 'OK',
-                  onPress: () => {
-                    removeDraftObservation(id);
-                    navigation.navigate('Home', { screen: 'My Observations' });
+              Alert.alert(
+                'Discard Observation',
+                'Do you want to discard this observation or save it for later?',
+                [
+                  {
+                    text: 'Discard',
+                    style: 'cancel',
+                    onPress: () => {
+                      removeDraftObservation(id);
+                      navigation.navigate('Home', {
+                        screen: 'My Observations',
+                      });
+                    },
                   },
-                },
-              ])
+                  {
+                    text: 'Save',
+                    onPress: () => {
+                      updateDraftObservation({ id, changes: { name } });
+                      navigation.navigate('Home', {
+                        screen: 'My Observations',
+                      });
+                    },
+                  },
+                ],
+              )
             }
           />
         </View>
@@ -59,7 +71,7 @@ const NameAndPhotos = ({
         <NativeButton
           title="Next"
           onPress={() => {
-            updateDraftObservation({ ...draftObservation, name });
+            updateDraftObservation({ id, changes: { name } });
             navigation.navigate('Time and Location', { id });
           }}
         />

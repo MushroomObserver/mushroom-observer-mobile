@@ -1,8 +1,12 @@
-import { useAuth } from '../../hooks/useAuth';
 import { selectKey } from '../../store/auth';
-import { clearDraft, selectDraft } from '../../store/draft';
+import {
+  selectById,
+  updateDraftObservation as updateDraftObservationAction,
+  removeDraftObservation as removeDraftObservationAction,
+} from '../../store/draftObservations';
 import { usePostObservationMutation } from '../../store/mushroomObserver';
-import { addObservation } from '../../store/observations';
+import { addObservation as addObservationAction } from '../../store/observations';
+import { ForwardedIdentificationAndNotesProps } from '../../types/navigation';
 import { useNavigation } from '@react-navigation/core';
 import { isEmpty, omitBy } from 'lodash';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
@@ -15,17 +19,25 @@ import {
   TextField,
   View,
 } from 'react-native-ui-lib';
-import { useDispatch, useSelector } from 'react-redux';
+import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
+import { connect, ConnectedProps } from 'react-redux';
 
-const IdentificationAndNotes = () => {
-  const dispatch = useDispatch();
-  const auth = useAuth();
+interface IdentificationAndNotesProps extends PropsFromRedux {
+  id: string;
+}
+
+const IdentificationAndNotes = ({
+  id,
+  apiKey,
+  draftObservation,
+  updateDraftObservation,
+  removeDraftObservation,
+  addObservation,
+}: IdentificationAndNotesProps) => {
   const navigation = useNavigation();
-  const draft = useSelector(selectDraft);
-  const api_key = useSelector(selectKey);
 
-  const [vote, setVote] = useState(draft.vote);
-  const [notes, setNotes] = useState(draft.notes);
+  const [vote, setVote] = useState(draftObservation.vote);
+  const [notes, setNotes] = useState(draftObservation.notes);
   const [
     postObservation, // This is the mutation trigger
     { data }, // This is the destructured mutation result
@@ -39,18 +51,18 @@ const IdentificationAndNotes = () => {
         <Button
           title="Save"
           onPress={() => {
-            const observation = omitBy(draft, isEmpty);
-            postObservation({ ...observation, api_key });
+            const observation = omitBy(draftObservation, isEmpty);
+            postObservation({ ...observation, api_key: apiKey });
           }}
         />
       ),
     });
-  }, [auth, dispatch, draft, navigation, postObservation, api_key]);
+  }, [navigation, postObservation]);
 
   useEffect(() => {
     if (data?.results) {
-      dispatch(clearDraft(undefined));
-      dispatch(addObservation(data.results[0]));
+      removeDraftObservation(id);
+      addObservation(data.results[0]);
       navigation.reset({
         index: 0,
         routes: [{ name: 'Home' }],
@@ -58,6 +70,7 @@ const IdentificationAndNotes = () => {
     }
 
     if (data?.errors) {
+      updateDraftObservation({ id, changes: { vote, notes } });
       setShowToast(true);
       setErrorMessage(data.errors[0].details);
     }
@@ -104,4 +117,23 @@ const IdentificationAndNotes = () => {
   );
 };
 
-export default IdentificationAndNotes;
+const mapStateToProps = (state: any, ownProps: any) => ({
+  apiKey: selectKey(state),
+  draftObservation: selectById(state, ownProps.id),
+});
+
+const mapDispatchToProps = {
+  updateDraftObservation: updateDraftObservationAction,
+  removeDraftObservation: removeDraftObservationAction,
+  addObservation: addObservationAction,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+const ConnectedIdentificationAndNotes = connector(IdentificationAndNotes);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default withForwardedNavigationParams<ForwardedIdentificationAndNotesProps>()(
+  ConnectedIdentificationAndNotes,
+);

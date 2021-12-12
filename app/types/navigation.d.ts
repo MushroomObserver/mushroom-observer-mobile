@@ -42,6 +42,11 @@ type ForwardedTimeAndLocationProps = ForwardedStackScreenProps<
   'Time and Location'
 >;
 
+type ForwardedIdentificationAndNotesProps = ForwardedStackScreenProps<
+  HomeStackParamList,
+  'Identification and Notes'
+>;
+
 type ForwardedViewObservationProps = ForwardedStackScreenProps<
   HomeStackParamList,
   'View Observation'

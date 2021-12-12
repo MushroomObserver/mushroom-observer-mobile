@@ -1,8 +1,8 @@
 import { useIsLogout, useUser } from './hooks/useAuth';
-import IdentificationAndNotes from './screens/CreateObservation/IdentificationAndNotes';
-import NameAndPhotos from './screens/CreateObservation/NameAndPhotos';
-import SelectLocation from './screens/CreateObservation/SelectLocation';
-import TimeAndLocation from './screens/CreateObservation/TimeAndLocation';
+import IdentificationAndNotes from './screens/CreateDraft/IdentificationAndNotes';
+import NameAndPhotos from './screens/CreateDraft/NameAndPhotos';
+import SelectLocation from './screens/CreateDraft/SelectLocation';
+import TimeAndLocation from './screens/CreateDraft/TimeAndLocation';
 import EditObservation from './screens/EditObservation';
 import EditPhoto from './screens/EditPhoto';
 import ListDrafts from './screens/ListDrafts';
