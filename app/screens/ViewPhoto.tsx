@@ -1,11 +1,10 @@
 import { useKey } from '../hooks/useAuth';
+import useDayjs from '../hooks/useDayjs';
 import { addImages, selectById } from '../store/images';
 import { useGetImagesQuery } from '../store/mushroomObserver';
 import { ForwardedViewPhotoProps } from '../types/navigation';
 import { Image as ImageType } from '../types/store';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import dayjs from 'dayjs';
-import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import React, { useEffect, useLayoutEffect } from 'react';
 import {
   Alert,
@@ -16,8 +15,6 @@ import {
 import { Image, Text, View } from 'react-native-ui-lib';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect, useDispatch } from 'react-redux';
-
-dayjs.extend(LocalizedFormat);
 
 interface ViewPhotoProps {
   id: number;
@@ -31,6 +28,7 @@ const ViewPhoto = ({ id, photo }: ViewPhotoProps) => {
   const navigation = useNavigation();
   const route = useRoute();
   const apiKey = useKey();
+  const dayjs = useDayjs();
 
   const { data, isLoading, error } = useGetImagesQuery({
     api_key: apiKey,

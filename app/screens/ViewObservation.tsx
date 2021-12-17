@@ -1,4 +1,5 @@
 import Photo from '../components/Photo';
+import useDayjs from '../hooks/useDayjs';
 import {
   removeObservation as removeObservationAction,
   selectById,
@@ -6,16 +7,12 @@ import {
 import { ForwardedViewObservationProps } from '../types/navigation';
 import { Observation } from '../types/store';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import dayjs from 'dayjs';
-import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import { concat } from 'lodash';
 import React, { useLayoutEffect } from 'react';
 import { Button as NativeButton, Dimensions, ScrollView } from 'react-native';
 import { Carousel, Text, TouchableOpacity, View } from 'react-native-ui-lib';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect } from 'react-redux';
-
-dayjs.extend(LocalizedFormat);
 
 interface ViewObservationProps {
   id: number;
@@ -30,6 +27,7 @@ const ViewObservation = ({
 }: ForwardedViewObservationProps) => {
   const navigation = useNavigation();
   const route = useRoute();
+  const dayjs = useDayjs();
 
   useLayoutEffect(() => {
     navigation.setOptions({

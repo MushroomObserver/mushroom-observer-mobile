@@ -1,4 +1,5 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { filter } from 'lodash';
 
 const adapter = createEntityAdapter();
 
@@ -7,11 +8,9 @@ const slice = createSlice({
   initialState: adapter.getInitialState(),
   reducers: {
     preloadNames: (state, action) => {
-      const names = require('./name_primer.json');
-      adapter.addMany(state, names);
-    },
-    namesLoaded: (state, action) => {
-      adapter.addMany(state, action.payload);
+      let names = require('./name_primer.json');
+      names = filter(names, name => !name.deprecated);
+      adapter.setAll(state, names);
     },
   },
 });
@@ -20,7 +19,7 @@ const slice = createSlice({
 const { actions, reducer } = slice;
 
 // Extract and export each action creator by name
-export const { reloadNames, preloadNames } = actions;
+export const { preloadNames } = actions;
 
 export const { selectAll, selectById, selectEntities, selectIds, selectTotal } =
   adapter.getSelectors(state => state.names);

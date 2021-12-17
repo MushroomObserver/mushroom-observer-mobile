@@ -1,6 +1,8 @@
+import { DraftObservation } from '../types/store';
+import { addDraftImage, removeDraftImage } from './draftImages';
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 
-const adapter = createEntityAdapter();
+const adapter = createEntityAdapter<DraftObservation>();
 
 const slice = createSlice({
   name: 'draftObservations',
@@ -12,7 +14,7 @@ const slice = createSlice({
     removeDraftObservations: adapter.removeMany,
     updateDraftObservation: adapter.updateOne,
     updateDraftObservations: adapter.updateMany,
-  },
+  }
 });
 
 // Extract the action creators object and the reducer

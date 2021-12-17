@@ -39,6 +39,7 @@ const mushroomObserverApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${API_URL}/api2/`,
   }),
+  tagTypes: ['Observation', 'Image'],
   endpoints: builder => ({
     getApiKeyForUser: builder.mutation<
       ApiResponse<ApiKeyResult>,
@@ -68,16 +69,28 @@ const mushroomObserverApi = createApi({
         };
       },
     }),
-    getObservations: builder.query<Observation, GetObservationsRequestParams>({
-      query: params => ({
-        url: `observations?${encodeQueryParams(params)}`,
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        validateStatus: createValidateStatus<Observation>(),
-      }),
-    }),
+    getObservations: builder.query<Observation[], GetObservationsRequestParams>(
+      {
+        query: params => ({
+          url: `observations?${encodeQueryParams(params)}`,
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          validateStatus: createValidateStatus<Observation[]>(),
+        }),
+        providesTags: result =>
+          result
+            ? [
+                ...result.map(({ id }) => ({
+                  type: 'Observation' as const,
+                  id,
+                })),
+                'Observation',
+              ]
+            : ['Observation'],
+      },
+    ),
     postObservation: builder.mutation<
       ApiResponse<Observation>,
       PostObservationRequestParams
@@ -93,6 +106,7 @@ const mushroomObserverApi = createApi({
           validateStatus: createValidateStatus<Observation>(),
         };
       },
+      invalidatesTags: ['Observation'],
     }),
     deleteObservation: builder.mutation({
       query: params => ({
@@ -102,7 +116,11 @@ const mushroomObserverApi = createApi({
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
+        validateStatus: createValidateStatus<Observation>(),
       }),
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Observation', id: arg.id },
+      ],
     }),
     getImages: builder.query<Image, GetImageRequestParams>({
       query: params => ({
@@ -113,6 +131,7 @@ const mushroomObserverApi = createApi({
         },
         validateStatus: createValidateStatus<Image>(),
       }),
+      providesTags: ['Image'],
     }),
     deleteImage: builder.mutation({
       query: params => ({
@@ -122,6 +141,7 @@ const mushroomObserverApi = createApi({
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
+        validateStatus: createValidateStatus<Image>(),
       }),
     }),
     postImage: builder.mutation({

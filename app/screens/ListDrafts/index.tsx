@@ -1,4 +1,4 @@
-import { selectAll, selectIds } from '../../store/draftObservations';
+import { selectIds } from '../../store/draftObservations';
 import DraftListEmptyView from './DraftListEmptyView';
 import DraftListItem from './DraftListItem';
 import React from 'react';

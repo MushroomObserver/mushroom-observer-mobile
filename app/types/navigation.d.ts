@@ -18,6 +18,7 @@ export type RegisterScreenProps = NativeStackScreenProps<
 
 export type HomeTabParamList = {
   'My Observations': undefined;
+  'My Drafts': undefined;
   Settings: undefined;
 };
 
@@ -40,6 +41,11 @@ type ForwardedNameAndPhotosProps = ForwardedStackScreenProps<
 type ForwardedTimeAndLocationProps = ForwardedStackScreenProps<
   HomeStackParamList,
   'Time and Location'
+>;
+
+type ForwardedSelectLocationProps = ForwardedStackScreenProps<
+  HomeStackParamList,
+  'Select Location'
 >;
 
 type ForwardedIdentificationAndNotesProps = ForwardedStackScreenProps<

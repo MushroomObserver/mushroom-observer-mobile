@@ -1,3 +1,4 @@
+import useDayjs from '../../hooks/useDayjs';
 import {
   selectById,
   updateDraftObservation as updateDraftObservationAction,
@@ -5,7 +6,6 @@ import {
 import { selectAll } from '../../store/locations';
 import { ForwardedTimeAndLocationProps } from '../../types/navigation';
 import { useNavigation } from '@react-navigation/core';
-import dayjs from 'dayjs';
 import { filter } from 'lodash-es';
 import React, { useLayoutEffect, useState } from 'react';
 import { Button as NativeButton, ScrollView } from 'react-native';
@@ -33,7 +33,7 @@ const TimeAndLocation = ({
   updateDraftObservation,
 }: TimeAndLocationProps) => {
   const navigation = useNavigation();
-
+  const dayjs = useDayjs();
   const [date, setDate] = useState(dayjs(draftObservation.date).toDate());
 
   const [query, setQuery] = useState('');

@@ -40,7 +40,7 @@ const IdentificationAndNotes = ({
   const [notes, setNotes] = useState(draftObservation.notes);
   const [
     postObservation, // This is the mutation trigger
-    { data }, // This is the destructured mutation result
+    { isUninitialized, isLoading, isError, error, isSuccess, data }, // This is the destructured mutation result
   ] = usePostObservationMutation();
   const [showToast, setShowToast] = useState(false);
   const [errorMessage, setErrorMessage] = useState(undefined);
@@ -60,7 +60,7 @@ const IdentificationAndNotes = ({
   }, [navigation, postObservation]);
 
   useEffect(() => {
-    if (data?.results) {
+    if (isSuccess) {
       removeDraftObservation(id);
       addObservation(data.results[0]);
       navigation.reset({
@@ -69,10 +69,11 @@ const IdentificationAndNotes = ({
       });
     }
 
-    if (data?.errors) {
-      updateDraftObservation({ id, changes: { vote, notes } });
-      setShowToast(true);
-      setErrorMessage(data.errors[0].details);
+    if (isError) {
+      // updateDraftObservation({ id, changes: { vote, notes } });
+      console.log(error.data);
+      // setShowToast(true);
+      // setErrorMessage(error);
     }
   });
 

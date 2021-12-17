@@ -63,3 +63,28 @@ export interface Image {
   license: number;
   notes: string;
 }
+
+export interface DraftObservation {
+  id: string;
+  name?: string;
+  date?: string;
+  location?: string;
+  vote?: number;
+  notes?: string;
+  latitude?: number;
+  longitude?: number;
+  altitude?: number;
+  isCollectionLocation?: boolean;
+  gpsHidden?: boolean;
+  draftPhotoIds?: string[];
+}
+
+export interface DraftImage {
+  id: string;
+  fileName?:string;
+  fileSize?:number;
+  type?:string;
+  width?: number;
+  height?:number;
+  uri?:string;
+}

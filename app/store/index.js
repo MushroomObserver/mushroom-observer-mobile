@@ -1,5 +1,4 @@
 import auth from './auth';
-import draft from './draft';
 import draftImages from './draftImages';
 import draftObservations from './draftObservations';
 import googleApi from './google';
@@ -50,7 +49,6 @@ const mainReducer = combineReducers({
   images,
   names,
   locations,
-  draft,
 });
 
 const rootReducer = (state, action) => {
@@ -67,7 +65,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(mushroomObserverApi.middleware),
+    }).concat(mushroomObserverApi.middleware, googleApi.middleware),
   devTools: true,
 });
 

@@ -8,10 +8,7 @@ const slice = createSlice({
   reducers: {
     preloadLocations: (state, action) => {
       const locations = require('./location_primer.json');
-      adapter.addMany(state, locations);
-    },
-    namesLoaded: (state, action) => {
-      adapter.addMany(state, action.payload);
+      adapter.setAll(state, locations);
     },
   },
 });

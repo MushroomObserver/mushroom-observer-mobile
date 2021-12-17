@@ -1,10 +1,16 @@
-import { selectDraft, updateDraft } from '../../store/draft';
+import {
+  selectById,
+  updateDraftObservation,
+  updateDraftObservation as updateDraftObservationAction,
+} from '../../store/draftObservations';
 import { useGeocodeQuery } from '../../store/google';
+import { ForwardedSelectLocationProps } from '../../types/navigation';
 import { useNavigation } from '@react-navigation/core';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Button, Dimensions, StyleSheet, Text, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { useDispatch, useSelector } from 'react-redux';
+import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
+import { connect, ConnectedProps, useDispatch, useSelector } from 'react-redux';
 
 const { width, height } = Dimensions.get('window');
 
@@ -12,24 +18,41 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.052;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const SelectLocation = () => {
+interface SelectLocationProps extends PropsFromRedux {
+  id: string;
+}
+
+const SelectLocation = ({ id, draftObservation }: SelectLocationProps) => {
   const navigation = useNavigation();
 
-  const draft = useSelector(selectDraft);
-  const dispatch = useDispatch();
-  const {
-    data: {
-      results: [
-        {
-          geometry: {
-            location: { lat, lng },
-          },
-        },
-      ],
-    },
-  } = useGeocodeQuery(draft.location);
+  const { isUninitialized, isLoading, isSuccess, data, isError, error } =
+    useGeocodeQuery(draftObservation?.location);
+  console.log({
+    isUninitialized,
+    isLoading,
+    isSuccess,
+    data,
+    isError,
+    error,
+  });
 
   const [region, setRegion] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: LATITUDE_DELTA,
+    longitudeDelta: LONGITUDE_DELTA,
+  });
+
+  const {
+    results: [
+      {
+        geometry: {
+          location: { lat, lng },
+        },
+      },
+    ],
+  } = data;
+  setRegion({
     latitude: lat,
     longitude: lng,
     latitudeDelta: LATITUDE_DELTA,
@@ -42,18 +65,19 @@ const SelectLocation = () => {
         <Button
           title="Select"
           onPress={async () => {
-            dispatch(
-              updateDraft({
+            updateDraftObservation({
+              id,
+              changes: {
                 latitude: region.latitude,
                 longitude: region.longitude,
-              }),
-            );
-            navigation.navigate('Time and Location');
+              },
+            });
+            navigation.navigate('Time and Location', { id });
           }}
         />
       ),
     });
-  }, [dispatch, navigation, region]);
+  }, [navigation, region]);
 
   return (
     <View style={mapStyles.container}>
@@ -111,4 +135,21 @@ const mapStyles = StyleSheet.create({
   },
   centeredText: { textAlign: 'center' },
 });
-export default SelectLocation;
+
+const mapStateToProps = (state: any, ownProps: any) => ({
+  draftObservation: selectById(state, ownProps.id),
+});
+
+const mapDispatchToProps = {
+  updateDraftObservation: updateDraftObservationAction,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+const ConnectedSelectLocation = connector(SelectLocation);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default withForwardedNavigationParams<ForwardedSelectLocationProps>()(
+  ConnectedSelectLocation,
+);

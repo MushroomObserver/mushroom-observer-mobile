@@ -1,6 +1,7 @@
+import { DraftImage } from '../types/store';
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 
-const adapter = createEntityAdapter();
+const adapter = createEntityAdapter<DraftImage>();
 
 const slice = createSlice({
   name: 'draftImages',

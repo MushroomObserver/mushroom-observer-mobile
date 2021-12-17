@@ -8,7 +8,7 @@ import { ProgressiveImage, View } from 'react-native-ui-lib';
 import { connect, useDispatch } from 'react-redux';
 
 interface PhotoProps {
-  id: number | string;
+  id: string;
   photo?: ImageType;
   width: number;
   height: number;
