@@ -1,5 +1,7 @@
 import { DraftImage } from '../types/store';
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createEntityAdapter, createSelector, createSlice } from '@reduxjs/toolkit';
+import { useMemo } from 'react';
+import { filter, includes } from 'lodash';
 
 const adapter = createEntityAdapter<DraftImage>();
 
@@ -32,5 +34,8 @@ export const {
 export const { selectAll, selectById, selectEntities, selectIds, selectTotal } =
   adapter.getSelectors(state => state.draftImages);
 
+
+export const selectByIds = createSelector(selectAll, (items, ids) => filter(items, item => includes(ids, item.id) ))
+export const selectByDraftObservationId = createSelector(selectAll, (items, id) => filter(items, item => item.draftObservationId == id ))
 // Export the reducer, either as a default or named export
 export default reducer;
