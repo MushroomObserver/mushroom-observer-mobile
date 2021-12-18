@@ -30,6 +30,7 @@ export type HomeStackParamList = {
   'Identification and Notes': { id: string };
   'View Observation': { id: string };
   'Edit Observation': { id: string };
+  'Create Photo': { id: string };
   'View Photo': { id: string };
   'Edit Photo': { id: string };
 };
@@ -61,6 +62,11 @@ type ForwardedViewObservationProps = ForwardedStackScreenProps<
 type ForwardedEditObservationProps = ForwardedStackScreenProps<
   HomeStackParamList,
   'Edit Observation'
+>;
+
+type ForwardedCreatePhotoProps = ForwardedStackScreenProps<
+  HomeStackParamList,
+  'Create Photo'
 >;
 
 type ForwardedViewPhotoProps = ForwardedStackScreenProps<

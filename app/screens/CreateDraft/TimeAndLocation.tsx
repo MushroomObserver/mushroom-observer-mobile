@@ -43,14 +43,10 @@ const TimeAndLocation = ({
   const [longitude, setLongitude] = useState(draftObservation.longitude);
   const [altitude, setAltitude] = useState(draftObservation.altitude);
 
-  const [is_collection_location, setIsCollectionLocation] = useState(
-    draftObservation.is_collection_location,
+  const [isCollectionLocation, setIsCollectionLocation] = useState(
+    draftObservation.isCollectionLocation,
   );
-  const [gps_hidden, setGpsHidden] = useState(draftObservation.gps_hidden);
-
-  const onChangeDate = (_: any, selectedDate = date) => {
-    setDate(new Date(selectedDate));
-  };
+  const [gpsHidden, setGpsHidden] = useState(draftObservation.gpsHidden);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -67,8 +63,8 @@ const TimeAndLocation = ({
                 latitude,
                 longitude,
                 altitude,
-                is_collection_location,
-                gps_hidden,
+                isCollectionLocation,
+                gpsHidden,
               },
             });
             navigation.navigate('Identification and Notes', { id });
@@ -79,8 +75,8 @@ const TimeAndLocation = ({
   }, [
     altitude,
     date,
-    gps_hidden,
-    is_collection_location,
+    gpsHidden,
+    isCollectionLocation,
     latitude,
     location,
     longitude,
@@ -90,13 +86,13 @@ const TimeAndLocation = ({
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View padding-30>
+        <View padding-20>
           <DateTimePicker
             title={'Date'}
             value={date}
             mode="date"
             display="default"
-            onChange={onChangeDate}
+            onChange={setDate}
           />
           <Picker
             showSearch
@@ -133,8 +129,8 @@ const TimeAndLocation = ({
                   latitude,
                   longitude,
                   altitude,
-                  is_collection_location,
-                  gps_hidden,
+                  isCollectionLocation,
+                  gpsHidden,
                 },
               });
               navigation.navigate('Select Location', { id });
@@ -160,7 +156,7 @@ const TimeAndLocation = ({
           <View marginV-15 spread row centerV>
             <Text>Is this location where it was collected?</Text>
             <Switch
-              value={is_collection_location}
+              value={isCollectionLocation}
               onValueChange={setIsCollectionLocation}
             />
           </View>
@@ -195,7 +191,7 @@ const TimeAndLocation = ({
           </View>
           <View spread row centerV>
             <Text>Hide exact coordinates?</Text>
-            <Switch value={gps_hidden} onValueChange={setGpsHidden} />
+            <Switch value={gpsHidden} onValueChange={setGpsHidden} />
           </View>
         </View>
       </ScrollView>

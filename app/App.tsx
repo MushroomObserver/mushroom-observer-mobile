@@ -3,6 +3,7 @@ import IdentificationAndNotes from './screens/CreateDraft/IdentificationAndNotes
 import NameAndPhotos from './screens/CreateDraft/NameAndPhotos';
 import SelectLocation from './screens/CreateDraft/SelectLocation';
 import TimeAndLocation from './screens/CreateDraft/TimeAndLocation';
+import CreatePhoto from './screens/CreatePhoto';
 import EditObservation from './screens/EditObservation';
 import EditPhoto from './screens/EditPhoto';
 import ListDrafts from './screens/ListDrafts';
@@ -110,6 +111,7 @@ const HomeStack = () => (
     </HomeStackGroup>
     <HomeStackScreen name="View Observation" component={ViewObservation} />
     <HomeStackScreen name="Edit Observation" component={EditObservation} />
+    <HomeStackScreen name="Create Photo" component={CreatePhoto} />
     <HomeStackScreen name="View Photo" component={ViewPhoto} />
     <HomeStackScreen name="Edit Photo" component={EditPhoto} />
   </HomeStackNavigator>

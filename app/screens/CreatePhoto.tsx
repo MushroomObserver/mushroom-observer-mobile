@@ -1,49 +1,94 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { useNavigation, useRoute } from '@react-navigation/core';
-import React from 'react';
-import { Button as NativeButton, ScrollView } from 'react-native';
-import { Image, Picker, Text, TextField, View } from 'react-native-ui-lib';
+import DraftPhoto from '../components/DraftPhoto';
+import useDayjs from '../hooks/useDayjs';
+import {
+  selectById,
+  updateDraftImage as updateDraftImageAction,
+} from '../store/draftImages';
+import { ForwardedCreatePhotoProps } from '../types/navigation';
+import { useNavigation } from '@react-navigation/core';
+import React, { useLayoutEffect, useState } from 'react';
+import { Button as NativeButton, Dimensions, ScrollView } from 'react-native';
+import {
+  Picker,
+  Text,
+  TextField,
+  View,
+  DateTimePicker,
+} from 'react-native-ui-lib';
+import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
+import { connect, ConnectedProps } from 'react-redux';
 
-const CreatePhoto = () => {
+const { width: screenWidth } = Dimensions.get('window');
+
+interface CreatePhotoProps extends PropsFromRedux {
+  id: string;
+  draftImage: any;
+}
+
+const CreatePhoto = ({
+  id,
+  draftImage,
+  updateDraftImage,
+}: CreatePhotoProps) => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const [copyrightHolder, setCopyrightHolder] = React.useState('');
-  const [when, setWhen] = React.useState(new Date());
-  const [license, setLicense] = React.useState('');
-  const [notes, setNotes] = React.useState('');
+  const dayjs = useDayjs();
+  const [copyrightHolder, setCopyrightHolder] = useState(
+    draftImage.copyrightHolder,
+  );
+  const [date, setDate] = useState(new Date());
+  const [license, setLicense] = useState<string>(draftImage.license);
+  const [notes, setNotes] = useState<string>(draftImage.notes);
 
-  const onChangeWhen = (_: Event, selectedDate = when) => {
-    setWhen(new Date(selectedDate));
-  };
-
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => <NativeButton title="Save" onPress={() => {}} />,
+      headerRight: () => (
+        <NativeButton
+          title="Save"
+          onPress={() => {
+            updateDraftImage({
+              id,
+              changes: {
+                date: dayjs(date).format('YYYYMMDD'),
+                copyrightHolder,
+                license,
+                notes,
+              },
+            });
+            navigation.goBack();
+          }}
+        />
+      ),
     });
-  }, [navigation, route]);
+  }, [navigation, copyrightHolder, date, license, notes]);
 
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View>
-          <Image
-            style={{ width: '100%', height: 300 }}
-            resizeMethod="scale"
-            source={{ uri: route.params.uri }}
+        <View centerH marginT-10>
+          <DraftPhoto
+            id={id}
+            width={screenWidth - 40}
+            height={200}
+            borderRadius={10}
           />
+        </View>
+        <View padding-20>
           <TextField
-            title="Copyright holder"
+            title="Copyright Holder"
             value={copyrightHolder}
-            onChange={setCopyrightHolder}
+            onChangeText={setCopyrightHolder}
           />
           <DateTimePicker
-            value={when}
+            title={'Date'}
+            value={date}
             maximumDate={new Date()}
             mode="date"
             display="default"
-            onChange={onChangeWhen}
+            onChange={setDate}
           />
-          <Text>Date the photograph or drawing was created.</Text>
+          <Text marginT-0 marginB-20>
+            Date the photograph or drawing was created.
+          </Text>
           <Picker title="License" onChange={setLicense} value={license}>
             <Picker.Item
               value={3.0}
@@ -69,4 +114,20 @@ const CreatePhoto = () => {
   );
 };
 
-export default CreatePhoto;
+const mapStateToProps = (state: any, ownProps: any) => ({
+  draftImage: selectById(state, ownProps.id),
+});
+
+const mapDispatchToProps = {
+  updateDraftImage: updateDraftImageAction,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+const ConnectedCreatePhoto = connector(CreatePhoto);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default withForwardedNavigationParams<ForwardedCreatePhotoProps>()(
+  ConnectedCreatePhoto,
+);

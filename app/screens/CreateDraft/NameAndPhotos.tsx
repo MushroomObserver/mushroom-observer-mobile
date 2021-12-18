@@ -14,7 +14,7 @@ import { ForwardedNameAndPhotosProps } from '../../types/navigation';
 import { useNavigation } from '@react-navigation/core';
 import { nanoid } from '@reduxjs/toolkit';
 import { concat, filter, sortBy } from 'lodash';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import {
   Alert,
   Button as NativeButton,
@@ -72,7 +72,7 @@ const Photo = ({ id, onRemovePhoto }: PhotoProps) => {
           backgroundColor={Colors.white}
           label="Edit"
           onPress={() =>
-            navigation.navigate('View Photo', {
+            navigation.navigate('Create Photo', {
               id,
             })
           }
@@ -161,9 +161,9 @@ const NameAndPhotos = ({
       const newIds: string[] = [];
       addDraftImages(
         assets.map(asset => {
-          const id = nanoid();
-          newIds.push(id);
-          return { id, ...asset };
+          const newId = nanoid();
+          newIds.push(newId);
+          return { id: newId, observationID: id, ...asset };
         }),
       );
       draftPhotoIds = concat(draftPhotoIds, newIds);

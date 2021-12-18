@@ -1,5 +1,5 @@
 import { DraftObservation } from '../types/store';
-import { addDraftImage, removeDraftImage } from './draftImages';
+import { addDraftImage, addDraftImages, removeDraftImage, selectById as selectDraftImageById } from './draftImages';
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 
 const adapter = createEntityAdapter<DraftObservation>();

@@ -80,7 +80,7 @@ const IdentificationAndNotes = ({
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View flex padding-30>
+        <View flex padding-20>
           <Picker title="Confidence" onChange={setVote} value={vote}>
             <Picker.Item value={3.0} label="I'd Call It That" />
             <Picker.Item value={2.0} label="Promising" />

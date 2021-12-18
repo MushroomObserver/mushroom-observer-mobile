@@ -87,4 +87,8 @@ export interface DraftImage {
   width?: number;
   height?:number;
   uri?:string;
+  copyrightHolder?: string;
+  date?: string;
+  license?: string;
+  notes?: string;
 }
