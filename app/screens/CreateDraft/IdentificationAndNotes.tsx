@@ -1,14 +1,18 @@
 import { selectKey } from '../../store/auth';
+import { selectAll, selectByDraftObservationId } from '../../store/draftImages';
 import {
   selectById,
   updateDraftObservation as updateDraftObservationAction,
   removeDraftObservation as removeDraftObservationAction,
 } from '../../store/draftObservations';
-import { usePostObservationMutation } from '../../store/mushroomObserver';
+import {
+  usePostImageMutation,
+  usePostObservationMutation,
+} from '../../store/mushroomObserver';
 import { addObservation as addObservationAction } from '../../store/observations';
 import { ForwardedIdentificationAndNotesProps } from '../../types/navigation';
 import { useNavigation } from '@react-navigation/core';
-import { isEmpty, omitBy } from 'lodash';
+import { filter, forEach, isEmpty, omitBy } from 'lodash';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Alert, Button, ScrollView } from 'react-native';
 import {
@@ -30,21 +34,24 @@ const IdentificationAndNotes = ({
   id,
   apiKey,
   draftObservation,
+  draftImages,
   updateDraftObservation,
   removeDraftObservation,
   addObservation,
 }: IdentificationAndNotesProps) => {
   const navigation = useNavigation();
 
-  const [vote, setVote] = useState(draftObservation.vote);
-  const [notes, setNotes] = useState(draftObservation.notes);
+  const [vote, setVote] = useState(draftObservation?.vote);
+  const [notes, setNotes] = useState(draftObservation?.notes);
   const [
     postObservation, // This is the mutation trigger
-    { isUninitialized, isLoading, isError, error, isSuccess, data }, // This is the destructured mutation result
+    postObservationResult, // This is the destructured mutation result
   ] = usePostObservationMutation();
+  const [postImage, postImageResult] = usePostImageMutation();
   const [showToast, setShowToast] = useState(false);
   const [errorMessage, setErrorMessage] = useState(undefined);
 
+  console.log(draftImages);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -60,18 +67,33 @@ const IdentificationAndNotes = ({
   }, [navigation, postObservation]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (postObservationResult.isSuccess) {
       removeDraftObservation(id);
-      addObservation(data.results[0]);
+      const newObservation = postObservationResult.data.results[0];
+      // forEach(draftImages)
+      // postImage({
+      //   copyright_holder: draft
+      //   date: date (when photo taken)
+      //   license: license
+      //   notes: string
+      //   observations: observation list (must have edit permission)
+      //   original_name: string (limit=120 chars, original file name or other private identifier)
+      //   projects: project list (must be member)
+      //   upload: upload
+      //   upload_file: string
+      //   upload_url: string
+      //   vote: enum (limit=1|2|3|4)
+      // });
+      addObservation(newObservation);
       navigation.reset({
         index: 0,
         routes: [{ name: 'Home' }],
       });
     }
 
-    if (isError) {
+    if (postObservationResult.isError) {
       // updateDraftObservation({ id, changes: { vote, notes } });
-      console.log(error.data);
+      console.log(postObservationResult.error.data);
       // setShowToast(true);
       // setErrorMessage(error);
     }
@@ -121,6 +143,7 @@ const IdentificationAndNotes = ({
 const mapStateToProps = (state: any, ownProps: any) => ({
   apiKey: selectKey(state),
   draftObservation: selectById(state, ownProps.id),
+  draftImages: selectAll(state),
 });
 
 const mapDispatchToProps = {

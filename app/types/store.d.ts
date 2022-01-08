@@ -91,4 +91,5 @@ export interface DraftImage {
   date?: string;
   license?: string;
   notes?: string;
+  draftObservationId: string;
 }
