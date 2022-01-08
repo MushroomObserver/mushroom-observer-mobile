@@ -13,6 +13,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { Platform } from 'react-native';
 import Config from 'react-native-config';
+import { isEmpty, omitBy } from 'lodash';
 
 const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
 const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
@@ -145,7 +146,7 @@ const mushroomObserverApi = createApi({
       }),
     }),
     postImage: builder.mutation({
-      query: ({ uri, name, type, key }) => {
+      query: ({ uri, name, type, key, ...params }) => {
         const formData = new FormData();
         formData.append('upload', {
           uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
@@ -153,7 +154,7 @@ const mushroomObserverApi = createApi({
           name: name,
         });
         return {
-          url: `images?api_key=${key}&detail=high`,
+          url: `images?=${encodeQueryParams(omitBy(params, isEmpty))}&api_key=${key}&detail=high`,
           method: 'POST',
           body: formData,
           headers: {

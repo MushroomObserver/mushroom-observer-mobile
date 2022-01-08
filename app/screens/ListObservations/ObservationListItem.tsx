@@ -59,7 +59,6 @@ const ObservationListItem = ({
                     deleteObservation({
                       api_key: apiKey,
                       id,
-                      log: false,
                     });
                   },
                 },

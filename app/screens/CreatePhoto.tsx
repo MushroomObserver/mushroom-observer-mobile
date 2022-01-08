@@ -46,7 +46,7 @@ const CreatePhoto = ({
           title="Save"
           onPress={() => {
             updateDraftImage({
-              id,
+              id: draftImage.id,
               changes: {
                 date: dayjs(date).format('YYYYMMDD'),
                 copyrightHolder,

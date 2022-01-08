@@ -43,23 +43,30 @@ const IdentificationAndNotes = ({
 
   const [vote, setVote] = useState(draftObservation?.vote);
   const [notes, setNotes] = useState(draftObservation?.notes);
-  const [
-    postObservation, // This is the mutation trigger
-    postObservationResult, // This is the destructured mutation result
-  ] = usePostObservationMutation();
+  const [postObservation, postObservationResult] = usePostObservationMutation();
   const [postImage, postImageResult] = usePostImageMutation();
   const [showToast, setShowToast] = useState(false);
   const [errorMessage, setErrorMessage] = useState(undefined);
 
-  console.log(draftImages);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <Button
           title="Save"
           onPress={() => {
-            const observation = omitBy(draftObservation, isEmpty);
-            postObservation({ ...observation, api_key: apiKey });
+            let observation = omitBy(
+              { notes, vote, ...draftObservation },
+              isEmpty,
+            );
+            delete observation.id;
+            delete observation.draftPhotoIds;
+            if (!postObservationResult.isLoading) {
+              postObservation({
+                ...observation,
+                api_key: apiKey,
+                detail: 'high',
+              });
+            }
           }}
         />
       ),
@@ -68,36 +75,53 @@ const IdentificationAndNotes = ({
 
   useEffect(() => {
     if (postObservationResult.isSuccess) {
-      removeDraftObservation(id);
+      console.log('result', postObservationResult);
       const newObservation = postObservationResult.data.results[0];
-      // forEach(draftImages)
-      // postImage({
-      //   copyright_holder: draft
-      //   date: date (when photo taken)
-      //   license: license
-      //   notes: string
-      //   observations: observation list (must have edit permission)
-      //   original_name: string (limit=120 chars, original file name or other private identifier)
-      //   projects: project list (must be member)
-      //   upload: upload
-      //   upload_file: string
-      //   upload_url: string
-      //   vote: enum (limit=1|2|3|4)
-      // });
-      addObservation(newObservation);
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      });
+
+      async function uploadImages() {
+        try {
+          const imagesToUpload = filter(draftImages, draftImage => {
+            return draftImage.draftObservationId != id;
+          });
+          let promises = imagesToUpload.map(image =>
+            postImage({
+              key: apiKey,
+              // copyright_holder: image.copyrightHolder,
+              // date: image.date,
+              // license: image.license.value,
+              // notes: image.notes,
+              observations: newObservation.id,
+              original_name: image.fileName,
+              uri: image.uri,
+              name: image.fileName,
+              type: image.type,
+              detail: 'high',
+            }).unwrap(),
+          );
+          let results = await Promise.all(promises);
+          console.log('results', results);
+
+          addObservation(newObservation);
+          removeDraftObservation(id);
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          });
+        } catch (e) {
+          console.log('e', e);
+        }
+      }
+
+      uploadImages();
     }
 
     if (postObservationResult.isError) {
-      // updateDraftObservation({ id, changes: { vote, notes } });
-      console.log(postObservationResult.error.data);
+      updateDraftObservation({ id, changes: { vote, notes } });
+      console.log('error', postObservationResult);
       // setShowToast(true);
       // setErrorMessage(error);
     }
-  });
+  }, [postObservationResult]);
 
   return (
     <View flex>
