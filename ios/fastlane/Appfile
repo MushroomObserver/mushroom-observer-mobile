@@ -1,0 +1,8 @@
+app_identifier("org.mushroomobserver.mobile") # The bundle identifier of your app
+apple_id("email.olivia.computer@gmail.com") # Your Apple email address
+
+itc_team_id("123435634") # App Store Connect Team ID
+team_id("V7M8VK952M") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
