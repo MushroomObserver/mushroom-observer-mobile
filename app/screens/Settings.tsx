@@ -5,6 +5,7 @@ import { logout } from '../store/auth';
 import { useNavigation } from '@react-navigation/core';
 import React, { useLayoutEffect } from 'react';
 import { ScrollView } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import { Text, View } from 'react-native-ui-lib';
 import { useDispatch } from 'react-redux';
 
@@ -36,13 +37,14 @@ const Settings = () => {
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View padding-30>
           <Text marginB-15>Logged in as {auth.user.login_name}</Text>
-          <Text>
+          <Text marginB-15>
             Current API key:{' '}
             {`********************${auth.key.substring(
               auth.key.length - 4,
               auth.key.length,
             )}`}
           </Text>
+          <Text marginB-15>Version: {DeviceInfo.getVersion()}</Text>
         </View>
       </ScrollView>
     </View>

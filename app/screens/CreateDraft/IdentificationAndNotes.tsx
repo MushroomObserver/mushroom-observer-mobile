@@ -22,6 +22,7 @@ import {
   Toast,
   TextField,
   View,
+  LoaderScreen,
 } from 'react-native-ui-lib';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect, ConnectedProps } from 'react-redux';
@@ -160,6 +161,14 @@ const IdentificationAndNotes = ({
         showDismiss
         onDismiss={() => setShowToast(false)}
       />
+      {postObservationResult.isLoading && (
+        <LoaderScreen
+          color={Colors.blue30}
+          backgroundColor={Colors.grey50}
+          message="Loading..."
+          overlay
+        />
+      )}
     </View>
   );
 };

@@ -34,19 +34,19 @@ const TimeAndLocation = ({
 }: TimeAndLocationProps) => {
   const navigation = useNavigation();
   const dayjs = useDayjs();
-  const [date, setDate] = useState(dayjs(draftObservation.date).toDate());
+  const [date, setDate] = useState(dayjs(draftObservation?.date).toDate());
 
   const [query, setQuery] = useState('');
-  const [location, setLocation] = useState(draftObservation.location);
+  const [location, setLocation] = useState(draftObservation?.location);
 
-  const [latitude, setLatitude] = useState(draftObservation.latitude);
-  const [longitude, setLongitude] = useState(draftObservation.longitude);
-  const [altitude, setAltitude] = useState(draftObservation.altitude);
+  const [latitude, setLatitude] = useState(draftObservation?.latitude);
+  const [longitude, setLongitude] = useState(draftObservation?.longitude);
+  const [altitude, setAltitude] = useState(draftObservation?.altitude);
 
   const [isCollectionLocation, setIsCollectionLocation] = useState(
-    draftObservation.isCollectionLocation,
+    draftObservation?.isCollectionLocation,
   );
-  const [gpsHidden, setGpsHidden] = useState(draftObservation.gpsHidden);
+  const [gpsHidden, setGpsHidden] = useState(draftObservation?.gpsHidden);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -89,9 +89,10 @@ const TimeAndLocation = ({
         <View padding-20>
           <DateTimePicker
             title={'Date'}
-            value={date}
+            value={date ? date : new Date()}
             mode="date"
             display="default"
+            themeVariant="light"
             onChange={setDate}
           />
           <Picker

@@ -34,6 +34,7 @@
     "react-native-autocomplete-input": "^5.0.2",
     "react-native-autocomplete-select": "^1.0.0",
     "react-native-config": "^1.4.5",
+    "react-native-device-info": "^8.4.8",
     "react-native-dropdown-autocomplete": "^1.0.18",
     "react-native-encrypted-storage": "^4.0.2",
     "react-native-gesture-handler": "^1.10.3",
