@@ -24,12 +24,11 @@ const ObservationListItem = ({
   const navigation = useNavigation();
 
   const [
-    deleteObservation, // This is the mutation trigger
-    { isUninitialized, isLoading, isError, error, isSuccess, data }, // This is the destructured mutation result
+    deleteObservation,
+    { isUninitialized, isLoading, isError, error, isSuccess, data },
   ] = useDeleteObservationMutation();
 
   if (isSuccess) {
-    console.log(data);
     removeObservation(id);
   }
 

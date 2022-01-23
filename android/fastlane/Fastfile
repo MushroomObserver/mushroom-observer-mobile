@@ -24,10 +24,7 @@ platform :android do
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
     gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
+    upload_to_play_store_internal_app_sharing
   end
 
   desc "Deploy a new version to the Google Play"

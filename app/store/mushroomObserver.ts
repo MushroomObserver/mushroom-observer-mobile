@@ -13,7 +13,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { Platform } from 'react-native';
 import Config from 'react-native-config';
-import { isEmpty, omitBy } from 'lodash';
+import { isUndefined, omitBy, snakeCase } from 'lodash';
 
 const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
 const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
@@ -25,7 +25,7 @@ console.log(API_URL, API_KEY);
  */
 const encodeQueryParams = (object: any) => {
   const string = Object.keys(object)
-    .map(key => `${key}=${encodeURIComponent(object[key])}`)
+    .map(key => `${snakeCase(key)}=${encodeURIComponent(object[key])}`)
     .join('&');
   return string;
 };
@@ -154,13 +154,14 @@ const mushroomObserverApi = createApi({
           name: name,
         });
         return {
-          url: `images?=${encodeQueryParams(omitBy(params, isEmpty))}&api_key=${key}&detail=high`,
+          url: `images?=${encodeQueryParams(omitBy(params, isUndefined))}&api_key=${key}&detail=high`,
           method: 'POST',
           body: formData,
           headers: {
             'Content-Type': type,
             Accept: 'application/json',
           },
+          validateStatus: createValidateStatus<Image>(),
         };
       },
     }),

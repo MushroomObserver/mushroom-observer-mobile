@@ -163,7 +163,7 @@ const NameAndPhotos = ({
         assets.map(asset => {
           const newId = nanoid();
           newIds.push(newId);
-          return { id: newId, draftObservationID: id, ...asset };
+          return { id: newId, draftObservationId: id, ...asset };
         }),
       );
       draftPhotoIds = concat(draftPhotoIds, newIds);

@@ -25,7 +25,7 @@ export type HomeTabParamList = {
 export type HomeStackParamList = {
   Home: NavigatorScreenParams<HomeTabParamList>;
   'Name and Photos': { id: string };
-  'Time and Location': { id: string };
+  'Time and Location': { id: string, params: object };
   'Select Location': { id: string };
   'Identification and Notes': { id: string };
   'View Observation': { id: string };

@@ -12,9 +12,9 @@ import {
 import { addObservation as addObservationAction } from '../../store/observations';
 import { ForwardedIdentificationAndNotesProps } from '../../types/navigation';
 import { useNavigation } from '@react-navigation/core';
-import { filter, forEach, isEmpty, omitBy } from 'lodash';
+import { filter, isUndefined, omitBy } from 'lodash';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { Alert, Button, ScrollView } from 'react-native';
+import { Button, ScrollView } from 'react-native';
 import {
   Colors,
   Picker,
@@ -42,6 +42,7 @@ const IdentificationAndNotes = ({
 }: IdentificationAndNotesProps) => {
   const navigation = useNavigation();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [vote, setVote] = useState(draftObservation?.vote);
   const [notes, setNotes] = useState(draftObservation?.notes);
   const [postObservation, postObservationResult] = usePostObservationMutation();
@@ -57,50 +58,59 @@ const IdentificationAndNotes = ({
           onPress={() => {
             let observation = omitBy(
               { notes, vote, ...draftObservation },
-              isEmpty,
+              isUndefined,
             );
             delete observation.id;
             delete observation.draftPhotoIds;
-            if (!postObservationResult.isLoading) {
+            if (!isLoading) {
+              setIsLoading(true);
               postObservation({
+                notes,
+                vote,
                 ...observation,
                 api_key: apiKey,
                 detail: 'high',
-              });
+              })
+                .then(a => console.log('observation created', a))
+                .catch(e => console.log('create failed', e));
             }
           }}
         />
       ),
     });
-  }, [navigation, postObservation]);
+  }, [navigation, postObservation, notes, vote]);
 
   useEffect(() => {
     if (postObservationResult.isSuccess) {
-      console.log('result', postObservationResult);
       const newObservation = postObservationResult.data.results[0];
 
-      async function uploadImages() {
+      async function uploadImages(draftId, observationId) {
         try {
-          const imagesToUpload = filter(draftImages, draftImage => {
-            return draftImage.draftObservationId != id;
-          });
-          let promises = imagesToUpload.map(image =>
-            postImage({
-              key: apiKey,
-              // copyright_holder: image.copyrightHolder,
-              // date: image.date,
-              // license: image.license.value,
-              // notes: image.notes,
-              observations: newObservation.id,
-              original_name: image.fileName,
-              uri: image.uri,
-              name: image.fileName,
-              type: image.type,
-              detail: 'high',
-            }).unwrap(),
-          );
-          let results = await Promise.all(promises);
-          console.log('results', results);
+          await Promise.all(
+            filter(draftImages, ['draftObservationId', draftId]).map(image => {
+              const params = {
+                key: apiKey,
+                copyright_holder: image?.copyrightHolder,
+                date: image?.date,
+                license: image?.license?.value,
+                notes: image?.notes,
+                observations: observationId,
+                original_name: image.fileName,
+                uri: image.uri,
+                name: image.fileName,
+                type: image.type,
+                detail: 'high',
+              };
+              console.log('img params', params);
+              return postImage(params)
+                .then(a => console.log('image uploaded', a))
+                .catch(e => console.log('image upload failed', e));
+            }),
+          )
+            .then(results => {
+              console.log('results', results);
+            })
+            .catch(e => console.log(e));
 
           addObservation(newObservation);
           removeDraftObservation(id);
@@ -109,14 +119,16 @@ const IdentificationAndNotes = ({
             routes: [{ name: 'Home' }],
           });
         } catch (e) {
+          setIsLoading(false);
           console.log('e', e);
         }
       }
 
-      uploadImages();
+      uploadImages(id, newObservation.id);
     }
 
     if (postObservationResult.isError) {
+      setIsLoading(false);
       updateDraftObservation({ id, changes: { vote, notes } });
       console.log('error', postObservationResult);
       // setShowToast(true);
@@ -128,7 +140,11 @@ const IdentificationAndNotes = ({
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View flex padding-20>
-          <Picker title="Confidence" onChange={setVote} value={vote}>
+          <Picker
+            title="Confidence"
+            onChange={({ value }) => setVote(value)}
+            value={vote}
+          >
             <Picker.Item value={3.0} label="I'd Call It That" />
             <Picker.Item value={2.0} label="Promising" />
             <Picker.Item value={1.0} label="Could Be" />
@@ -161,7 +177,7 @@ const IdentificationAndNotes = ({
         showDismiss
         onDismiss={() => setShowToast(false)}
       />
-      {postObservationResult.isLoading && (
+      {isLoading && (
         <LoaderScreen
           color={Colors.blue30}
           backgroundColor={Colors.grey50}

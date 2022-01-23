@@ -5,9 +5,9 @@ import {
 } from '../../store/draftObservations';
 import { selectAll } from '../../store/locations';
 import { ForwardedTimeAndLocationProps } from '../../types/navigation';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation, useRoute } from '@react-navigation/core';
 import { filter } from 'lodash-es';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Button as NativeButton, ScrollView } from 'react-native';
 import {
   Button,
@@ -32,7 +32,9 @@ const TimeAndLocation = ({
   draftObservation,
   updateDraftObservation,
 }: TimeAndLocationProps) => {
+  const enableLocation = false;
   const navigation = useNavigation();
+  const route = useRoute();
   const dayjs = useDayjs();
   const [date, setDate] = useState(dayjs(draftObservation?.date).toDate());
 
@@ -47,6 +49,14 @@ const TimeAndLocation = ({
     draftObservation?.isCollectionLocation,
   );
   const [gpsHidden, setGpsHidden] = useState(draftObservation?.gpsHidden);
+
+  useEffect(() => {
+    console.log(route.params);
+    if (route.params?.latitude && route.params?.longitude) {
+      setLatitude(parseFloat(route.params?.latitude));
+      setLongitude(parseFloat(route.params?.longitude));
+    }
+  }, [route.params?.latitude, route.params?.longitude]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -116,27 +126,29 @@ const TimeAndLocation = ({
             validate="required"
             errorMessage="This field is required"
           />
-          <Button
-            marginB-15
-            label="Locate"
-            disabled={!location}
-            size={Button.sizes.medium}
-            onPress={() => {
-              updateDraftObservation({
-                id,
-                changes: {
-                  date: dayjs(date).format('YYYYMMDD'),
-                  location,
-                  latitude,
-                  longitude,
-                  altitude,
-                  isCollectionLocation,
-                  gpsHidden,
-                },
-              });
-              navigation.navigate('Select Location', { id });
-            }}
-          />
+          {enableLocation && (
+            <Button
+              marginB-15
+              label="Locate"
+              disabled={!location}
+              size={Button.sizes.medium}
+              onPress={() => {
+                updateDraftObservation({
+                  id,
+                  changes: {
+                    date: dayjs(date).format('YYYYMMDD'),
+                    location,
+                    latitude,
+                    longitude,
+                    altitude,
+                    isCollectionLocation,
+                    gpsHidden,
+                  },
+                });
+                navigation.navigate('Select Location', { id });
+              }}
+            />
+          )}
           <Text marginB-15>
             Where the observation was made. In the US this should be at least
             accurate to the county. Examples:
@@ -149,11 +161,13 @@ const TimeAndLocation = ({
               Hotel Parque dos Coqueiros, Aracaju, Sergipe, Brazil
             </Text>
           </View>
-          <Text>
-            <Text style={{ fontWeight: 'bold' }}>Use the Locate Button</Text> to
-            bring this location up on the map. Then click to add a marker and
-            drag it to the specific Latitude & Longitude.
-          </Text>
+          {enableLocation && (
+            <Text>
+              <Text style={{ fontWeight: 'bold' }}>Use the Locate Button</Text>{' '}
+              to bring this location up on the map. Then click to add a marker
+              and drag it to the specific Latitude & Longitude.
+            </Text>
+          )}
           <View marginV-15 spread row centerV>
             <Text>Is this location where it was collected?</Text>
             <Switch
@@ -161,35 +175,37 @@ const TimeAndLocation = ({
               onValueChange={setIsCollectionLocation}
             />
           </View>
-          <View spread row>
-            <View flex>
-              <TextField
-                title="Latitude"
-                value={latitude}
-                maxLength={5}
-                keyboardType="numeric"
-                onChangeText={setLatitude}
-              />
+          {enableLocation && (
+            <View spread row>
+              <View flex>
+                <TextField
+                  title="Latitude"
+                  value={`${latitude || ''}`}
+                  maxLength={5}
+                  keyboardType="numeric"
+                  onChangeText={lat => setLatitude(parseFloat(lat))}
+                />
+              </View>
+              <View flex marginH-30>
+                <TextField
+                  title="Longitude"
+                  value={`${longitude || ''}`}
+                  maxLength={5}
+                  keyboardType="numeric"
+                  onChangeText={lng => setLongitude(parseFloat(lng))}
+                />
+              </View>
+              <View flex>
+                <TextField
+                  title="Altitude"
+                  value={`${altitude || ''}`}
+                  maxLength={5}
+                  keyboardType="numeric"
+                  onChangeText={alt => setAltitude(parseFloat(alt))}
+                />
+              </View>
             </View>
-            <View flex marginH-30>
-              <TextField
-                title="Longitude"
-                value={longitude}
-                maxLength={5}
-                keyboardType="numeric"
-                onChangeText={setLongitude}
-              />
-            </View>
-            <View flex>
-              <TextField
-                title="Altitude"
-                value={altitude}
-                maxLength={5}
-                keyboardType="numeric"
-                onChangeText={setAltitude}
-              />
-            </View>
-          </View>
+          )}
           <View spread row centerV>
             <Text>Hide exact coordinates?</Text>
             <Switch value={gpsHidden} onValueChange={setGpsHidden} />
