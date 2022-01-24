@@ -24,7 +24,7 @@ console.log(API_URL, API_KEY);
  * so the 'any' type is fine just here. Otherwise we like types.
  */
 const encodeQueryParams = (object: any) => {
-  const string = Object.keys(object)
+  const string = Object.keys(omitBy(object, isUndefined))
     .map(key => `${snakeCase(key)}=${encodeURIComponent(object[key])}`)
     .join('&');
   return string;
@@ -154,7 +154,7 @@ const mushroomObserverApi = createApi({
           name: name,
         });
         return {
-          url: `images?=${encodeQueryParams(omitBy(params, isUndefined))}&api_key=${key}&detail=high`,
+          url: `images?${encodeQueryParams(params)}&api_key=${key}&detail=high`,
           method: 'POST',
           body: formData,
           headers: {
