@@ -37,6 +37,7 @@ const AddPhotosButton = ({
                   {
                     mediaType: 'photo',
                     saveToPhotos: true,
+                    includeExtra: true,
                   },
                   callback,
                 );
@@ -46,6 +47,7 @@ const AddPhotosButton = ({
                   {
                     mediaType: 'photo',
                     selectionLimit: maxPhotos - numPhotos,
+                    includeExtra: true,
                   },
                   callback,
                 );

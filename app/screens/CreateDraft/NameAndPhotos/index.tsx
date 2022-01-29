@@ -1,16 +1,16 @@
-import AddPhotosButton from '../../components/AddPhotosButton';
-import DraftPhoto from '../../components/DraftPhoto';
+import AddPhotosButton from '../../../components/AddPhotosButton';
+import DraftPhoto from '../../../components/DraftPhoto';
+import NamePicker from '../../../components/NamePicker';
 import {
   addDraftImages as addDraftImagesAction,
   removeDraftImage as removeDraftImageAction,
-} from '../../store/draftImages';
+} from '../../../store/draftImages';
 import {
   selectById,
   updateDraftObservation as updateDraftObservationAction,
   removeDraftObservation as removeDraftObservationAction,
-} from '../../store/draftObservations';
-import { selectAll } from '../../store/names';
-import { ForwardedNameAndPhotosProps } from '../../types/navigation';
+} from '../../../store/draftObservations';
+import { ForwardedNameAndPhotosProps } from '../../../types/navigation';
 import { useNavigation } from '@react-navigation/core';
 import { nanoid } from '@reduxjs/toolkit';
 import { concat, filter, sortBy } from 'lodash';
@@ -22,14 +22,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Callback, ImagePickerResponse } from 'react-native-image-picker';
-import {
-  Carousel,
-  Chip,
-  Colors,
-  Picker,
-  Text,
-  View,
-} from 'react-native-ui-lib';
+import { Carousel, Chip, Colors, Text, View } from 'react-native-ui-lib';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -43,6 +36,7 @@ interface PhotoProps {
   id: string;
   onRemovePhoto: Function;
 }
+
 const Photo = ({ id, onRemovePhoto }: PhotoProps) => {
   const navigation = useNavigation();
   return (
@@ -90,56 +84,51 @@ const Photo = ({ id, onRemovePhoto }: PhotoProps) => {
 const NameAndPhotos = ({
   id,
   draftObservation,
-  names,
   updateDraftObservation,
   removeDraftObservation,
   addDraftImages,
   removeDraftImage,
 }: NameAndPhotosProps) => {
   const navigation = useNavigation();
-  const sortedNames = sortBy(names, ['text_name', 'author']);
-  const [query, setQuery] = useState('');
   const [name, setName] = useState(draftObservation?.name);
   let draftPhotoIds = draftObservation?.draftPhotoIds || [];
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <View>
-          <NativeButton
-            title="Cancel"
-            onPress={() =>
-              Alert.alert(
-                'Discard Observation',
-                'Do you want to discard this observation or save it for later?',
-                [
-                  {
-                    text: 'Discard',
-                    style: 'cancel',
-                    onPress: () => {
-                      removeDraftObservation(id);
-                      navigation.navigate('Home', {
-                        screen: 'My Observations',
-                      });
-                    },
+        <NativeButton
+          title="Cancel"
+          onPress={() =>
+            Alert.alert(
+              'Discard Observation',
+              'Do you want to discard this observation or save it for later?',
+              [
+                {
+                  text: 'Discard',
+                  style: 'cancel',
+                  onPress: () => {
+                    removeDraftObservation(id);
+                    navigation.navigate('Home', {
+                      screen: 'My Observations',
+                    });
                   },
-                  {
-                    text: 'Save',
-                    onPress: () => {
-                      updateDraftObservation({
-                        id,
-                        changes: { name, draftPhotoIds },
-                      });
-                      navigation.navigate('Home', {
-                        screen: 'My Drafts',
-                      });
-                    },
+                },
+                {
+                  text: 'Save',
+                  onPress: () => {
+                    updateDraftObservation({
+                      id,
+                      changes: { name, draftPhotoIds },
+                    });
+                    navigation.navigate('Home', {
+                      screen: 'My Drafts',
+                    });
                   },
-                ],
-              )
-            }
-          />
-        </View>
+                },
+              ],
+            )
+          }
+        />
       ),
       headerRight: () => (
         <NativeButton
@@ -159,13 +148,13 @@ const NameAndPhotos = ({
   }: ImagePickerResponse) => {
     if (!didCancel && assets) {
       const newIds: string[] = [];
-      addDraftImages(
-        assets.map(asset => {
-          const newId = nanoid();
-          newIds.push(newId);
-          return { id: newId, draftObservationID: id, ...asset };
-        }),
-      );
+      const draftImages = assets.map(asset => {
+        const newId = nanoid();
+        newIds.push(newId);
+        return { ...asset, id: newId, draftObservationId: id };
+      });
+      addDraftImages(draftImages);
+
       draftPhotoIds = concat(draftPhotoIds, newIds);
       updateDraftObservation({ id, changes: { name, draftPhotoIds } });
     }
@@ -205,27 +194,10 @@ const NameAndPhotos = ({
             numPhotos={draftPhotoIds.length}
             maxPhotos={SELECTION_LIMIT}
           />
-          <Picker
-            showSearch
-            title="Name"
-            value={{ label: name, value: name }}
-            onChange={item => {
+          <NamePicker
+            name={name}
+            onChangeName={item => {
               setName(item.value);
-            }}
-            onSearchChange={setQuery}
-            searchPlaceholder={query}
-            listProps={{
-              data: filter(sortedNames, n => n.text_name.startsWith(query)),
-              renderItem: ({ item }) => {
-                return (
-                  <Picker.Item
-                    key={item.id}
-                    value={item.text_name + ' ' + item.author}
-                    label={item.text_name + ' ' + item.author}
-                    disabled={item.deprecated}
-                  />
-                );
-              },
             }}
           />
           <Text>
@@ -250,7 +222,6 @@ const NameAndPhotos = ({
 
 const mapStateToProps = (state: any, ownProps: any) => ({
   draftObservation: selectById(state, ownProps.id),
-  names: selectAll(state),
 });
 
 const mapDispatchToProps = {

@@ -24,6 +24,9 @@ const Register = () => {
   const passwordInput = useRef<typeof TextField>();
   const [password, setPassword] = useState('');
 
+  const confirmPasswordInput = useRef<typeof TextField>();
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   const [postUser, { data, isLoading }] = usePostUserMutation();
 
   useEffect(() => {
@@ -73,9 +76,7 @@ const Register = () => {
             returnKeyType="next"
             enablesReturnKeyAutomatically
             onChangeText={setUsername}
-            onSubmitEditing={() => {
-              passwordInput.current.focus();
-            }}
+            onSubmitEditing={() => passwordInput.current.focus()}
             blurOnSubmit={false}
             value={username}
             maxLength={80}
@@ -92,17 +93,39 @@ const Register = () => {
             returnKeyType="done"
             enablesReturnKeyAutomatically
             onChangeText={setPassword}
+            onSubmitEditing={() => confirmPasswordInput.current.focus()}
+            value={password}
+            maxLength={80}
+            validate="required"
+            errorMessage="This field is required"
+          />
+          <TextField
+            ref={confirmPasswordInput}
+            autoCorrect={false}
+            autoCapitalize="none"
+            title="Confirm Password"
+            textContentType="password"
+            autoCompleteType="password"
+            returnKeyType="done"
+            enablesReturnKeyAutomatically
+            onChangeText={setConfirmPassword}
             onSubmitEditing={() =>
               postUser({ email, login: username, password })
             }
-            value={password}
+            value={confirmPassword}
             maxLength={80}
             validate="required"
             errorMessage="This field is required"
           />
           <Button
             label="Register"
-            disabled={!email || !username || !password || isLoading}
+            disabled={
+              isLoading ||
+              !email ||
+              !username ||
+              !password ||
+              !(password === confirmPassword)
+            }
             onPress={() => postUser({ email, login: username, password })}
           />
         </View>

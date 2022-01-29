@@ -1,3 +1,7 @@
+import { ConfidenceView } from '../components/ConfidenceView';
+import { DateView } from '../components/DateView';
+import { NameView } from '../components/NameView';
+import { OwnerView } from '../components/OwnerView';
 import Photo from '../components/Photo';
 import useDayjs from '../hooks/useDayjs';
 import {
@@ -7,7 +11,7 @@ import {
 import { ForwardedViewObservationProps } from '../types/navigation';
 import { Observation } from '../types/store';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import { concat } from 'lodash';
+import { concat, find, round } from 'lodash';
 import React, { useLayoutEffect } from 'react';
 import { Button as NativeButton, Dimensions, ScrollView } from 'react-native';
 import { Carousel, Text, TouchableOpacity, View } from 'react-native-ui-lib';
@@ -77,16 +81,28 @@ const ViewObservation = ({
         )}
         <View flex paddingH-15>
           <Text text70H>
-            Date: <Text text70>{dayjs(observation.date).format('ll')}</Text>
+            Date:{' '}
+            <Text text70>
+              <DateView date={observation.date} format="ll" />
+            </Text>
           </Text>
           <Text text70H>
-            Owner: <Text text70>{observation.owner.login_name}</Text>
+            Owner:{' '}
+            <Text text70>
+              <OwnerView owner={observation.owner} />
+            </Text>
           </Text>
           <Text text70H>
-            Consensus: <Text text70>{observation.consensus.name}</Text>
+            Consensus:{' '}
+            <Text text70>
+              <NameView name={observation.consensus} />
+            </Text>
           </Text>
           <Text text70H>
-            Confidence: <Text text70>{observation.confidence}</Text>
+            Confidence:{' '}
+            <Text text70>
+              <ConfidenceView confidence={observation.confidence} />
+            </Text>
           </Text>
           <Text text70H>
             Location name: <Text text70>{observation.location_name}</Text>
@@ -107,11 +123,15 @@ const ViewObservation = ({
           </Text>
           <Text text70H>
             Created at:{' '}
-            <Text text70>{dayjs(observation.created_at).format('lll')}</Text>{' '}
+            <Text text70>
+              <DateView date={observation.created_at} format="lll" />
+            </Text>{' '}
           </Text>
           <Text text70H>
             Updated at:{' '}
-            <Text text70>{dayjs(observation.updated_at).format('lll')}</Text>
+            <Text text70>
+              <DateView date={observation.updated_at} format="lll" />
+            </Text>
           </Text>
         </View>
       </ScrollView>
