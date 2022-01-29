@@ -1,3 +1,4 @@
+import FlashView from './components/FlashView';
 import { useIsLogout, useUser } from './hooks/useAuth';
 import IdentificationAndNotes from './screens/CreateDraft/IdentificationAndNotes';
 import NameAndPhotos from './screens/CreateDraft/NameAndPhotos';
@@ -13,6 +14,7 @@ import Register from './screens/Register';
 import Settings from './screens/Settings';
 import ViewObservation from './screens/ViewObservation';
 import ViewPhoto from './screens/ViewPhoto';
+import { selectError, selectInfo, selectWarning } from './store/flash';
 import { preloadLocations } from './store/locations';
 import { preloadNames } from './store/names';
 import { LoginStackParamList } from './types/navigation';
@@ -25,8 +27,9 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
+import { View } from 'react-native-ui-lib';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const { Navigator: LoginStackNavigator, Screen: LoginStackScreen } =
   createNativeStackNavigator<LoginStackParamList>();
@@ -121,6 +124,9 @@ const App = () => {
   const user = useUser();
   const dispatch = useDispatch();
   const navigationRef = useNavigationContainerRef();
+  const error = useSelector(selectError);
+  const warning = useSelector(selectWarning);
+  const info = useSelector(selectInfo);
 
   useReduxDevToolsExtension(navigationRef);
 
@@ -130,9 +136,14 @@ const App = () => {
   });
 
   return (
-    <NavigationContainer ref={navigationRef}>
-      {!user ? <LoginStack /> : <HomeStack />}
-    </NavigationContainer>
+    <View flex>
+      <FlashView info={info} />
+      <FlashView warning={warning} />
+      <FlashView error={error} />
+      <NavigationContainer ref={navigationRef}>
+        {!user ? <LoginStack /> : <HomeStack />}
+      </NavigationContainer>
+    </View>
   );
 };
 

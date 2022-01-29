@@ -1,7 +1,15 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { filter } from 'lodash';
 
-const adapter = createEntityAdapter();
+export type Name =  {
+  id: number,
+  text_name: string,
+  deprecated: boolean,
+  synonym_id: number,
+  author: string
+}
+
+const adapter = createEntityAdapter<Name>();
 
 const slice = createSlice({
   name: 'names',

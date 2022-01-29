@@ -1,18 +1,16 @@
-import useDayjs from '../../hooks/useDayjs';
+import LocationPicker from '../../../components/LocationPicker';
+import useDayjs from '../../../hooks/useDayjs';
 import {
   selectById,
   updateDraftObservation as updateDraftObservationAction,
-} from '../../store/draftObservations';
-import { selectAll } from '../../store/locations';
-import { ForwardedTimeAndLocationProps } from '../../types/navigation';
+} from '../../../store/draftObservations';
+import { ForwardedTimeAndLocationProps } from '../../../types/navigation';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import { filter } from 'lodash-es';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Button as NativeButton, ScrollView } from 'react-native';
 import {
   Button,
   DateTimePicker,
-  Picker,
   Switch,
   Text,
   TextField,
@@ -28,7 +26,6 @@ interface TimeAndLocationProps extends PropsFromRedux {
 
 const TimeAndLocation = ({
   id,
-  locations,
   draftObservation,
   updateDraftObservation,
 }: TimeAndLocationProps) => {
@@ -38,7 +35,6 @@ const TimeAndLocation = ({
   const dayjs = useDayjs();
   const [date, setDate] = useState(dayjs(draftObservation?.date).toDate());
 
-  const [query, setQuery] = useState('');
   const [location, setLocation] = useState(draftObservation?.location);
 
   const [latitude, setLatitude] = useState(draftObservation?.latitude);
@@ -51,7 +47,6 @@ const TimeAndLocation = ({
   const [gpsHidden, setGpsHidden] = useState(draftObservation?.gpsHidden);
 
   useEffect(() => {
-    console.log(route.params);
     if (route.params?.latitude && route.params?.longitude) {
       setLatitude(parseFloat(route.params?.latitude));
       setLongitude(parseFloat(route.params?.longitude));
@@ -105,26 +100,11 @@ const TimeAndLocation = ({
             themeVariant="light"
             onChange={setDate}
           />
-          <Picker
-            showSearch
-            title="Location"
-            value={{ label: location, value: location }}
-            onChange={item => {
+          <LocationPicker
+            location={location}
+            onChangeLocation={item => {
               setLocation(item.value);
             }}
-            onSearchChange={setQuery}
-            listProps={{
-              data: filter(locations, n => n.name.startsWith(query)),
-              renderItem: ({ item }) => (
-                <Picker.Item
-                  key={item.id}
-                  value={item.name}
-                  label={item.name}
-                />
-              ),
-            }}
-            validate="required"
-            errorMessage="This field is required"
           />
           {enableLocation && (
             <Button
@@ -217,7 +197,6 @@ const TimeAndLocation = ({
 };
 
 const mapStateToProps = (state: any, ownProps: any) => ({
-  locations: selectAll(state),
   draftObservation: selectById(state, ownProps.id),
 });
 

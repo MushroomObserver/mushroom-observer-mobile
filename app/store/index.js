@@ -1,6 +1,7 @@
 import auth from './auth';
 import draftImages from './draftImages';
 import draftObservations from './draftObservations';
+import flash from './flash';
 import googleApi from './google';
 import images from './images';
 import locations from './locations';
@@ -49,6 +50,7 @@ const mainReducer = combineReducers({
   images,
   names,
   locations,
+  flash,
 });
 
 const rootReducer = (state, action) => {

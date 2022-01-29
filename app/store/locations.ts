@@ -1,6 +1,11 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 
-const adapter = createEntityAdapter();
+export type Location = {
+  id: number,
+  name: string,
+}
+
+const adapter = createEntityAdapter<Location>();
 
 const slice = createSlice({
   name: 'locations',
@@ -13,15 +18,11 @@ const slice = createSlice({
   },
 });
 
-// Extract the action creators object and the reducer
 const { actions, reducer } = slice;
 
-// Extract and export each action creator by name
-export const { reloadLocations, preloadLocations } = actions;
+export const { preloadLocations } = actions;
 
-// Export the selectors from the entity adapter
 export const { selectAll, selectById, selectEntities, selectIds, selectTotal } =
   adapter.getSelectors(state => state.locations);
 
-// Export the reducer, either as a default or named export
 export default reducer;
