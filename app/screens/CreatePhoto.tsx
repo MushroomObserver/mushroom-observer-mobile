@@ -1,4 +1,5 @@
 import DraftPhoto from '../components/DraftPhoto';
+import { NotesField } from '../components/NotesField';
 import useDayjs from '../hooks/useDayjs';
 import {
   selectById,
@@ -38,6 +39,9 @@ const CreatePhoto = ({
   const [date, setDate] = useState(new Date(draftImage.timestamp));
   const [license, setLicense] = useState<string>(draftImage.license);
   const [notes, setNotes] = useState<string>(draftImage.notes);
+
+  const notesDetails =
+    'Enter notes that are specific to this particular image.';
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -100,14 +104,12 @@ const CreatePhoto = ({
             />
             <Picker.Item value={1.0} label="Public Domain" />
           </Picker>
-          <TextField
-            title="Notes"
-            value={notes}
-            onChangeText={setNotes}
-            expandable
-            multiline
+          <NotesField
+            placeholder={notesDetails}
+            notes={notes}
+            onChangeNotes={setNotes}
           />
-          <Text>Enter notes that are specific to this particular image.</Text>
+          <Text>{notesDetails}</Text>
         </View>
       </ScrollView>
     </View>
