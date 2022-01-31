@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, TextField, View } from 'react-native-ui-lib';
 
 interface NotesFieldProps {
@@ -12,12 +12,14 @@ export const NotesField = ({
   notes,
   onChangeNotes,
 }: NotesFieldProps) => {
+  const [expanded, setExpanded] = useState(false);
   return (
     <TextField
       title="Notes"
       value={notes}
       onChangeText={onChangeNotes}
-      placeholder={placeholder}
+      placeholder={expanded ? placeholder : undefined}
+      onToggleExpandableModal={setExpanded}
       expandable
       multiline
       autoFocus
