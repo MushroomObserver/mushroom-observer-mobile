@@ -28,7 +28,7 @@ import { useNavigation } from '@react-navigation/core';
 import { filter, get, isUndefined, omitBy } from 'lodash';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Button, ScrollView } from 'react-native';
-import { Colors, View, LoaderScreen } from 'react-native-ui-lib';
+import { Colors, View, LoaderScreen, Text } from 'react-native-ui-lib';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -59,6 +59,12 @@ const IdentificationAndNotes = ({
   const [notes, setNotes] = useState(draftObservation?.notes);
   const [postObservation, postObservationResult] = usePostObservationMutation();
   const [postImage, postImageResult] = usePostImageMutation();
+
+  const notesDetails =
+    'Please include any additional information you can think of about this ' +
+    'observation that isn’t clear from the photographs, e.g., habitat, ' +
+    'substrate or nearby trees; distinctive texture, scent, taste, staining ' +
+    'or bruising; results of chemical or microscopic analyses, etc.';
 
   const SaveObservationButton = () => {
     const { isConnected, isInternetReachable }: NetInfoState = useNetInfo();
@@ -188,7 +194,12 @@ const IdentificationAndNotes = ({
             confidence={vote}
             onChangeConfidence={({ value }) => setVote(value)}
           />
-          <NotesField notes={notes} onChangeNotes={setNotes} />
+          <NotesField
+            placeholder={notesDetails}
+            notes={notes}
+            onChangeNotes={setNotes}
+          />
+          <Text>{notesDetails}</Text>
         </View>
       </ScrollView>
 
