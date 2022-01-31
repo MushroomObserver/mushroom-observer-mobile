@@ -1,5 +1,5 @@
 import { Location, selectAll } from '../store/locations';
-import { filter } from 'lodash-es';
+import { filter, lowerCase } from 'lodash';
 import React, { useState } from 'react';
 import { Picker } from 'react-native-ui-lib';
 import { connect } from 'react-redux';
@@ -25,7 +25,9 @@ const LocationPicker = ({
       onChange={onChangeLocation}
       onSearchChange={setQuery}
       listProps={{
-        data: filter(locations, n => n.name.startsWith(query)),
+        data: filter(locations, ({ name }) =>
+          lowerCase(name).includes(lowerCase(query)),
+        ),
         renderItem: ({ item }: { item: Location }) => (
           <Picker.Item key={item.id} value={item.name} label={item.name} />
         ),
