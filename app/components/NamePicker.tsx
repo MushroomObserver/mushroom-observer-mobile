@@ -1,5 +1,5 @@
 import { Name, selectAll } from '../store/names';
-import { filter, sortBy } from 'lodash';
+import { filter, lowerCase, sortBy } from 'lodash';
 import React, { useState } from 'react';
 import { Picker } from 'react-native-ui-lib';
 import { connect } from 'react-redux';
@@ -22,7 +22,12 @@ const NamePicker = ({ name, names, onChangeName }: NamePickerProps) => {
       onChange={onChangeName}
       onSearchChange={setQuery}
       listProps={{
-        data: filter(sortedNames, n => n.text_name.startsWith(query)),
+        data: filter(
+          sortedNames,
+          ({ text_name, author }) =>
+            lowerCase(text_name).includes(lowerCase(query)) ||
+            lowerCase(author).includes(lowerCase(query)),
+        ),
         renderItem: ({ item }: { item: Name }) => {
           return (
             <Picker.Item
