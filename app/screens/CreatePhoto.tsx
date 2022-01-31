@@ -36,7 +36,7 @@ const CreatePhoto = ({
   const [copyrightHolder, setCopyrightHolder] = useState(
     draftImage.copyrightHolder,
   );
-  const [date, setDate] = useState(new Date(draftImage.timestamp));
+  const [date, setDate] = useState(dayjs(draftImage.date).toDate());
   const [license, setLicense] = useState<string>(draftImage.license);
   const [notes, setNotes] = useState<string>(draftImage.notes);
 

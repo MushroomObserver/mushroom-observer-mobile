@@ -1,6 +1,7 @@
 import AddPhotosButton from '../../../components/AddPhotosButton';
 import DraftPhoto from '../../../components/DraftPhoto';
 import NamePicker from '../../../components/NamePicker';
+import useDayjs from '../../../hooks/useDayjs';
 import {
   addDraftImages as addDraftImagesAction,
   removeDraftImage as removeDraftImageAction,
@@ -90,6 +91,7 @@ const NameAndPhotos = ({
   removeDraftImage,
 }: NameAndPhotosProps) => {
   const navigation = useNavigation();
+  const dayjs = useDayjs();
   const [name, setName] = useState(draftObservation?.name);
   let draftPhotoIds = draftObservation?.draftPhotoIds || [];
 
@@ -148,15 +150,21 @@ const NameAndPhotos = ({
   }: ImagePickerResponse) => {
     if (!didCancel && assets) {
       const newIds: string[] = [];
+      let date = undefined;
       const draftImages = assets.map(asset => {
         const newId = nanoid();
         newIds.push(newId);
-        return { ...asset, id: newId, draftObservationId: id };
+        date = dayjs(asset.timestamp).format('YYYYMMDD');
+        return {
+          ...asset,
+          id: newId,
+          draftObservationId: id,
+          date,
+        };
       });
       addDraftImages(draftImages);
-
       draftPhotoIds = concat(draftPhotoIds, newIds);
-      updateDraftObservation({ id, changes: { name, draftPhotoIds } });
+      updateDraftObservation({ id, changes: { name, draftPhotoIds, date } });
     }
   };
 
