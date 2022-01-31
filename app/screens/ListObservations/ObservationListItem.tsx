@@ -1,6 +1,5 @@
 import Photo from '../../components/Photo';
 import { selectKey } from '../../store/auth';
-import { useDeleteObservationMutation } from '../../store/mushroomObserver';
 import {
   selectById,
   removeObservation as removeObservationAction,
@@ -23,19 +22,6 @@ const ObservationListItem = ({
 }: ObservationListItemProps) => {
   const navigation = useNavigation();
 
-  const [
-    deleteObservation,
-    { isUninitialized, isLoading, isError, error, isSuccess, data },
-  ] = useDeleteObservationMutation();
-
-  if (isSuccess) {
-    removeObservation(id);
-  }
-
-  if (isError) {
-    console.log(error);
-  }
-
   return (
     <Drawer
       useNativeAnimations
@@ -46,7 +32,7 @@ const ObservationListItem = ({
           onPress: () =>
             Alert.alert(
               'Delete Observation',
-              'Do you want to delete this observation?',
+              'Do you want to delete this observation? (The uploaded observation will remain.)',
               [
                 {
                   text: 'Cancel',
@@ -55,10 +41,7 @@ const ObservationListItem = ({
                 {
                   text: 'Delete',
                   onPress: () => {
-                    deleteObservation({
-                      api_key: apiKey,
-                      id,
-                    });
+                    removeObservation(id);
                   },
                 },
               ],
