@@ -328,7 +328,7 @@ PODS:
     - Google-Maps-iOS-Utils (= 2.1.0)
     - GoogleMaps (= 3.5.0)
     - React-Core
-  - react-native-image-picker (4.1.2):
+  - react-native-image-picker (4.7.1):
     - React-Core
   - react-native-maps (0.29.3):
     - React-Core
@@ -711,12 +711,12 @@ SPEC CHECKSUMS:
   Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
   FlipperKit: d8d346844eca5d9120c17d441a2f38596e8ed2b9
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
-  glog: 43737235ae6a21de4f45297f4f73b6420fc2ecb2
+  glog: 5337263514dd6f09803962437687240c5dc39aa4
   Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
   GoogleMaps: 32ca02de09de357a10ac773f2c70f1986751392d
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
-  RCT-Folly: e2636706cc3fded205cf0d380428ec0ea7455f80
+  RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
   RCTRequired: 3cc065b52aa18db729268b9bd78a2feffb4d0f91
   RCTTypeSafety: 3c4fc37d5dea452d2ef17324db5504ec2f05083a
   React: 4a00720816c52a213424442954acb7e4b724804a
@@ -734,7 +734,7 @@ SPEC CHECKSUMS:
   react-native-exif: 7ae60c8ee683d729640bd78f81171600f9e2f9c2
   react-native-flipper: bc0286688e9bff709f2cf53f0ae9c032fc06afa1
   react-native-google-maps: d6a30377b40a338bd09d6ad36ce48dc5d12b5792
-  react-native-image-picker: f45729c43d4f854508ab25c0d0f0f711a2a8a267
+  react-native-image-picker: 27c3726557dac6e224a17c564c16cdc7fb952f79
   react-native-maps: 41d01d8e0afcebe32bec9eea3bd945adc1b18f7a
   react-native-netinfo: 78bb0c4bf96177a14ea1bba951de9ad27419965b
   react-native-safe-area-context: 5cf05f49df9d17261e40e518481f2e334c6cd4b5
@@ -769,6 +769,6 @@ SPEC CHECKSUMS:
   Yoga: 2b4a01651f42a32f82e6cef3830a3ba48088237f
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: d6f4c9292166551dde2fc4c0b34304e353cc53c4
+PODFILE CHECKSUM: 1c7116d3ae004f21955e7f877ca17ef820837e2d
 
 COCOAPODS: 1.10.2
