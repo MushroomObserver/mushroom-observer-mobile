@@ -26,6 +26,8 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>Location</key>
+	<string></string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
@@ -37,10 +39,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Capture photos of observations for upload.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Associate location with observations.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Upload photos from your device.</string>
+	<string>Select photos of observations for upload.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
