@@ -18,9 +18,12 @@ const NamePicker = ({ name, names, onChangeName }: NamePickerProps) => {
     <Picker
       showSearch
       title="Name"
+      label="Name"
       value={{ label: name, value: name }}
       onChange={onChangeName}
       onSearchChange={setQuery}
+      topBarProps={{ title: 'Name' }}
+      searchPlaceholder={'Search names'}
       listProps={{
         data: filter(
           sortedNames,
