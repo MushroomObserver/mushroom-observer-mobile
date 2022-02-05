@@ -24,34 +24,19 @@ export type HomeTabParamList = {
 
 export type HomeStackParamList = {
   Home: NavigatorScreenParams<HomeTabParamList>;
-  'Name and Photos': { id: string };
-  'Time and Location': { id: string, params: object };
+  'Create Draft': { id: string };
+  'Edit Draft': { id: string };
   'Select Location': { id: string };
-  'Identification and Notes': { id: string };
   'View Observation': { id: string };
   'Edit Observation': { id: string };
   'Create Photo': { id: string };
   'View Photo': { id: string };
   'Edit Photo': { id: string };
 };
-type ForwardedNameAndPhotosProps = ForwardedStackScreenProps<
-  HomeStackParamList,
-  'Name and Photos'
->;
 
-type ForwardedTimeAndLocationProps = ForwardedStackScreenProps<
+type ForwardedCreateDraftProps = ForwardedStackScreenProps<
   HomeStackParamList,
-  'Time and Location'
->;
-
-type ForwardedSelectLocationProps = ForwardedStackScreenProps<
-  HomeStackParamList,
-  'Select Location'
->;
-
-type ForwardedIdentificationAndNotesProps = ForwardedStackScreenProps<
-  HomeStackParamList,
-  'Identification and Notes'
+  'Create Draft'
 >;
 
 type ForwardedViewObservationProps = ForwardedStackScreenProps<

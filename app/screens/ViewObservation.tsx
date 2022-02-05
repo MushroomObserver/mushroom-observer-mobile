@@ -3,6 +3,7 @@ import { DateView } from '../components/DateView';
 import { NameView } from '../components/NameView';
 import { OwnerView } from '../components/OwnerView';
 import Photo from '../components/Photo';
+import HeaderButtons from '../components/header/HeaderButtons';
 import useDayjs from '../hooks/useDayjs';
 import {
   removeObservation as removeObservationAction,
@@ -14,7 +15,15 @@ import { useNavigation, useRoute } from '@react-navigation/core';
 import { concat, find, round } from 'lodash';
 import React, { useLayoutEffect } from 'react';
 import { Button as NativeButton, Dimensions, ScrollView } from 'react-native';
-import { Carousel, Text, TouchableOpacity, View } from 'react-native-ui-lib';
+import {
+  Carousel,
+  Chip,
+  Colors,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native-ui-lib';
+import { Item } from 'react-navigation-header-buttons';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect } from 'react-redux';
 
@@ -31,55 +40,59 @@ const ViewObservation = ({
 }: ForwardedViewObservationProps) => {
   const navigation = useNavigation();
   const route = useRoute();
-  const dayjs = useDayjs();
 
   useLayoutEffect(() => {
     navigation.setOptions({
       title: `Observation #${id}`,
       headerRight: () => (
-        <>
-          <NativeButton
+        <HeaderButtons>
+          <Item
             title="Edit"
             onPress={() => navigation.navigate('Edit Observation', { id })}
+            disabled
           />
-        </>
+        </HeaderButtons>
       ),
     });
   }, [navigation, route]);
 
+  console.log(observation);
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        {observation.primary_image && (
+        <View marginT-20>
           <Carousel
-            showCounter
             horizontal
-            containerMarginHorizontal={10}
-            containerPaddingVertical={10}
             allowAccessibleLayout
-            pageControlPosition={Carousel.pageControlPositions.OVER}
+            pageControlPosition={Carousel.pageControlPositions.UNDER}
+            pageControlProps={{
+              color: Colors.primary,
+              inactiveColor: Colors.grey30,
+            }}
           >
-            {concat(observation.primary_image, observation.images).map(
-              (image: object) => (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('View Photo', {
-                      id: image.id,
-                    })
-                  }
-                >
-                  <Photo
-                    id={image.id}
-                    width={screenWidth - 20}
-                    height={220}
-                    borderRadius={10}
-                  />
-                </TouchableOpacity>
-              ),
-            )}
+            {concat(observation.photoIds).map((id: string) => (
+              <TouchableOpacity
+                key={id}
+                flex
+                center
+                onPress={() =>
+                  navigation.navigate('View Photo', {
+                    id: id,
+                  })
+                }
+              >
+                <Photo
+                  id={id}
+                  key={id}
+                  width={screenWidth - 40}
+                  height={280}
+                  borderRadius={10}
+                />
+              </TouchableOpacity>
+            ))}
           </Carousel>
-        )}
-        <View flex paddingH-15>
+        </View>
+        <View flex paddingH-20>
           <Text text70H>
             Date:{' '}
             <Text text70>

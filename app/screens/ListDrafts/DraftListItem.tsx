@@ -39,7 +39,7 @@ const DraftListItem = ({
         marginH-10
         borderRadius={10}
         enableShadow
-        onPress={() => navigation.navigate('Name and Photos', { id })}
+        onPress={() => navigation.navigate('Edit Draft', { id })}
       >
         <View flex flexG padding-7>
           <Text>Date: {dayjs(draftObservation?.date).format('ll')}</Text>
