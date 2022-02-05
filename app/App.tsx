@@ -1,5 +1,6 @@
 import FlashView from './components/FlashView';
 import { useIsLogout, useUser } from './hooks/useAuth';
+import CreateDraft from './screens/CreateDraft';
 import IdentificationAndNotes from './screens/CreateDraft/IdentificationAndNotes';
 import NameAndPhotos from './screens/CreateDraft/NameAndPhotos';
 import SelectLocation from './screens/CreateDraft/SelectLocation';
@@ -29,6 +30,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { View } from 'react-native-ui-lib';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { OverflowMenuProvider } from 'react-navigation-header-buttons';
 import { useDispatch, useSelector } from 'react-redux';
 
 const { Navigator: LoginStackNavigator, Screen: LoginStackScreen } =
@@ -103,15 +105,16 @@ const HomeStack = () => (
       component={HomeTabs}
       options={{ headerShown: false }}
     />
-    <HomeStackGroup screenOptions={{ presentation: 'card' }}>
-      <HomeStackScreen name="Name and Photos" component={NameAndPhotos} />
-      <HomeStackScreen name="Time and Location" component={TimeAndLocation} />
-      <HomeStackScreen name="Select Location" component={SelectLocation} />
-      <HomeStackScreen
-        name="Identification and Notes"
-        component={IdentificationAndNotes}
-      />
-    </HomeStackGroup>
+    <HomeStackScreen
+      name="Create Draft"
+      component={CreateDraft}
+      options={{ presentation: 'card' }}
+    />
+    <HomeStackScreen
+      name="Edit Draft"
+      component={CreateDraft}
+      options={{ presentation: 'card' }}
+    />
     <HomeStackScreen name="View Observation" component={ViewObservation} />
     <HomeStackScreen name="Edit Observation" component={EditObservation} />
     <HomeStackScreen name="Create Photo" component={CreatePhoto} />
@@ -141,7 +144,9 @@ const App = () => {
       <FlashView warning={warning} />
       <FlashView error={error} />
       <NavigationContainer ref={navigationRef}>
-        {!user ? <LoginStack /> : <HomeStack />}
+        <OverflowMenuProvider>
+          {!user ? <LoginStack /> : <HomeStack />}
+        </OverflowMenuProvider>
       </NavigationContainer>
     </View>
   );
