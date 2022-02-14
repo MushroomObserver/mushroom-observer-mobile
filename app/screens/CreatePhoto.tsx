@@ -109,7 +109,6 @@ const CreatePhoto = ({
             notes={notes}
             onChangeNotes={setNotes}
           />
-          <Text>{notesDetails}</Text>
         </View>
       </ScrollView>
     </View>

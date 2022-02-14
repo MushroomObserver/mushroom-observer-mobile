@@ -90,9 +90,11 @@ const DraftWizard = ({
   const [date, setDate] = useState(dayjs(draftObservation?.date).toDate());
   const [location, setLocation] = useState(draftObservation?.location);
   const [isCollectionLocation, setIsCollectionLocation] = useState(
-    draftObservation?.isCollectionLocation,
+    draftObservation?.isCollectionLocation || true,
   );
-  const [gpsHidden, setGpsHidden] = useState(draftObservation?.gpsHidden);
+  const [gpsHidden, setGpsHidden] = useState(
+    draftObservation?.gpsHidden || false,
+  );
   const [vote, setVote] = useState(draftObservation?.vote);
   const [notes, setNotes] = useState(draftObservation?.notes);
 
@@ -283,10 +285,12 @@ const DraftWizard = ({
   }: ImagePickerResponse) => {
     if (!didCancel && assets) {
       const newIds: string[] = [];
+      console.log(assets);
       let date = undefined;
       const draftImages = assets.map(asset => {
         const newId = nanoid();
         newIds.push(newId);
+        exifr.parse(asset.uri, true).then(result => console.log(result));
         setDate(dayjs(asset.timestamp).toDate());
         return {
           ...asset,
@@ -475,7 +479,6 @@ const DraftWizard = ({
               notes={notes}
               onChangeNotes={setNotes}
             />
-            <Text>{NOTES_DETAILS}</Text>
           </View>
         )}
       </ScrollView>

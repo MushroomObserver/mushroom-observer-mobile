@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Text, TextField, View } from 'react-native-ui-lib';
+import { Text, Incubator, View } from 'react-native-ui-lib';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 interface NotesFieldProps {
   placeholder: string;
@@ -12,17 +13,17 @@ export const NotesField = ({
   notes,
   onChangeNotes,
 }: NotesFieldProps) => {
-  const [expanded, setExpanded] = useState(false);
   return (
-    <TextField
-      title="Notes"
+    <Incubator.TextField
+      label="Notes"
       value={notes}
-      onChangeText={onChangeNotes}
-      placeholder={expanded ? placeholder : undefined}
-      onToggleExpandableModal={setExpanded}
+      onChange={onChangeNotes}
+      color={Colors.textColor}
+      placeholder={placeholder}
       expandable
       multiline
-      autoFocus
+      textAlignVertical="top"
+      numberOfLines={7}
     />
   );
 };
