@@ -1,12 +1,14 @@
 import ConfirmButton from '../components/ConfirmButton';
+import HeaderButtons from '../components/header/HeaderButtons';
 import { useAuth } from '../hooks/useAuth';
 import { persistor } from '../store';
 import { logout } from '../store/auth';
 import { useNavigation } from '@react-navigation/core';
 import React, { useLayoutEffect } from 'react';
-import { ScrollView } from 'react-native';
+import { Alert, ScrollView } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { Text, View } from 'react-native-ui-lib';
+import { Item } from 'react-navigation-header-buttons';
 import { useDispatch } from 'react-redux';
 
 const Settings = () => {
@@ -17,17 +19,26 @@ const Settings = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <View marginR-15>
-          <ConfirmButton
-            buttonTitle="Logout"
-            alertTitle="Logout"
-            alertMessage="Are you sure?"
-            onConfirm={() => {
-              persistor.purge();
-              dispatch(logout());
-            }}
+        <HeaderButtons>
+          <Item
+            title={'Logout'}
+            onPress={() =>
+              Alert.alert('Logout', 'Are you sure?', [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'OK',
+                  onPress: () => {
+                    persistor.purge();
+                    dispatch(logout());
+                  },
+                },
+              ])
+            }
           />
-        </View>
+        </HeaderButtons>
       ),
     });
   });

@@ -39,7 +39,7 @@ const ObservationList = ({
               date: dayjs(new Date()).format('YYYYMMDD'),
               draftPhotoIds: [],
             });
-            navigation.navigate('Name and Photos', { id });
+            navigation.navigate('Create Draft', { id });
           },
           iconSource: () => (
             <View marginR-10>

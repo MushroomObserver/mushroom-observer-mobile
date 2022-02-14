@@ -26,6 +26,9 @@ const LocationPicker = ({
       onSearchChange={setQuery}
       topBarProps={{ title: 'Location' }}
       searchPlaceholder={'Search locations'}
+      validateOnStart
+      validateOnChange
+      validateOnBlur
       listProps={{
         data: orderBy(
           filter(locations, ({ name }) =>

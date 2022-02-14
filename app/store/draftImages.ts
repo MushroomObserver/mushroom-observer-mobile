@@ -1,6 +1,5 @@
 import { DraftImage } from '../types/store';
 import { createEntityAdapter, createSelector, createSlice } from '@reduxjs/toolkit';
-import { useMemo } from 'react';
 import { filter, includes } from 'lodash';
 
 const adapter = createEntityAdapter<DraftImage>();

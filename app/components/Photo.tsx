@@ -1,11 +1,8 @@
-import { useKey } from '../hooks/useAuth';
-import { addImages, selectById } from '../store/images';
-import { useGetImagesQuery } from '../store/mushroomObserver';
+import { selectById } from '../store/images';
 import { Image as ImageType } from '../types/store';
-import React, { useEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
-import { ProgressiveImage, View } from 'react-native-ui-lib';
-import { connect, useDispatch } from 'react-redux';
+import React from 'react';
+import { Image } from 'react-native-ui-lib';
+import { connect } from 'react-redux';
 
 interface PhotoProps {
   id: string;
@@ -21,7 +18,6 @@ interface PhotoProps {
 }
 
 const Photo = ({
-  id,
   photo,
   width,
   height,
@@ -31,28 +27,8 @@ const Photo = ({
   borderBottomRightRadius,
   borderBottomLeftRadius,
 }: PhotoProps) => {
-  const dispatch = useDispatch();
-  const apiKey = useKey();
-
-  const { data, isLoading, error } = useGetImagesQuery({
-    api_key: apiKey,
-    id: `${id}`,
-    detail: 'high',
-  });
-
-  useEffect(() => {
-    if (data) {
-      dispatch(addImages(data.results));
-    }
-  });
-
-  return isLoading ? (
-    <View center style={{ width, height }}>
-      <ActivityIndicator />
-    </View>
-  ) : (
-    <ProgressiveImage
-      animationDuration={500}
+  return (
+    <Image
       style={{
         resizeMode: 'cover',
         width,
@@ -64,8 +40,6 @@ const Photo = ({
         borderBottomLeftRadius,
       }}
       resizeMethod="auto"
-      loader={<ActivityIndicator />}
-      thumbnailSource={{ uri: photo?.files[0] }}
       source={{ uri: photo?.files[1] }}
     />
   );

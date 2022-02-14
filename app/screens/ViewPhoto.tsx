@@ -1,57 +1,40 @@
-import { useKey } from '../hooks/useAuth';
+import { OwnerView } from '../components/OwnerView';
+import Photo from '../components/Photo';
+import HeaderButtons from '../components/header/HeaderButtons';
 import useDayjs from '../hooks/useDayjs';
-import { addImages, selectById } from '../store/images';
-import { useGetImagesQuery } from '../store/mushroomObserver';
+import { selectById } from '../store/images';
 import { ForwardedViewPhotoProps } from '../types/navigation';
 import { Image as ImageType } from '../types/store';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import React, { useEffect, useLayoutEffect } from 'react';
-import {
-  Alert,
-  Button as NativeButton,
-  Dimensions,
-  ScrollView,
-} from 'react-native';
-import { Image, Text, View } from 'react-native-ui-lib';
+import React, { useLayoutEffect } from 'react';
+import { Dimensions, ScrollView } from 'react-native';
+import { Text, View } from 'react-native-ui-lib';
+import { Item } from 'react-navigation-header-buttons';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 
 interface ViewPhotoProps {
-  id: number;
+  id: string;
   photo: ImageType;
 }
 
 const { width: screenWidth } = Dimensions.get('window');
-
 const ViewPhoto = ({ id, photo }: ViewPhotoProps) => {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const apiKey = useKey();
   const dayjs = useDayjs();
-
-  const { data, isLoading, error } = useGetImagesQuery({
-    api_key: apiKey,
-    id,
-    detail: 'high',
-  });
-
-  useEffect(() => {
-    if (data) {
-      dispatch(addImages(data.results));
-    }
-  });
 
   useLayoutEffect(() => {
     navigation.setOptions({
       title: `Photo #${id}`,
       headerRight: () => (
-        <>
-          <NativeButton
+        <HeaderButtons>
+          <Item
             title="Edit"
             onPress={() => navigation.navigate('Edit Photo', { id })}
+            disabled
           />
-        </>
+        </HeaderButtons>
       ),
     });
   }, [navigation, route]);
@@ -59,15 +42,12 @@ const ViewPhoto = ({ id, photo }: ViewPhotoProps) => {
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View padding-15>
-          <Image
-            marginB-15
-            width="100%"
-            height={220}
-            resizeMethod="auto"
-            source={{
-              uri: `https://mushroomobserver.org/images/320/${id}.jpg`,
-            }}
+        <View padding-20>
+          <Photo
+            id={id}
+            height={480}
+            borderRadius={11}
+            width={screenWidth - 40}
           />
           {photo && (
             <View>
@@ -75,7 +55,10 @@ const ViewPhoto = ({ id, photo }: ViewPhotoProps) => {
                 Date: <Text text70>{dayjs(photo.date).format('ll')}</Text>
               </Text>
               <Text text70H>
-                Owner: <Text text70>{photo.owner.login_name}</Text>
+                Owner:{' '}
+                <Text text70>
+                  <OwnerView owner={photo.owner} />
+                </Text>
               </Text>
               <Text text70H>
                 License: <Text text70>{photo.license}</Text>
@@ -84,7 +67,8 @@ const ViewPhoto = ({ id, photo }: ViewPhotoProps) => {
           )}
           {photo?.notes && (
             <Text text70H>
-              License: <Text text70>{photo.license}</Text>
+              Notes:{' '}
+              <Text text70>{photo.notes.replace(/<(.|\n)*?>/g, '')}</Text>
             </Text>
           )}
         </View>

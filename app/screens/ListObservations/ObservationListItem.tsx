@@ -5,6 +5,7 @@ import {
   removeObservation as removeObservationAction,
 } from '../../store/observations';
 import { useNavigation } from '@react-navigation/core';
+import { get } from 'lodash';
 import React from 'react';
 import { Alert } from 'react-native';
 import { Card, Colors, Drawer, Text, View } from 'react-native-ui-lib';
@@ -70,9 +71,9 @@ const ObservationListItem = ({
             {observation.location_name}
           </Text>
         </View>
-        {observation?.primary_image && (
+        {get(observation, 'photoIds[0]') && (
           <Photo
-            id={observation.primary_image.id}
+            id={observation.photoIds[0]}
             width={90}
             height={90}
             borderTopRightRadius={10}
