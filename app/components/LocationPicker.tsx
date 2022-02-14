@@ -1,7 +1,7 @@
 import { Location, selectAll } from '../store/locations';
 import { filter, lowerCase, orderBy } from 'lodash';
 import React, { useState } from 'react';
-import { Picker } from 'react-native-ui-lib';
+import { Colors, Picker } from 'react-native-ui-lib';
 import { connect } from 'react-redux';
 
 interface LocationPickerProps {
@@ -26,6 +26,7 @@ const LocationPicker = ({
       onSearchChange={setQuery}
       topBarProps={{ title: 'Location' }}
       searchPlaceholder={'Search locations'}
+      searchStyle={{ color: Colors.black, placeholderTextColor: Colors.grey40 }}
       validateOnStart
       validateOnChange
       validateOnBlur

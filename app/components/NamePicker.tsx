@@ -2,6 +2,7 @@ import { Name, selectAll } from '../store/names';
 import { filter, lowerCase, sortBy } from 'lodash';
 import React, { useState } from 'react';
 import { Picker } from 'react-native-ui-lib';
+import { Colors } from 'react-native-ui-lib';
 import { connect } from 'react-redux';
 
 interface NamePickerProps {
@@ -24,6 +25,7 @@ const NamePicker = ({ name, names, onChangeName }: NamePickerProps) => {
       onSearchChange={setQuery}
       topBarProps={{ title: 'Name' }}
       searchPlaceholder={'Search names'}
+      searchStyle={{ color: Colors.black, placeholderTextColor: Colors.grey40 }}
       listProps={{
         data: filter(
           sortedNames,
