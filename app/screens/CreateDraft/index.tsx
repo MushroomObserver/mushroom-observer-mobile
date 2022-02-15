@@ -290,7 +290,6 @@ const DraftWizard = ({
       const draftImages = assets.map(asset => {
         const newId = nanoid();
         newIds.push(newId);
-        exifr.parse(asset.uri, true).then(result => console.log(result));
         setDate(dayjs(asset.timestamp).toDate());
         return {
           ...asset,

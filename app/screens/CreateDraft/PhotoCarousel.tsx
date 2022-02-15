@@ -1,9 +1,10 @@
 import DraftPhoto from '../../components/DraftPhoto';
-import { selectById } from '../../store/draftObservations';
+import useDayjs from '../../hooks/useDayjs';
+import { selectById } from '../../store/draftImages';
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { Dimensions } from 'react-native';
-import { Carousel, Chip, Colors, View } from 'react-native-ui-lib';
+import { Carousel, Chip, Colors, Text, View } from 'react-native-ui-lib';
 import { connect, ConnectedProps } from 'react-redux';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -18,8 +19,10 @@ interface PhotoProps extends PropsFromRedux {
   onRemovePhoto: Function;
 }
 
-const Photo = ({ id, onRemovePhoto }: PhotoProps) => {
+const Photo = ({ id, draftPhoto, onRemovePhoto }: PhotoProps) => {
   const navigation = useNavigation();
+  const dayjs = useDayjs();
+  console.log(draftPhoto);
   return (
     <View flex center>
       <DraftPhoto
@@ -30,49 +33,99 @@ const Photo = ({ id, onRemovePhoto }: PhotoProps) => {
         borderRadius={11}
       />
       <View
+        absT
+        flex
+        padding-5
+        width={screenWidth - 40}
+        style={{
+          borderTopLeftRadius: 11,
+          borderTopRightRadius: 11,
+          backgroundColor: Colors.rgba(Colors.white, 0.7),
+        }}
+      >
+        <View padding-5>
+          <View row spread>
+            <Text>Latitude: {draftPhoto?.latitude?.toPrecision(4)}</Text>
+            <Text>
+              Longitude:
+              {draftPhoto?.longitude?.toPrecision(4)}
+            </Text>
+            <Text>
+              Altitude:
+              {draftPhoto?.altitude?.toPrecision(4)}
+            </Text>
+          </View>
+          <View row spread>
+            <Text>Date: {dayjs(draftPhoto?.date).format('ll')}</Text>
+          </View>
+        </View>
+        <View centerV row spread>
+          <Chip
+            backgroundColor={Colors.white}
+            label="Use GPS"
+            onPress={() => onRemovePhoto(id)}
+            labelStyle={{ color: Colors.white }}
+            containerStyle={{
+              borderColor: Colors.yellow20,
+              backgroundColor: Colors.yellow20,
+            }}
+          />
+          <Chip
+            backgroundColor={Colors.white}
+            label="Use Date"
+            onPress={() => onRemovePhoto(id)}
+            labelStyle={{ color: Colors.white }}
+            containerStyle={{
+              borderColor: Colors.yellow20,
+              backgroundColor: Colors.yellow20,
+            }}
+          />
+        </View>
+      </View>
+      <View
         absB
         flex
-        row
-        spread
         padding-5
         width={screenWidth - 40}
         style={{
           borderBottomLeftRadius: 11,
           borderBottomRightRadius: 11,
-          backgroundColor: Colors.rgba(Colors.white, 0.5),
+          backgroundColor: Colors.rgba(Colors.white, 0.7),
         }}
       >
-        <Chip
-          backgroundColor={Colors.white}
-          label="Remove"
-          onPress={() => onRemovePhoto(id)}
-          labelStyle={{ color: Colors.white }}
-          containerStyle={{
-            borderColor: Colors.red20,
-            backgroundColor: Colors.red20,
-          }}
-        />
-        <Chip
-          backgroundColor={Colors.white}
-          label="Edit"
-          onPress={() =>
-            navigation.navigate('Create Photo', {
-              id,
-            })
-          }
-          labelStyle={{ color: Colors.white }}
-          containerStyle={{
-            borderColor: Colors.primary,
-            backgroundColor: Colors.primary,
-          }}
-        />
+        <View row spread>
+          <Chip
+            backgroundColor={Colors.white}
+            label="Remove"
+            onPress={() => onRemovePhoto(id)}
+            labelStyle={{ color: Colors.white }}
+            containerStyle={{
+              borderColor: Colors.red20,
+              backgroundColor: Colors.red20,
+            }}
+          />
+          <Chip
+            backgroundColor={Colors.white}
+            label="Edit"
+            onPress={() =>
+              navigation.navigate('Create Photo', {
+                id,
+              })
+            }
+            labelStyle={{ color: Colors.white }}
+            containerStyle={{
+              borderColor: Colors.primary,
+              backgroundColor: Colors.primary,
+            }}
+          />
+        </View>
       </View>
     </View>
   );
 };
 
 const mapStateToProps = (state: any, ownProps: any) => ({
-  draftObservation: selectById(state, ownProps.id),
+  draftPhoto: selectById(state, ownProps.id),
 });
 
 const connector = connect(mapStateToProps);
