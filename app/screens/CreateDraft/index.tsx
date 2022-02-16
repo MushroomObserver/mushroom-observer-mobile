@@ -87,7 +87,7 @@ const DraftWizard = ({
     draftObservation?.draftPhotoIds || [],
   );
   const [name, setName] = useState(draftObservation?.name);
-  const [date, setDate] = useState(dayjs(draftObservation?.date).toDate());
+  const [date, setDate] = useState(draftObservation?.date);
   const [location, setLocation] = useState(draftObservation?.location);
   const [isCollectionLocation, setIsCollectionLocation] = useState(
     draftObservation?.isCollectionLocation || true,
@@ -195,7 +195,9 @@ const DraftWizard = ({
                             postImage({
                               key: apiKey,
                               copyright_holder: image?.copyrightHolder,
-                              date: image?.date,
+                              date: image?.date
+                                ? dayjs(image.date).format('YYYYMMDD')
+                                : undefined,
                               license: image?.license?.value,
                               notes: image?.notes,
                               observations: newObservation.id,
@@ -290,12 +292,12 @@ const DraftWizard = ({
       const draftImages = assets.map(asset => {
         const newId = nanoid();
         newIds.push(newId);
-        setDate(dayjs(asset.timestamp).toDate());
+        setDate(asset.timestamp);
         return {
           ...asset,
           id: newId,
           draftObservationId: id,
-          date: dayjs(asset.timestamp).format('YYYYMMDD'),
+          date: asset.timestamp,
         };
       });
       addDraftImages(draftImages);
@@ -374,10 +376,10 @@ const DraftWizard = ({
               Date
             </Text>
             <DateTimePicker
-              value={date}
+              value={dayjs(date).toDate()}
               mode="date"
               themeVariant="light"
-              onChange={date => console.log(date)}
+              onChange={setDate}
             />
             <LocationPicker
               location={location}

@@ -59,28 +59,30 @@ const Photo = ({ id, draftPhoto, onRemovePhoto }: PhotoProps) => {
             <Text>Date: {dayjs(draftPhoto?.date).format('ll')}</Text>
           </View>
         </View>
-        <View centerV row spread>
-          <Chip
-            backgroundColor={Colors.white}
-            label="Use GPS"
-            onPress={() => onRemovePhoto(id)}
-            labelStyle={{ color: Colors.white }}
-            containerStyle={{
-              borderColor: Colors.yellow20,
-              backgroundColor: Colors.yellow20,
-            }}
-          />
-          <Chip
-            backgroundColor={Colors.white}
-            label="Use Date"
-            onPress={() => onRemovePhoto(id)}
-            labelStyle={{ color: Colors.white }}
-            containerStyle={{
-              borderColor: Colors.yellow20,
-              backgroundColor: Colors.yellow20,
-            }}
-          />
-        </View>
+        {false && (
+          <View centerV row spread>
+            <Chip
+              backgroundColor={Colors.white}
+              label="Use GPS"
+              onPress={() => onRemovePhoto(id)}
+              labelStyle={{ color: Colors.white }}
+              containerStyle={{
+                borderColor: Colors.yellow20,
+                backgroundColor: Colors.yellow20,
+              }}
+            />
+            <Chip
+              backgroundColor={Colors.white}
+              label="Use Date"
+              onPress={() => onRemovePhoto(id)}
+              labelStyle={{ color: Colors.white }}
+              containerStyle={{
+                borderColor: Colors.yellow20,
+                backgroundColor: Colors.yellow20,
+              }}
+            />
+          </View>
+        )}
       </View>
       <View
         absB
