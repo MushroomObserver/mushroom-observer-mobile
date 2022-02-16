@@ -1,6 +1,7 @@
 import { selectById } from '../store/images';
 import { Image as ImageType } from '../types/store';
 import React from 'react';
+import Config from 'react-native-config';
 import { Image } from 'react-native-ui-lib';
 import { connect } from 'react-redux';
 
@@ -27,6 +28,15 @@ const Photo = ({
   borderBottomRightRadius,
   borderBottomLeftRadius,
 }: PhotoProps) => {
+  const getPhotoUri = (uri: string) => {
+    if (__DEV__)
+      return uri.replace(
+        'http://images.mushroomobserver.org',
+        Config.MUSHROOM_OBSERVER_API_URL + '/images',
+      );
+    return uri;
+  };
+
   return (
     <Image
       style={{
@@ -40,7 +50,7 @@ const Photo = ({
         borderBottomLeftRadius,
       }}
       resizeMethod="auto"
-      source={{ uri: photo?.files[1] }}
+      source={{ uri: getPhotoUri(photo?.files[1]) }}
     />
   );
 };

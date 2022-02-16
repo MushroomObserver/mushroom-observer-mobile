@@ -86,6 +86,9 @@ export interface DraftImage {
   type?:string;
   width?: number;
   height?:number;
+  latitude?:number;
+  longitude?:number;
+  altitude?:number;
   uri?:string;
   copyrightHolder?: string;
   date?: string;

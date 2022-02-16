@@ -150,15 +150,15 @@ const mushroomObserverApi = createApi({
         const formData = new FormData();
         formData.append('upload', {
           uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
-          type: type,
-          name: name,
+          type,
+          name,
         });
         return {
           url: `images?${encodeQueryParams(params)}&api_key=${key}&detail=high`,
           method: 'POST',
           body: formData,
           headers: {
-            'Content-Type': type,
+            'Content-Type': "multipart/form-data",
             Accept: 'application/json',
           },
           validateStatus: createValidateStatus<Image>(),
