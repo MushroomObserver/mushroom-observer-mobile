@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@expo/react-native-action-sheet": "^3.12.0",
-    "@notech/react-native-exif": "^0.6.2",
     "@react-native-async-storage/async-storage": "^1.15.9",
     "@react-native-community/blur": "^3.6.0",
     "@react-native-community/datetimepicker": "^3.5.2",

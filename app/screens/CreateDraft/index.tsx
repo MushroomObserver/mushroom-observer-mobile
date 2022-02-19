@@ -281,23 +281,31 @@ const DraftWizard = ({
     draftPhotoIds,
   ]);
 
+  const jsCoreDateCreator = (dateString: string) => {
+    let dateParams = dateString.split('T');
+    return dayjs(dateParams[0], 'YYYY-MM-DD').toString();
+  };
+
   const addPhotos: Callback = async ({
     didCancel,
     assets,
   }: ImagePickerResponse) => {
     if (!didCancel && assets) {
       const newIds: string[] = [];
-      console.log(assets);
       let date = undefined;
       const draftImages = assets.map(asset => {
         const newId = nanoid();
         newIds.push(newId);
-        setDate(asset.timestamp);
+        let timestamp = asset.timestamp;
+        if (timestamp) {
+          timestamp = jsCoreDateCreator(timestamp);
+          setDate(timestamp);
+        }
         return {
           ...asset,
           id: newId,
           draftObservationId: id,
-          date: asset.timestamp,
+          date: timestamp,
         };
       });
       addDraftImages(draftImages);
