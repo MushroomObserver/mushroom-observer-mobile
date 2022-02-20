@@ -38,6 +38,7 @@ import { nanoid } from '@reduxjs/toolkit';
 import { clamp, get, omitBy, isUndefined, filter, concat } from 'lodash';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Alert, ScrollView } from 'react-native';
+import GetLocation from 'react-native-get-location';
 import { Callback, ImagePickerResponse } from 'react-native-image-picker';
 import {
   Wizard,
