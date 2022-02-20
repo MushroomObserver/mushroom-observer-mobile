@@ -36,7 +36,7 @@ import PhotoCarousel from './PhotoCarousel';
 import { useNavigation } from '@react-navigation/native';
 import { nanoid } from '@reduxjs/toolkit';
 import { clamp, get, omitBy, isUndefined, filter, concat } from 'lodash';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Alert, ScrollView } from 'react-native';
 import { Callback, ImagePickerResponse } from 'react-native-image-picker';
 import {
@@ -88,6 +88,9 @@ const DraftWizard = ({
   );
   const [name, setName] = useState(draftObservation?.name);
   const [date, setDate] = useState(draftObservation?.date);
+  const [latitude, setLatitude] = useState(draftObservation?.latitude);
+  const [longitude, setLongitude] = useState(draftObservation?.longitude);
+  const [altitude, setAltitude] = useState(draftObservation?.altitude);
   const [location, setLocation] = useState(draftObservation?.location);
   const [isCollectionLocation, setIsCollectionLocation] = useState(
     draftObservation?.isCollectionLocation || true,
@@ -102,7 +105,6 @@ const DraftWizard = ({
   const [postImage, postImageResult] = usePostImageMutation();
 
   const [isLoading, setIsLoading] = useState(false);
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -281,6 +283,25 @@ const DraftWizard = ({
     draftPhotoIds,
   ]);
 
+  useEffect(() => {
+    const getGPS = async () => {
+      const gps = await GetLocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 15000,
+      });
+      console.log('gps', gps);
+      if (gps.latitude) setLatitude(gps.latitude);
+      if (gps.longitude) setLongitude(gps.longitude);
+      if (gps.altitude) setAltitude(gps.altitude);
+      const res = await geocoder.reverse({
+        lat: gps.latitude,
+        lon: gps.longitude,
+      });
+      console.log('res', res);
+    };
+    getGPS();
+  }, []);
+
   const jsCoreDateCreator = (dateString: string) => {
     let dateParams = dateString.split('T');
     return dayjs(dateParams[0], 'YYYY-MM-DD').toString();
@@ -294,12 +315,11 @@ const DraftWizard = ({
       const newIds: string[] = [];
       let date = undefined;
       const draftImages = assets.map(asset => {
+        let { timestamp } = asset;
         const newId = nanoid();
         newIds.push(newId);
-        let timestamp = asset.timestamp;
         if (timestamp) {
           timestamp = jsCoreDateCreator(timestamp);
-          setDate(timestamp);
         }
         return {
           ...asset,
@@ -311,6 +331,21 @@ const DraftWizard = ({
       addDraftImages(draftImages);
       setDraftPhotoIds(concat(draftPhotoIds, newIds));
       updateDraftObservation({ id, changes: { name, draftPhotoIds, date } });
+    }
+  };
+
+  const useInfo = (date, latitude, longitude, altitude) => {
+    if (date) {
+      setDate(date);
+    }
+    if (latitude) {
+      setLatitude(latitude);
+    }
+    if (latitude) {
+      setLongitude(longitude);
+    }
+    if (latitude) {
+      setAltitude(altitude);
     }
   };
 
@@ -331,10 +366,13 @@ const DraftWizard = ({
   return (
     <View flex>
       <Wizard activeIndex={activeIndex} onActiveIndexChanged={setActiveIndex}>
-        <Wizard.Step state={Wizard.States.ENABLED} label="Photos and Name" />
+        <Wizard.Step
+          state={Wizard.States.ENABLED}
+          label="Photos, Date, and GPS"
+        />
         <Wizard.Step
           state={location ? Wizard.States.ENABLED : Wizard.States.ERROR}
-          label="Date and Location"
+          label="Name and Location"
         />
         <Wizard.Step
           state={Wizard.States.ENABLED}
@@ -347,6 +385,7 @@ const DraftWizard = ({
             <View marginT-20 marginB-20={draftPhotoIds.length > 0}>
               <PhotoCarousel
                 draftPhotoIds={draftPhotoIds}
+                onUseInfo={useInfo}
                 onRemovePhoto={removePhoto}
               />
             </View>
@@ -356,39 +395,72 @@ const DraftWizard = ({
                 numPhotos={draftPhotoIds.length}
                 maxPhotos={SELECTION_LIMIT}
               />
-              <NamePicker
-                name={name}
-                onChangeName={({ value }: { value: string }) => setName(value)}
+              <Text marginB-10 grey30>
+                Date
+              </Text>
+              <DateTimePicker
+                value={dayjs(date).toDate()}
+                mode="date"
+                themeVariant="light"
+                onChange={setDate}
               />
-              <Text>
-                The name you would apply to this observation. If you don’t know
-                what it is, just leave it blank. If you find a better name in
-                the future, you can always propose a name later.
-              </Text>
-              <Text marginT-10>
-                <Text style={{ fontWeight: 'bold' }}>
-                  Scientific names are currently required,
-                </Text>{' '}
-                but do not include any author information. If multiple names
-                apply, you will be given the option to select between them. If
-                the name is not recognized in the database, then you will be
-                given the option to add the name or fix the spelling if it’s
-                just a typo.
-              </Text>
+              <View spread row>
+                <View flex>
+                  <TextField
+                    title="Latitude"
+                    value={`${latitude?.toPrecision(5) || ''}`}
+                    maxLength={5}
+                    keyboardType="numeric"
+                    onChangeText={lat => setLatitude(parseFloat(lat))}
+                  />
+                </View>
+                <View flex marginH-30>
+                  <TextField
+                    title="Longitude"
+                    value={`${longitude?.toPrecision(5) || ''}`}
+                    maxLength={5}
+                    keyboardType="numeric"
+                    onChangeText={lng => setLongitude(parseFloat(lng))}
+                  />
+                </View>
+                <View flex>
+                  <TextField
+                    title="Altitude"
+                    value={`${altitude?.toPrecision(4) || ''}`}
+                    maxLength={4}
+                    keyboardType="numeric"
+                    onChangeText={alt => setAltitude(parseFloat(alt))}
+                    transformer={value => `${value}m`}
+                  />
+                </View>
+              </View>
+              <View spread row centerV>
+                <Text>Hide exact coordinates?</Text>
+                <Switch value={gpsHidden} onValueChange={setGpsHidden} />
+              </View>
             </View>
           </View>
         )}
         {activeIndex === 1 && (
           <View padding-20>
-            <Text marginB-10 grey30>
-              Date
-            </Text>
-            <DateTimePicker
-              value={dayjs(date).toDate()}
-              mode="date"
-              themeVariant="light"
-              onChange={setDate}
+            <NamePicker
+              name={name}
+              onChangeName={({ value }: { value: string }) => setName(value)}
             />
+            <Text grey20 marginB-10>
+              The name you would apply to this observation. If you don’t know
+              what it is, just leave it blank. If you find a better name in the
+              future, you can always propose a name later.
+            </Text>
+            <Text marginB-15>
+              <Text style={{ fontWeight: 'bold' }}>
+                Scientific names are currently required,
+              </Text>{' '}
+              but do not include any author information. If multiple names
+              apply, you will be given the option to select between them. If the
+              name is not recognized in the database, then you will be given the
+              option to add the name or fix the spelling if it’s just a typo.
+            </Text>
             <LocationPicker
               location={location}
               onChangeLocation={({ value }: { value: string }) => {
@@ -437,41 +509,6 @@ const DraftWizard = ({
                 value={isCollectionLocation}
                 onValueChange={setIsCollectionLocation}
               />
-            </View>
-            {false && (
-              <View spread row>
-                <View flex>
-                  <TextField
-                    title="Latitude"
-                    value={`${latitude || ''}`}
-                    maxLength={5}
-                    keyboardType="numeric"
-                    onChangeText={lat => setLatitude(parseFloat(lat))}
-                  />
-                </View>
-                <View flex marginH-30>
-                  <TextField
-                    title="Longitude"
-                    value={`${longitude || ''}`}
-                    maxLength={5}
-                    keyboardType="numeric"
-                    onChangeText={lng => setLongitude(parseFloat(lng))}
-                  />
-                </View>
-                <View flex>
-                  <TextField
-                    title="Altitude"
-                    value={`${altitude || ''}`}
-                    maxLength={5}
-                    keyboardType="numeric"
-                    onChangeText={alt => setAltitude(parseFloat(alt))}
-                  />
-                </View>
-              </View>
-            )}
-            <View spread row centerV>
-              <Text>Hide exact coordinates?</Text>
-              <Switch value={gpsHidden} onValueChange={setGpsHidden} />
             </View>
           </View>
         )}
