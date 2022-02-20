@@ -294,11 +294,6 @@ const DraftWizard = ({
       if (gps.latitude) setLatitude(gps.latitude);
       if (gps.longitude) setLongitude(gps.longitude);
       if (gps.altitude) setAltitude(gps.altitude);
-      const res = await geocoder.reverse({
-        lat: gps.latitude,
-        lon: gps.longitude,
-      });
-      console.log('res', res);
     };
     getGPS();
   }, []);
