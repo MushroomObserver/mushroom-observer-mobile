@@ -41,7 +41,7 @@ const DraftListItem = ({
         enableShadow
         onPress={() => navigation.navigate('Edit Draft', { id })}
       >
-        <View flex flexG padding-7>
+        <View flex flexG padding-7 height={100}>
           <Text>Date: {dayjs(draftObservation?.date).format('ll')}</Text>
           <Text numberOfLines={1} ellipsizeMode="tail">
             {draftObservation?.name}
@@ -53,8 +53,7 @@ const DraftListItem = ({
         {draftObservation?.draftPhotoIds && (
           <DraftPhoto
             id={draftObservation.draftPhotoIds[0]}
-            width={90}
-            height={90}
+            aspectRatio={1.3}
             borderTopRightRadius={10}
             borderBottomRightRadius={10}
           />

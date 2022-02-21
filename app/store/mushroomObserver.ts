@@ -11,14 +11,13 @@ import {
 import { Image, Observation } from '../types/store';
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
+import { isUndefined, omitBy, snakeCase } from 'lodash';
 import { Platform } from 'react-native';
 import Config from 'react-native-config';
-import { isUndefined, omitBy, snakeCase } from 'lodash';
 
 const API_URL = Config.MUSHROOM_OBSERVER_API_URL;
 const API_KEY = Config.MUSHROOM_OBSERVER_API_KEY;
 
-console.log(API_URL, API_KEY);
 /*
  * This is only used to encode query params that have been typed
  * so the 'any' type is fine just here. Otherwise we like types.
@@ -158,7 +157,7 @@ const mushroomObserverApi = createApi({
           method: 'POST',
           body: formData,
           headers: {
-            'Content-Type': "multipart/form-data",
+            'Content-Type': 'multipart/form-data',
             Accept: 'application/json',
           },
           validateStatus: createValidateStatus<Image>(),

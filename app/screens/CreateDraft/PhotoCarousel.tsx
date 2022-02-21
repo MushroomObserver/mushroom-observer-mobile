@@ -26,21 +26,14 @@ const Photo = ({ id, draftPhoto, onUseInfo, onRemovePhoto }: PhotoProps) => {
   const dayjs = useDayjs();
 
   return (
-    <View flex center>
-      <DraftPhoto
-        id={id}
-        key={id}
-        width={screenWidth - 40}
-        height={280}
-        borderRadius={11}
-      />
+    <View flex center marginH-s4>
+      <DraftPhoto id={id} key={id} borderRadius={11} cover aspectRatio={1.3} />
       <View
         absT
         flex
         row
         spread
         padding-5
-        width={screenWidth - 40}
         style={{
           borderTopLeftRadius: 11,
           borderTopRightRadius: 11,
@@ -48,24 +41,20 @@ const Photo = ({ id, draftPhoto, onUseInfo, onRemovePhoto }: PhotoProps) => {
         }}
       >
         <View flex marginR-10>
+          <Text text100L>
+            Date: {dayjs(draftPhoto?.date).format('M/DD/YYYY')}
+          </Text>
           <View centerV row spread>
-            <Text text100L>
-              Date: {dayjs(draftPhoto?.date).format('M/DD/YYYY')}
-            </Text>
-          </View>
-          <View flex centerV row spread>
-            {draftPhoto?.latitude &&
-            draftPhoto?.longitude &&
-            draftPhoto?.altitude ? (
+            {draftPhoto?.latitude && draftPhoto?.longitude ? (
               <>
                 <Text text100L>
-                  Latitude: {draftPhoto?.latitude?.toPrecision(5)}
+                  Latitude: {draftPhoto?.latitude?.toFixed(4)}
                 </Text>
                 <Text text100L>
-                  Longitude: {draftPhoto?.longitude?.toPrecision(5)}
+                  Longitude: {draftPhoto?.longitude?.toFixed(4)}
                 </Text>
                 <Text text100L>
-                  Altitude: {draftPhoto?.altitude?.toPrecision(4)}m
+                  Altitude: {draftPhoto?.altitude?.toFixed(2)}m
                 </Text>
               </>
             ) : (
@@ -96,15 +85,16 @@ const Photo = ({ id, draftPhoto, onUseInfo, onRemovePhoto }: PhotoProps) => {
       <View
         absB
         flex
+        row
+        spread
         padding-5
-        width={screenWidth - 40}
         style={{
           borderBottomLeftRadius: 11,
           borderBottomRightRadius: 11,
           backgroundColor: Colors.rgba(Colors.white, 0.7),
         }}
       >
-        <View row spread>
+        <View flex row spread>
           <Chip
             backgroundColor={Colors.white}
             label="Remove"

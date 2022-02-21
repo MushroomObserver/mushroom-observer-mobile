@@ -6,6 +6,7 @@ import NameAndPhotos from './screens/CreateDraft/NameAndPhotos';
 import SelectLocation from './screens/CreateDraft/SelectLocation';
 import TimeAndLocation from './screens/CreateDraft/TimeAndLocation';
 import CreatePhoto from './screens/CreatePhoto';
+import DevScreen from './screens/DevScreen';
 import EditObservation from './screens/EditObservation';
 import EditPhoto from './screens/EditPhoto';
 import ListDrafts from './screens/ListDrafts';
@@ -95,6 +96,17 @@ const HomeTabs = () => (
         ),
       }}
     />
+    {__DEV__ && (
+      <HomeTabsScreen
+        name="Developer"
+        component={DevScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="blender-phone" size={size} color={color} />
+          ),
+        }}
+      />
+    )}
   </HomeTabsNavigator>
 );
 
