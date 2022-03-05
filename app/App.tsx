@@ -96,7 +96,7 @@ const HomeTabs = () => (
         ),
       }}
     />
-    {__DEV__ && (
+    {/* {__DEV__ && (
       <HomeTabsScreen
         name="Developer"
         component={DevScreen}
@@ -106,7 +106,7 @@ const HomeTabs = () => (
           ),
         }}
       />
-    )}
+    )} */}
   </HomeTabsNavigator>
 );
 
