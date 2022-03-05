@@ -437,7 +437,7 @@ const DraftWizard = ({
                       preset="default"
                       label="Altitude"
                       value={_.toString(altitude)}
-                      formatter={value => `${value}m`}
+                      formatter={value => (value ? `${value}m` : undefined)}
                       maxLength={4}
                       keyboardType="numeric"
                       onChangeText={setAltitude}

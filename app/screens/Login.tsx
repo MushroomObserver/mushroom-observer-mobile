@@ -1,25 +1,19 @@
+import { FormGroup } from '../components/base/FormGroup';
+import { TextField } from '../components/base/TextField';
 import { loginSuccess as loginSuccessAction } from '../store/auth';
 import { useGetApiKeyForUserMutation } from '../store/mushroomObserver';
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView } from 'react-native';
 import Config from 'react-native-config';
-import {
-  Button,
-  Colors,
-  Image,
-  LoaderScreen,
-  Text,
-  TextField,
-  View,
-} from 'react-native-ui-lib';
+import { Button, Colors, Image, LoaderScreen, View } from 'react-native-ui-lib';
 import { connect, ConnectedProps } from 'react-redux';
 
 const Login = ({ loginSuccess }: PropsFromRedux) => {
   const navigation = useNavigation();
   const [username, onChangeUsername] = useState('');
   const [password, onChangePassword] = useState('');
-  const [hasError, setHasError] = useState<string | undefined>();
+  const [loginFailed, setLoginFailed] = useState<boolean>(false);
   const usernameInput = useRef<typeof TextField>();
   const passwordInput = useRef<typeof TextField>();
 
@@ -45,7 +39,7 @@ const Login = ({ loginSuccess }: PropsFromRedux) => {
       } = response.data;
       loginSuccess({ login_name: username, id: user, key });
     } else if (response.error) {
-      setHasError('Incorrect username or password');
+      setLoginFailed(true);
     }
   }, [response, username]);
 
@@ -54,53 +48,60 @@ const Login = ({ loginSuccess }: PropsFromRedux) => {
       <ScrollView>
         <View padding-30>
           <Image marginB-15 logo />
-          <TextField
-            ref={usernameInput}
-            autoFocus
-            autoCorrect={false}
-            autoCapitalize="none"
-            title="Username"
-            textContentType="username"
-            autoCompleteType="username"
-            returnKeyType="next"
-            enablesReturnKeyAutomatically
-            onChangeText={onChangeUsername}
-            onSubmitEditing={() => {
-              passwordInput.current.focus();
-            }}
-            blurOnSubmit={false}
-            value={username}
-            validate="required"
-          />
-          <TextField
-            ref={passwordInput}
-            autoCorrect={false}
-            autoCapitalize="none"
-            title="Password"
-            textContentType="password"
-            autoCompleteType="password"
-            returnKeyType="done"
-            enablesReturnKeyAutomatically
-            secureTextEntry
-            onChangeText={onChangePassword}
-            onSubmitEditing={submitLogin}
-            value={password}
-            validate="required"
-            error={hasError}
-          />
-          <Button
-            label="Login"
-            disabled={!username || !password || response.isLoading}
-            onPress={submitLogin}
-          />
-          <Text marginV-15 center>
-            or
-          </Text>
-          <Button
-            outline
-            label="Register"
-            onPress={() => navigation.navigate('Register')}
-          />
+          <FormGroup>
+            <TextField
+              preset="default"
+              ref={usernameInput}
+              autoFocus
+              autoCorrect={false}
+              autoCapitalize="none"
+              label="Username"
+              textContentType="username"
+              autoCompleteType="username"
+              returnKeyType="next"
+              enablesReturnKeyAutomatically
+              onChangeText={onChangeUsername}
+              onSubmitEditing={() => {
+                passwordInput.current.focus();
+              }}
+              blurOnSubmit={false}
+              value={username}
+              validate="required"
+              validationMessage="Username is required"
+            />
+            <TextField
+              preset="default"
+              ref={passwordInput}
+              autoCorrect={false}
+              autoCapitalize="none"
+              label="Password"
+              textContentType="password"
+              autoCompleteType="password"
+              returnKeyType="done"
+              enablesReturnKeyAutomatically
+              secureTextEntry
+              onChangeText={onChangePassword}
+              onSubmitEditing={submitLogin}
+              value={password}
+              validate={['required', () => loginFailed]}
+              validationMessage={[
+                'Password is required',
+                'Incorrect username or password',
+              ]}
+            />
+          </FormGroup>
+          <View marginT-s4 row spread>
+            <Button
+              outline
+              label="Register"
+              onPress={() => navigation.navigate('Register')}
+            />
+            <Button
+              label="Login"
+              disabled={!username || !password || response.isLoading}
+              onPress={submitLogin}
+            />
+          </View>
         </View>
       </ScrollView>
       {response.isLoading && (
