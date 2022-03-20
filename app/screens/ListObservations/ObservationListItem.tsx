@@ -1,3 +1,4 @@
+import NoPhoto from '../../components/NoPhoto';
 import Photo from '../../components/Photo';
 import { selectKey } from '../../store/auth';
 import {
@@ -71,9 +72,16 @@ const ObservationListItem = ({
             {observation.location_name}
           </Text>
         </View>
-        {get(observation, 'photoIds[0]') && (
+        {(get(observation, 'photoIds[0]') && (
           <Photo
             id={observation.photoIds[0]}
+            width={90}
+            height={90}
+            borderTopRightRadius={10}
+            borderBottomRightRadius={10}
+          />
+        )) || (
+          <NoPhoto
             width={90}
             height={90}
             borderTopRightRadius={10}

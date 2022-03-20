@@ -1,10 +1,12 @@
 import DraftPhoto from '../../components/DraftPhoto';
+import NoPhoto from '../../components/NoPhoto';
 import useDayjs from '../../hooks/useDayjs';
 import {
   selectById,
   removeDraftObservation as removeDraftObservationAction,
 } from '../../store/draftObservations';
 import { useNavigation } from '@react-navigation/core';
+import { get } from 'lodash';
 import React from 'react';
 import { Card, Colors, Drawer, Text, View } from 'react-native-ui-lib';
 import { connect, ConnectedProps } from 'react-redux';
@@ -41,7 +43,7 @@ const DraftListItem = ({
         enableShadow
         onPress={() => navigation.navigate('Edit Draft', { id })}
       >
-        <View flex flexG padding-7 height={100}>
+        <View flex flexG padding-7 height={90}>
           <Text>Date: {dayjs(draftObservation?.date).format('ll')}</Text>
           <Text numberOfLines={1} ellipsizeMode="tail">
             {draftObservation?.name}
@@ -50,10 +52,18 @@ const DraftListItem = ({
             {draftObservation?.location}
           </Text>
         </View>
-        {draftObservation?.draftPhotoIds && (
+        {(get(draftObservation, 'draftPhotoIds[0]') && (
           <DraftPhoto
-            id={draftObservation.draftPhotoIds[0]}
-            aspectRatio={1.3}
+            id={get(draftObservation, 'draftPhotoIds[0]')}
+            width={90}
+            height={90}
+            borderTopRightRadius={10}
+            borderBottomRightRadius={10}
+          />
+        )) || (
+          <NoPhoto
+            width={90}
+            height={90}
             borderTopRightRadius={10}
             borderBottomRightRadius={10}
           />
