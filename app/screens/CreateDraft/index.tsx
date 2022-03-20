@@ -33,12 +33,19 @@ import {
   addObservation as addObservationAction,
   updateObservation as updateObservationAction,
 } from '../../store/observations';
+import { PostObservationRequestParams } from '../../types/api';
 import { ForwardedCreateDraftProps } from '../../types/navigation';
+import { DraftObservation } from '../../types/store';
 import PhotoCarousel from './PhotoCarousel';
 import { useNavigation } from '@react-navigation/native';
 import { nanoid } from '@reduxjs/toolkit';
 import _, { clamp, get, omitBy, isUndefined, filter, concat } from 'lodash';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import { ActivityIndicator, Alert, ScrollView } from 'react-native';
 import GetLocation from 'react-native-get-location';
 import { Callback, ImagePickerResponse } from 'react-native-image-picker';
@@ -108,6 +115,123 @@ const DraftWizard = ({
   const [postImage, postImageResult] = usePostImageMutation();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const uploadObservation = useCallback(
+    ({
+      name,
+      date,
+      location,
+      isCollectionLocation,
+      latitude,
+      longitude,
+      altitude,
+      gpsHidden,
+      vote,
+      notes,
+    }) => {
+      setIsLoading(true);
+      postObservation({
+        api_key: apiKey,
+        name,
+        date: dayjs(date).format('YYYYMMDD'),
+        location,
+        isCollectionLocation,
+        latitude,
+        longitude,
+        altitude,
+        gpsHidden,
+        vote,
+        notes,
+        detail: 'high',
+      })
+        .then(postObservationResponse => {
+          const newObservation = get(
+            postObservationResponse,
+            'data.results[0]',
+          );
+          if (newObservation) {
+            setInfo('Observation created');
+            addObservation(newObservation);
+            removeDraftObservation(id);
+            const imagesToUpload = filter(draftImages, ({ id }) =>
+              draftPhotoIds.includes(id),
+            );
+            if (imagesToUpload) {
+              return Promise.all(
+                imagesToUpload.map(image =>
+                  postImage({
+                    key: apiKey,
+                    copyright_holder: image?.copyrightHolder,
+                    date: image?.date
+                      ? dayjs(image.date).format('YYYYMMDD')
+                      : undefined,
+                    license: image?.license?.value,
+                    notes: image?.notes,
+                    observations: newObservation.id,
+                    original_name: image.fileName,
+                    uri: image.uri,
+                    name: image.fileName,
+                    type: image.type,
+                    detail: 'high',
+                  })
+                    .then(imageUploadResponse => {
+                      const newImage = get(
+                        imageUploadResponse,
+                        'data.results[0]',
+                      );
+                      if (newImage) {
+                        setInfo('Image uploaded');
+                        addImage(newImage);
+                        removeDraftImage(image.id);
+                        return newImage.id;
+                      }
+                      const error = get(
+                        imageUploadResponse,
+                        'error.data.errors[0].details',
+                      );
+                      if (error) {
+                        setError(error);
+                      }
+                    })
+                    .catch(e => console.log('image upload failed', e)),
+                ),
+              )
+                .then(results => {
+                  updateObservation({
+                    id: newObservation.id,
+                    changes: {
+                      photoIds: results,
+                    },
+                  });
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Home' }],
+                  });
+                })
+                .catch(e => console.log('failed', e));
+            } else {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' }],
+              });
+            }
+          }
+          const error = get(
+            postObservationResponse,
+            'error.data.errors[0].details',
+          );
+          console.log('new observation', newObservation);
+          console.log('error', error);
+          if (error) {
+            setError(error);
+          }
+          setIsLoading(false);
+        })
+        .catch(e => console.log('create failed', e));
+    },
+    [],
+  );
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -168,16 +292,10 @@ const DraftWizard = ({
             <HiddenItem
               title="Upload"
               disabled={!location}
-              onPress={() => {
-                let observation = omitBy(
-                  { notes, vote, ...draftObservation },
-                  isUndefined,
-                );
-                setIsLoading(true);
-                postObservation({
-                  api_key: apiKey,
+              onPress={() =>
+                uploadObservation({
                   name,
-                  date: dayjs(date).format('YYYYMMDD'),
+                  date,
                   location,
                   isCollectionLocation,
                   latitude,
@@ -186,95 +304,8 @@ const DraftWizard = ({
                   gpsHidden,
                   vote,
                   notes,
-                  detail: 'high',
                 })
-                  .then(postObservationResponse => {
-                    const newObservation = get(
-                      postObservationResponse,
-                      'data.results[0]',
-                    );
-                    if (newObservation) {
-                      setInfo('Observation created');
-                      addObservation(newObservation);
-                      removeDraftObservation(id);
-                      const imagesToUpload = filter(draftImages, ({ id }) =>
-                        draftPhotoIds.includes(id),
-                      );
-                      if (imagesToUpload) {
-                        return Promise.all(
-                          imagesToUpload.map(image =>
-                            postImage({
-                              key: apiKey,
-                              copyright_holder: image?.copyrightHolder,
-                              date: image?.date
-                                ? dayjs(image.date).format('YYYYMMDD')
-                                : undefined,
-                              license: image?.license?.value,
-                              notes: image?.notes,
-                              observations: newObservation.id,
-                              original_name: image.fileName,
-                              uri: image.uri,
-                              name: image.fileName,
-                              type: image.type,
-                              detail: 'high',
-                            })
-                              .then(imageUploadResponse => {
-                                const newImage = get(
-                                  imageUploadResponse,
-                                  'data.results[0]',
-                                );
-                                if (newImage) {
-                                  setInfo('Image uploaded');
-                                  addImage(newImage);
-                                  removeDraftImage(image.id);
-                                  return newImage.id;
-                                }
-                                const error = get(
-                                  imageUploadResponse,
-                                  'error.data.errors[0].details',
-                                );
-                                if (error) {
-                                  setError(error);
-                                }
-                              })
-                              .catch(e =>
-                                console.log('image upload failed', e),
-                              ),
-                          ),
-                        )
-                          .then(results => {
-                            updateObservation({
-                              id: newObservation.id,
-                              changes: {
-                                photoIds: results,
-                              },
-                            });
-                            navigation.reset({
-                              index: 0,
-                              routes: [{ name: 'Home' }],
-                            });
-                          })
-                          .catch(e => console.log('failed', e));
-                      } else {
-                        navigation.reset({
-                          index: 0,
-                          routes: [{ name: 'Home' }],
-                        });
-                      }
-                    }
-                    const error = get(
-                      postObservationResponse,
-                      'error.data.errors[0].details',
-                    );
-                    console.log('new observation', newObservation);
-                    console.log('error', error);
-                    if (error) {
-                      setError(error);
-                    }
-                    setIsLoading(false);
-                  })
-                  .catch(e => console.log('create failed', e));
-              }}
+              }
             />
           </OverflowMenu>
         </HeaderButtons>
@@ -554,7 +585,28 @@ const DraftWizard = ({
         )}
         <View row spread margin-s4 marginT-0>
           <Button label="Back" disabled={activeIndex === 0} onPress={back} />
-          <Button label="Next" disabled={activeIndex === 2} onPress={next} />
+          {(activeIndex === 2 && (
+            <Button
+              label="Upload"
+              backgroundColor={Colors.green30}
+              onPress={() =>
+                uploadObservation({
+                  name,
+                  date,
+                  location,
+                  isCollectionLocation,
+                  latitude,
+                  longitude,
+                  altitude,
+                  gpsHidden,
+                  vote,
+                  notes,
+                })
+              }
+            />
+          )) || (
+            <Button label="Next" disabled={activeIndex === 2} onPress={next} />
+          )}
         </View>
       </ScrollView>
       {isLoading && (
