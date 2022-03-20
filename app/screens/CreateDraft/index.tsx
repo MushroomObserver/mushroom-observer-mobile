@@ -237,34 +237,6 @@ const DraftWizard = ({
       headerLeft: () => (
         <HeaderButtons>
           <Item
-            title="Discard"
-            onPress={() =>
-              Alert.alert(
-                'Discard Observation',
-                'Do you want to discard this observation?',
-                [
-                  {
-                    text: 'Cancel',
-                    style: 'cancel',
-                  },
-                  {
-                    text: 'Discard',
-                    onPress: () => {
-                      removeDraftObservation(id);
-                      navigation.navigate('Home', {
-                        screen: 'My Drafts',
-                      });
-                    },
-                  },
-                ],
-              )
-            }
-          />
-        </HeaderButtons>
-      ),
-      headerRight: () => (
-        <HeaderButtons>
-          <Item
             title="Save"
             onPress={() => {
               updateDraftObservation({
@@ -288,23 +260,51 @@ const DraftWizard = ({
               });
             }}
           />
+        </HeaderButtons>
+      ),
+      headerRight: () => (
+        <HeaderButtons>
+          <Item
+            title="Upload"
+            disabled={!location}
+            onPress={() =>
+              uploadObservation({
+                name,
+                date,
+                location,
+                isCollectionLocation,
+                latitude,
+                longitude,
+                altitude,
+                gpsHidden,
+                vote,
+                notes,
+              })
+            }
+          />
           <OverflowMenu>
             <HiddenItem
-              title="Upload"
-              disabled={!location}
+              title="Discard"
               onPress={() =>
-                uploadObservation({
-                  name,
-                  date,
-                  location,
-                  isCollectionLocation,
-                  latitude,
-                  longitude,
-                  altitude,
-                  gpsHidden,
-                  vote,
-                  notes,
-                })
+                Alert.alert(
+                  'Discard Observation',
+                  'Do you want to discard this observation?',
+                  [
+                    {
+                      text: 'Cancel',
+                      style: 'cancel',
+                    },
+                    {
+                      text: 'Discard',
+                      onPress: () => {
+                        removeDraftObservation(id);
+                        navigation.navigate('Home', {
+                          screen: 'My Drafts',
+                        });
+                      },
+                    },
+                  ],
+                )
               }
             />
           </OverflowMenu>
