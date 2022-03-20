@@ -1,10 +1,6 @@
 import FlashView from './components/FlashView';
 import { useIsLogout, useUser } from './hooks/useAuth';
 import CreateDraft from './screens/CreateDraft';
-import IdentificationAndNotes from './screens/CreateDraft/IdentificationAndNotes';
-import NameAndPhotos from './screens/CreateDraft/NameAndPhotos';
-import SelectLocation from './screens/CreateDraft/SelectLocation';
-import TimeAndLocation from './screens/CreateDraft/TimeAndLocation';
 import CreatePhoto from './screens/CreatePhoto';
 import DevScreen from './screens/DevScreen';
 import EditObservation from './screens/EditObservation';
@@ -16,9 +12,11 @@ import Register from './screens/Register';
 import Settings from './screens/Settings';
 import ViewObservation from './screens/ViewObservation';
 import ViewPhoto from './screens/ViewPhoto';
+import { selectTotal as selectDraftObservationTotal } from './store/draftObservations';
 import { selectError, selectInfo, selectWarning } from './store/flash';
 import { preloadLocations } from './store/locations';
 import { preloadNames } from './store/names';
+import { selectTotal as selectObservationTotal } from './store/observations';
 import { LoginStackParamList } from './types/navigation';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -32,7 +30,7 @@ import React, { useEffect } from 'react';
 import { View } from 'react-native-ui-lib';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { OverflowMenuProvider } from 'react-navigation-header-buttons';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, ConnectedProps, useDispatch, useSelector } from 'react-redux';
 
 const { Navigator: LoginStackNavigator, Screen: LoginStackScreen } =
   createNativeStackNavigator<LoginStackParamList>();
@@ -67,7 +65,7 @@ const LoginStack = () => {
   );
 };
 
-const HomeTabs = () => (
+const HomeTabs = ({ draftObservationCount }: PropsFromRedux) => (
   <HomeTabsNavigator initialRouteName="My Drafts">
     <HomeTabsScreen
       name="My Observations"
@@ -82,6 +80,8 @@ const HomeTabs = () => (
       name="My Drafts"
       component={ListDrafts}
       options={{
+        tabBarBadge:
+          draftObservationCount > 0 ? draftObservationCount : undefined,
         tabBarIcon: ({ color, size }) => (
           <Icon name="clipboard-list" size={size} color={color} />
         ),
@@ -110,11 +110,21 @@ const HomeTabs = () => (
   </HomeTabsNavigator>
 );
 
+const mapStateToProps = (state: any, ownProps: any) => ({
+  draftObservationCount: selectDraftObservationTotal(state),
+});
+
+const connector = connect(mapStateToProps);
+
+const ConnectedHomeTabs = connector(HomeTabs);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
 const HomeStack = () => (
   <HomeStackNavigator>
     <HomeStackScreen
       name="Home"
-      component={HomeTabs}
+      component={ConnectedHomeTabs}
       options={{ headerShown: false }}
     />
     <HomeStackScreen
