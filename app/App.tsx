@@ -68,7 +68,7 @@ const LoginStack = () => {
 };
 
 const HomeTabs = () => (
-  <HomeTabsNavigator>
+  <HomeTabsNavigator initialRouteName="My Drafts">
     <HomeTabsScreen
       name="My Observations"
       component={ListObservations}
