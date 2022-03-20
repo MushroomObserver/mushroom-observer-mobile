@@ -9,28 +9,25 @@ interface DraftPhotoProps extends Omit<ImageProps, 'source'> {
 
 const DraftPhoto = ({
   draftPhoto,
-  width,
-  height,
   borderRadius,
   borderTopLeftRadius,
   borderTopRightRadius,
   borderBottomRightRadius,
   borderBottomLeftRadius,
+  ...props
 }: PropsFromRedux) => {
   return (
     <Image
+      blurRadius={1}
       style={{
-        resizeMode: 'cover',
-        width,
-        height,
         borderRadius,
         borderTopLeftRadius,
         borderTopRightRadius,
         borderBottomRightRadius,
         borderBottomLeftRadius,
       }}
-      resizeMethod="auto"
       source={{ uri: draftPhoto?.uri }}
+      {...props}
     />
   );
 };

@@ -1,9 +1,13 @@
-import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 
 export type FlashState = {
-  error: string | undefined,
-  warning: string | undefined,
-  info: string | undefined,
+  error: string | undefined;
+  warning: string | undefined;
+  info: string | undefined;
 };
 
 const initialState: FlashState = {
@@ -17,14 +21,13 @@ const slice = createSlice({
   initialState,
   reducers: {
     setError(state, action: PayloadAction<string | undefined>) {
-      console.log(action.payload)
-      state.error = action.payload
+      state.error = action.payload;
     },
     setWarning(state, action: PayloadAction<string | undefined>) {
-      state.warning = action.payload
+      state.warning = action.payload;
     },
     setInfo(state, action: PayloadAction<string | undefined>) {
-      state.info = action.payload
+      state.info = action.payload;
     },
   },
 });
@@ -39,7 +42,7 @@ const selectError = state => state.flash.error;
 const selectWarning = state => state.flash.warning;
 const selectInfo = state => state.flash.info;
 
-export { selectError, selectWarning, selectInfo}
+export { selectError, selectWarning, selectInfo };
 
 // Export the reducer, either as a default or named export
 export default reducer;

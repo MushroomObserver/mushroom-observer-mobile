@@ -11,91 +11,90 @@ const { width: screenWidth } = Dimensions.get('window');
 
 interface PhotoCarouselProps {
   draftPhotoIds: string[];
+  onUseInfo: Function;
   onRemovePhoto: Function;
 }
 
 interface PhotoProps extends PropsFromRedux {
   id: string;
+  onUseInfo: Function;
   onRemovePhoto: Function;
 }
 
-const Photo = ({ id, draftPhoto, onRemovePhoto }: PhotoProps) => {
+const Photo = ({ id, draftPhoto, onUseInfo, onRemovePhoto }: PhotoProps) => {
   const navigation = useNavigation();
   const dayjs = useDayjs();
-  console.log(draftPhoto);
+
   return (
-    <View flex center>
-      <DraftPhoto
-        id={id}
-        key={id}
-        width={screenWidth - 40}
-        height={280}
-        borderRadius={11}
-      />
+    <View flex center marginH-s4>
+      <DraftPhoto id={id} key={id} borderRadius={11} cover aspectRatio={1.3} />
       <View
         absT
         flex
+        row
+        spread
         padding-5
-        width={screenWidth - 40}
         style={{
           borderTopLeftRadius: 11,
           borderTopRightRadius: 11,
           backgroundColor: Colors.rgba(Colors.white, 0.7),
         }}
       >
-        <View padding-5>
-          <View row spread>
-            <Text>Latitude: {draftPhoto?.latitude?.toPrecision(4)}</Text>
-            <Text>
-              Longitude:
-              {draftPhoto?.longitude?.toPrecision(4)}
-            </Text>
-            <Text>
-              Altitude:
-              {draftPhoto?.altitude?.toPrecision(4)}
-            </Text>
-          </View>
-          <View row spread>
-            <Text>Date: {dayjs(draftPhoto?.date).format('ll')}</Text>
+        <View flex marginR-10>
+          <Text text100L>
+            Date: {dayjs(draftPhoto?.date).format('M/DD/YYYY')}
+          </Text>
+          <View centerV row spread>
+            {draftPhoto?.latitude && draftPhoto?.longitude ? (
+              <>
+                <Text text100L>
+                  Latitude: {draftPhoto?.latitude?.toFixed(4)}
+                </Text>
+                <Text text100L>
+                  Longitude: {draftPhoto?.longitude?.toFixed(4)}
+                </Text>
+                <Text text100L>
+                  Altitude: {draftPhoto?.altitude?.toFixed(2)}m
+                </Text>
+              </>
+            ) : (
+              <Text text100L>No location info available.</Text>
+            )}
           </View>
         </View>
-        {false && (
-          <View centerV row spread>
-            <Chip
-              backgroundColor={Colors.white}
-              label="Use GPS"
-              onPress={() => onRemovePhoto(id)}
-              labelStyle={{ color: Colors.white }}
-              containerStyle={{
-                borderColor: Colors.yellow20,
-                backgroundColor: Colors.yellow20,
-              }}
-            />
-            <Chip
-              backgroundColor={Colors.white}
-              label="Use Date"
-              onPress={() => onRemovePhoto(id)}
-              labelStyle={{ color: Colors.white }}
-              containerStyle={{
-                borderColor: Colors.yellow20,
-                backgroundColor: Colors.yellow20,
-              }}
-            />
-          </View>
-        )}
+        <View centerV>
+          <Chip
+            backgroundColor={Colors.white}
+            label="Use Info"
+            onPress={() =>
+              onUseInfo(
+                draftPhoto?.date,
+                draftPhoto?.latitude,
+                draftPhoto?.longitude,
+                draftPhoto?.altitude,
+              )
+            }
+            labelStyle={{ color: Colors.white }}
+            containerStyle={{
+              borderColor: Colors.yellow20,
+              backgroundColor: Colors.yellow20,
+            }}
+          />
+        </View>
       </View>
       <View
         absB
         flex
+        row
+        spread
         padding-5
-        width={screenWidth - 40}
         style={{
           borderBottomLeftRadius: 11,
           borderBottomRightRadius: 11,
           backgroundColor: Colors.rgba(Colors.white, 0.7),
         }}
       >
-        <View row spread>
+        <View flex row spread>
           <Chip
             backgroundColor={Colors.white}
             label="Remove"
@@ -138,6 +137,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const PhotoCarousel = ({
   draftPhotoIds,
+  onUseInfo,
   onRemovePhoto,
 }: PhotoCarouselProps) => {
   return (
@@ -154,6 +154,7 @@ const PhotoCarousel = ({
         <ConnectedPhoto
           key={id}
           id={id}
+          onUseInfo={onUseInfo}
           onRemovePhoto={() => onRemovePhoto(id)}
         />
       ))}

@@ -56,7 +56,6 @@ const ViewObservation = ({
     });
   }, [navigation, route]);
 
-  console.log(observation);
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -93,54 +92,54 @@ const ViewObservation = ({
           </Carousel>
         </View>
         <View flex paddingH-20>
-          <Text text70H>
+          <Text text70M>
             Date:{' '}
             <Text text70>
-              <DateView date={observation.date} format="ll" />
+              <DateView date={observation.date} format="YYYY-MM-DD" />
             </Text>
           </Text>
-          <Text text70H>
+          <Text text70M>
             Owner:{' '}
             <Text text70>
               <OwnerView owner={observation.owner} />
             </Text>
           </Text>
-          <Text text70H>
+          <Text text70M>
             Consensus:{' '}
             <Text text70>
               <NameView name={observation.consensus} />
             </Text>
           </Text>
-          <Text text70H>
+          <Text text70M>
             Confidence:{' '}
             <Text text70>
               <ConfidenceView confidence={observation.confidence} />
             </Text>
           </Text>
-          <Text text70H>
+          <Text text70M>
             Location name: <Text text70>{observation.location_name}</Text>
           </Text>
-          <Text text70H>
+          <Text text70M>
             Is collection location?:{' '}
             <Text text70>
               {observation.is_collection_location ? 'Yes' : 'No'}
             </Text>
           </Text>
-          <Text text70H>
+          <Text text70M>
             GPS Hidden:{' '}
             <Text text70>{observation.gps_hidden ? 'Yes' : 'No'}</Text>{' '}
           </Text>
-          <Text text70H>
+          <Text text70M>
             Specimen Available:{' '}
             <Text text70>{observation.specimen_available ? 'Yes' : 'No'}</Text>{' '}
           </Text>
-          <Text text70H>
+          <Text text70M>
             Created at:{' '}
             <Text text70>
               <DateView date={observation.created_at} format="lll" />
             </Text>{' '}
           </Text>
-          <Text text70H>
+          <Text text70M>
             Updated at:{' '}
             <Text text70>
               <DateView date={observation.updated_at} format="lll" />

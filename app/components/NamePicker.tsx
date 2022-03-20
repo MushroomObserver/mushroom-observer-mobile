@@ -1,8 +1,14 @@
 import { Name, selectAll } from '../store/names';
 import { filter, lowerCase, sortBy } from 'lodash';
 import React, { useState } from 'react';
-import { Picker } from 'react-native-ui-lib';
-import { Colors } from 'react-native-ui-lib';
+import {
+  Button,
+  Colors,
+  Incubator,
+  Picker,
+  Text,
+  View,
+} from 'react-native-ui-lib';
 import { connect } from 'react-redux';
 
 interface NamePickerProps {
@@ -16,34 +22,67 @@ const NamePicker = ({ name, names, onChangeName }: NamePickerProps) => {
   const [query, setQuery] = useState('');
 
   return (
-    <Picker
-      showSearch
-      title="Name"
-      label="Name"
-      value={{ label: name, value: name }}
-      onChange={onChangeName}
-      onSearchChange={setQuery}
-      topBarProps={{ title: 'Name' }}
-      searchPlaceholder={'Search names'}
-      searchStyle={{ color: Colors.black, placeholderTextColor: Colors.grey40 }}
-      listProps={{
-        data: filter(
-          sortedNames,
-          ({ text_name, author }) =>
-            lowerCase(text_name).includes(lowerCase(query)) ||
-            lowerCase(author).includes(lowerCase(query)),
-        ),
-        renderItem: ({ item }: { item: Name }) => {
+    <View>
+      <Picker
+        migrate
+        migrateTextField
+        title="Name"
+        label="Name"
+        renderPicker={(selectedItem: string, itemLabel: string) => {
           return (
-            <Picker.Item
-              key={item.id}
-              value={item.text_name + ' ' + item.author}
-              label={item.text_name + ' ' + item.author}
+            <Incubator.TextField
+              preset="default"
+              label="Name"
+              value={selectedItem}
             />
           );
-        },
-      }}
-    />
+        }}
+        showSearch
+        searchPlaceholder={'Search names'}
+        searchStyle={{
+          color: Colors.black,
+          placeholderTextColor: Colors.grey40,
+        }}
+        onSearchChange={setQuery}
+        value={name}
+        onChange={onChangeName}
+        topBarProps={{ title: 'Name' }}
+        listProps={{
+          data: filter(
+            sortedNames,
+            ({ text_name, author }) =>
+              lowerCase(text_name).includes(lowerCase(query)) ||
+              lowerCase(author).includes(lowerCase(query)),
+          ),
+          renderItem: ({ item }: { item: Name }) => {
+            return (
+              <Picker.Item
+                key={item.text_name + ' ' + item.author}
+                value={item.text_name + ' ' + item.author}
+                label={item.text_name + ' ' + item.author}
+              />
+            );
+          },
+        }}
+      />
+      <View flex>
+        <View right marginB-s2>
+          <Button
+            disabled={!name}
+            size={Button.sizes.xSmall}
+            label="Clear"
+            onPress={() => {
+              onChangeName();
+            }}
+          />
+        </View>
+        <Text>
+          The name you would apply to this observation. If you don’t know what
+          it is, just leave it blank. If you find a better name in the future,
+          you can always propose a name later.
+        </Text>
+      </View>
+    </View>
   );
 };
 

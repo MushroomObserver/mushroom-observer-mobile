@@ -3,6 +3,8 @@ import { ConfidencePicker } from '../../components/ConfidencePicker';
 import LocationPicker from '../../components/LocationPicker';
 import NamePicker from '../../components/NamePicker';
 import { NotesField } from '../../components/NotesField';
+import { FormGroup } from '../../components/base/FormGroup';
+import { TextField } from '../../components/base/TextField';
 import HeaderButtons from '../../components/header/HeaderButtons';
 import OverflowMenu from '../../components/header/OverflowMenu';
 import { useKey } from '../../hooks/useAuth';
@@ -35,9 +37,10 @@ import { ForwardedCreateDraftProps } from '../../types/navigation';
 import PhotoCarousel from './PhotoCarousel';
 import { useNavigation } from '@react-navigation/native';
 import { nanoid } from '@reduxjs/toolkit';
-import { clamp, get, omitBy, isUndefined, filter, concat } from 'lodash';
-import React, { useLayoutEffect, useState } from 'react';
-import { Alert, ScrollView } from 'react-native';
+import _, { clamp, get, omitBy, isUndefined, filter, concat } from 'lodash';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { ActivityIndicator, Alert, ScrollView } from 'react-native';
+import GetLocation from 'react-native-get-location';
 import { Callback, ImagePickerResponse } from 'react-native-image-picker';
 import {
   Wizard,
@@ -45,11 +48,11 @@ import {
   Button,
   Text,
   Switch,
-  TextField,
   DateTimePicker,
   LoaderScreen,
   Colors,
 } from 'react-native-ui-lib';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { HiddenItem, Item } from 'react-navigation-header-buttons';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect, ConnectedProps } from 'react-redux';
@@ -88,6 +91,9 @@ const DraftWizard = ({
   );
   const [name, setName] = useState(draftObservation?.name);
   const [date, setDate] = useState(draftObservation?.date);
+  const [latitude, setLatitude] = useState(draftObservation?.latitude);
+  const [longitude, setLongitude] = useState(draftObservation?.longitude);
+  const [altitude, setAltitude] = useState(draftObservation?.altitude);
   const [location, setLocation] = useState(draftObservation?.location);
   const [isCollectionLocation, setIsCollectionLocation] = useState(
     draftObservation?.isCollectionLocation || true,
@@ -102,7 +108,6 @@ const DraftWizard = ({
   const [postImage, postImageResult] = usePostImageMutation();
 
   const [isLoading, setIsLoading] = useState(false);
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -141,11 +146,14 @@ const DraftWizard = ({
               updateDraftObservation({
                 id,
                 changes: {
-                  name,
                   date: dayjs(date).format('YYYYMMDD'),
+                  latitude,
+                  longitude,
+                  altitude,
+                  gpsHidden,
+                  name,
                   location,
                   isCollectionLocation,
-                  gpsHidden,
                   vote,
                   notes,
                   draftPhotoIds,
@@ -172,6 +180,9 @@ const DraftWizard = ({
                   date: dayjs(date).format('YYYYMMDD'),
                   location,
                   isCollectionLocation,
+                  latitude,
+                  longitude,
+                  altitude,
                   gpsHidden,
                   vote,
                   notes,
@@ -281,6 +292,20 @@ const DraftWizard = ({
     draftPhotoIds,
   ]);
 
+  useEffect(() => {
+    const getGPS = async () => {
+      const gps = await GetLocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 15000,
+      });
+      console.log('gps', gps);
+      if (gps.latitude) setLatitude(gps.latitude.toFixed(4));
+      if (gps.longitude) setLongitude(gps.longitude.toFixed(4));
+      if (gps.altitude) setAltitude(gps.altitude.toFixed(2));
+    };
+    // getGPS();
+  }, []);
+
   const jsCoreDateCreator = (dateString: string) => {
     let dateParams = dateString.split('T');
     return dayjs(dateParams[0], 'YYYY-MM-DD').toString();
@@ -294,12 +319,11 @@ const DraftWizard = ({
       const newIds: string[] = [];
       let date = undefined;
       const draftImages = assets.map(asset => {
+        let { timestamp } = asset;
         const newId = nanoid();
         newIds.push(newId);
-        let timestamp = asset.timestamp;
         if (timestamp) {
           timestamp = jsCoreDateCreator(timestamp);
-          setDate(timestamp);
         }
         return {
           ...asset,
@@ -311,6 +335,21 @@ const DraftWizard = ({
       addDraftImages(draftImages);
       setDraftPhotoIds(concat(draftPhotoIds, newIds));
       updateDraftObservation({ id, changes: { name, draftPhotoIds, date } });
+    }
+  };
+
+  const useInfo = (date, latitude, longitude, altitude) => {
+    if (date) {
+      setDate(date);
+    }
+    if (latitude) {
+      setLatitude(latitude?.toFixed(4));
+    }
+    if (latitude) {
+      setLongitude(longitude?.toFixed(4));
+    }
+    if (latitude) {
+      setAltitude(altitude?.toFixed(2));
     }
   };
 
@@ -331,10 +370,13 @@ const DraftWizard = ({
   return (
     <View flex>
       <Wizard activeIndex={activeIndex} onActiveIndexChanged={setActiveIndex}>
-        <Wizard.Step state={Wizard.States.ENABLED} label="Photos and Name" />
+        <Wizard.Step
+          state={Wizard.States.ENABLED}
+          label="Photos, Date, and GPS"
+        />
         <Wizard.Step
           state={location ? Wizard.States.ENABLED : Wizard.States.ERROR}
-          label="Date and Location"
+          label="Name and Location"
         />
         <Wizard.Step
           state={Wizard.States.ENABLED}
@@ -343,158 +385,178 @@ const DraftWizard = ({
       </Wizard>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         {activeIndex === 0 && (
-          <View flex>
-            <View marginT-20 marginB-20={draftPhotoIds.length > 0}>
+          <>
+            <View marginT-s4={draftPhotoIds.length > 0}>
               <PhotoCarousel
                 draftPhotoIds={draftPhotoIds}
+                onUseInfo={useInfo}
                 onRemovePhoto={removePhoto}
               />
             </View>
-            <View flex paddingH-20>
+            <View flex margin-s4>
               <AddPhotosButton
                 callback={addPhotos}
                 numPhotos={draftPhotoIds.length}
                 maxPhotos={SELECTION_LIMIT}
               />
-              <NamePicker
-                name={name}
-                onChangeName={({ value }: { value: string }) => setName(value)}
-              />
-              <Text>
-                The name you would apply to this observation. If you don’t know
-                what it is, just leave it blank. If you find a better name in
-                the future, you can always propose a name later.
-              </Text>
-              <Text marginT-10>
-                <Text style={{ fontWeight: 'bold' }}>
-                  Scientific names are currently required,
-                </Text>{' '}
-                but do not include any author information. If multiple names
-                apply, you will be given the option to select between them. If
-                the name is not recognized in the database, then you will be
-                given the option to add the name or fix the spelling if it’s
-                just a typo.
-              </Text>
+              <FormGroup>
+                <Text marginB-s2 text80 textDefault>
+                  Date
+                </Text>
+                <DateTimePicker
+                  value={dayjs(date).toDate()}
+                  dateFormat="YYYY-MM-DD"
+                  mode="date"
+                  themeVariant="light"
+                  onChange={setDate}
+                />
+                <View spread row>
+                  <View flex>
+                    <TextField
+                      preset="default"
+                      label="Latitude"
+                      disabled
+                      value={_.toString(latitude)}
+                      maxLength={5}
+                      keyboardType="numeric"
+                      onChangeText={lat => setLatitude}
+                    />
+                  </View>
+                  <View flex marginH-s2>
+                    <TextField
+                      preset="default"
+                      label="Longitude"
+                      value={_.toString(longitude)}
+                      maxLength={5}
+                      keyboardType="numeric"
+                      onChangeText={setLongitude}
+                    />
+                  </View>
+                  <View flex>
+                    <TextField
+                      preset="default"
+                      label="Altitude"
+                      value={_.toString(altitude)}
+                      formatter={value => (value ? `${value}m` : undefined)}
+                      maxLength={4}
+                      keyboardType="numeric"
+                      onChangeText={setAltitude}
+                    />
+                  </View>
+                </View>
+                <View row right marginB-s2>
+                  <Button
+                    size={Button.sizes.xSmall}
+                    iconSource={() => (
+                      <View marginR-5>
+                        {false ? (
+                          <ActivityIndicator
+                            size="small"
+                            color={Colors.white}
+                          />
+                        ) : (
+                          <Icon name="globe" size={15} color="white" />
+                        )}
+                      </View>
+                    )}
+                    label="Use Current Location"
+                    onPress={async () => {
+                      const gps = await GetLocation.getCurrentPosition({
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                      });
+                      if (gps.latitude) setLatitude(gps.latitude.toFixed(4));
+                      if (gps.longitude) setLongitude(gps.longitude.toFixed(4));
+                      if (gps.altitude) setAltitude(gps.altitude.toFixed(2));
+                    }}
+                  />
+                </View>
+                <View spread row centerV>
+                  <Text>Hide exact coordinates?</Text>
+                  <Switch value={gpsHidden} onValueChange={setGpsHidden} />
+                </View>
+              </FormGroup>
             </View>
-          </View>
+          </>
         )}
         {activeIndex === 1 && (
-          <View padding-20>
-            <Text marginB-10 grey30>
-              Date
-            </Text>
-            <DateTimePicker
-              value={dayjs(date).toDate()}
-              mode="date"
-              themeVariant="light"
-              onChange={setDate}
-            />
-            <LocationPicker
-              location={location}
-              onChangeLocation={({ value }: { value: string }) => {
-                setLocation(value);
-              }}
-            />
-            {false && (
-              <Button
-                marginB-15
-                label="Locate"
-                disabled={!draftObservation?.location}
-                size={Button.sizes.medium}
-                onPress={() => {
-                  updateDraftObservation({
-                    id,
-                    changes: { ...draftObservation },
-                  });
-                  navigation.navigate('Select Location', { id });
-                }}
+          <>
+            <FormGroup margin-s4>
+              <NamePicker name={name} onChangeName={setName} />
+            </FormGroup>
+            <FormGroup margin-s4 marginT-0>
+              <LocationPicker
+                location={location}
+                onChangeLocation={setLocation}
               />
-            )}
-            <Text marginB-15>
-              Where the observation was made. In the US this should be at least
-              accurate to the county. Examples:
-            </Text>
-            <View marginB-15>
-              <Text style={{ fontStyle: 'italic' }}>
-                Albion, Mendocino Co., California, USA
+              {false && (
+                <Button
+                  marginB-15
+                  label="Locate"
+                  disabled={!draftObservation?.location}
+                  size={Button.sizes.medium}
+                  onPress={() => {
+                    updateDraftObservation({
+                      id,
+                      changes: { ...draftObservation },
+                    });
+                    navigation.navigate('Select Location', { id });
+                  }}
+                />
+              )}
+              <Text marginB-15>
+                Where the observation was made. In the US this should be at
+                least accurate to the county. Examples:
               </Text>
-              <Text style={{ fontStyle: 'italic' }}>
-                Hotel Parque dos Coqueiros, Aracaju, Sergipe, Brazil
-              </Text>
-            </View>
-            {false && (
-              <Text>
-                <Text style={{ fontWeight: 'bold' }}>
-                  Use the Locate Button
-                </Text>{' '}
-                to bring this location up on the map. Then click to add a marker
-                and drag it to the specific Latitude & Longitude.
-              </Text>
-            )}
-            <View marginV-15 spread row centerV>
-              <Text>Is this location where it was collected?</Text>
-              <Switch
-                value={isCollectionLocation}
-                onValueChange={setIsCollectionLocation}
-              />
-            </View>
-            {false && (
-              <View spread row>
-                <View flex>
-                  <TextField
-                    title="Latitude"
-                    value={`${latitude || ''}`}
-                    maxLength={5}
-                    keyboardType="numeric"
-                    onChangeText={lat => setLatitude(parseFloat(lat))}
-                  />
-                </View>
-                <View flex marginH-30>
-                  <TextField
-                    title="Longitude"
-                    value={`${longitude || ''}`}
-                    maxLength={5}
-                    keyboardType="numeric"
-                    onChangeText={lng => setLongitude(parseFloat(lng))}
-                  />
-                </View>
-                <View flex>
-                  <TextField
-                    title="Altitude"
-                    value={`${altitude || ''}`}
-                    maxLength={5}
-                    keyboardType="numeric"
-                    onChangeText={alt => setAltitude(parseFloat(alt))}
-                  />
-                </View>
+              <View marginB-15>
+                <Text style={{ fontStyle: 'italic' }}>
+                  Albion, Mendocino Co., California, USA
+                </Text>
+                <Text style={{ fontStyle: 'italic' }}>
+                  Hotel Parque dos Coqueiros, Aracaju, Sergipe, Brazil
+                </Text>
               </View>
-            )}
-            <View spread row centerV>
-              <Text>Hide exact coordinates?</Text>
-              <Switch value={gpsHidden} onValueChange={setGpsHidden} />
-            </View>
-          </View>
+              {false && (
+                <Text>
+                  <Text style={{ fontWeight: 'bold' }}>
+                    Use the Locate Button
+                  </Text>{' '}
+                  to bring this location up on the map. Then click to add a
+                  marker and drag it to the specific Latitude & Longitude.
+                </Text>
+              )}
+              <View marginV-15 spread row centerV>
+                <Text>Is this location where it was collected?</Text>
+                <Switch
+                  value={isCollectionLocation}
+                  onValueChange={setIsCollectionLocation}
+                />
+              </View>
+            </FormGroup>
+          </>
         )}
         {activeIndex === 2 && (
-          <View flex padding-20>
-            <ConfidencePicker
-              confidence={vote}
-              onChangeConfidence={({ value }: { value: number }) =>
-                setVote(value)
-              }
-            />
-            <NotesField
-              placeholder={NOTES_DETAILS}
-              notes={notes}
-              onChangeNotes={setNotes}
-            />
-          </View>
+          <>
+            <FormGroup margin-s4>
+              <ConfidencePicker
+                confidence={vote}
+                onChangeConfidence={setVote}
+              />
+            </FormGroup>
+            <FormGroup margin-s4 marginT-0>
+              <NotesField
+                placeholder={NOTES_DETAILS}
+                notes={notes}
+                onChangeNotes={setNotes}
+              />
+            </FormGroup>
+          </>
         )}
+        <View row spread margin-s4 marginT-0>
+          <Button label="Back" disabled={activeIndex === 0} onPress={back} />
+          <Button label="Next" disabled={activeIndex === 2} onPress={next} />
+        </View>
       </ScrollView>
-      <View row spread marginT-20 marginH-20 marginB-40>
-        <Button label="Back" disabled={activeIndex === 0} onPress={back} />
-        <Button label="Next" disabled={activeIndex === 2} onPress={next} />
-      </View>
       {isLoading && (
         <LoaderScreen
           color={Colors.blue30}

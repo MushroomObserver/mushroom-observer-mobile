@@ -1,7 +1,7 @@
 import { Location, selectAll } from '../store/locations';
 import { filter, lowerCase, orderBy } from 'lodash';
 import React, { useState } from 'react';
-import { Colors, Picker } from 'react-native-ui-lib';
+import { Button, Colors, Incubator, Picker, View } from 'react-native-ui-lib';
 import { connect } from 'react-redux';
 
 interface LocationPickerProps {
@@ -18,33 +18,65 @@ const LocationPicker = ({
   const [query, setQuery] = useState('');
 
   return (
-    <Picker
-      showSearch
-      title="Location"
-      value={{ label: location, value: location }}
-      onChange={onChangeLocation}
-      onSearchChange={setQuery}
-      topBarProps={{ title: 'Location' }}
-      searchPlaceholder={'Search locations'}
-      searchStyle={{ color: Colors.black, placeholderTextColor: Colors.grey40 }}
-      validateOnStart
-      validateOnChange
-      validateOnBlur
-      listProps={{
-        data: orderBy(
-          filter(locations, ({ name }) =>
-            lowerCase(name).includes(lowerCase(query)),
+    <View>
+      <Picker
+        migrate
+        migrateTextField
+        renderPicker={(selectedItem: string, itemLabel: string) => {
+          return (
+            <Incubator.TextField
+              preset="default"
+              label="Location"
+              validate="required"
+              value={selectedItem}
+              validateOnStart
+              validateOnChange
+              validationMessage="Location is required"
+            />
+          );
+        }}
+        showSearch
+        searchPlaceholder={'Search locations'}
+        searchStyle={{
+          color: Colors.black,
+          placeholderTextColor: Colors.grey40,
+        }}
+        title="Location"
+        value={location}
+        onChange={onChangeLocation}
+        onSearchChange={setQuery}
+        topBarProps={{ title: 'Location' }}
+        validateOnStart
+        validateOnChange
+        validateOnBlur
+        listProps={{
+          data: orderBy(
+            filter(locations, ({ name }) =>
+              lowerCase(name).includes(lowerCase(query)),
+            ),
+            [({ name }) => name.toLowerCase()],
+            ['asc'],
           ),
-          [({ name }) => name.toLowerCase()],
-          ['asc'],
-        ),
-        renderItem: ({ item }: { item: Location }) => (
-          <Picker.Item key={item.id} value={item.name} label={item.name} />
-        ),
-      }}
-      validate="required"
-      errorMessage="This field is required"
-    />
+          renderItem: ({ item }: { item: Location }) => (
+            <Picker.Item key={item.id} value={item.name} label={item.name} />
+          ),
+        }}
+        validate="required"
+        errorMessage="This field is required"
+      />
+      <View flex>
+        <View right marginB-s2>
+          <Button
+            disabled={!location}
+            size={Button.sizes.xSmall}
+            label="Clear"
+            onPress={() => {
+              onChangeLocation();
+            }}
+          />
+        </View>
+      </View>
+    </View>
   );
 };
 
