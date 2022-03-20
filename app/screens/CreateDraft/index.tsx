@@ -229,7 +229,19 @@ const DraftWizard = ({
         })
         .catch(e => console.log('create failed', e));
     },
-    [],
+    [
+      name,
+      date,
+      location,
+      isCollectionLocation,
+      latitude,
+      longitude,
+      altitude,
+      gpsHidden,
+      vote,
+      notes,
+      draftImages,
+    ],
   );
 
   useLayoutEffect(() => {
