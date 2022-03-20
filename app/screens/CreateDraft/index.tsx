@@ -328,6 +328,9 @@ const DraftWizard = ({
     name,
     date,
     location,
+    latitude,
+    longitude,
+    altitude,
     isCollectionLocation,
     gpsHidden,
     vote,
@@ -462,7 +465,7 @@ const DraftWizard = ({
                       value={_.toString(latitude)}
                       maxLength={5}
                       keyboardType="numeric"
-                      onChangeText={lat => setLatitude}
+                      onChangeText={setLatitude}
                     />
                   </View>
                   <View flex marginH-s2>
