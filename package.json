@@ -33,6 +33,7 @@
     "react-native-autocomplete-dropdown": "^1.1.4",
     "react-native-autocomplete-input": "^5.0.2",
     "react-native-autocomplete-select": "^1.0.0",
+    "react-native-blob-util": "^0.14.1",
     "react-native-config": "^1.4.5",
     "react-native-device-info": "^8.4.8",
     "react-native-dropdown-autocomplete": "^1.0.18",
@@ -58,6 +59,7 @@
     "react-navigation-props-mapper": "^3.0.0",
     "react-redux": "^7.2.6",
     "redux-persist": "^6.0.0",
+    "redux-persist-filesystem-storage": "^4.0.0",
     "redux-persist-sensitive-storage": "^1.0.0",
     "rn-sequelize": "^5.21.4"
   },
