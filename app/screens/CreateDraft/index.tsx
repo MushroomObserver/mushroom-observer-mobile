@@ -102,6 +102,7 @@ const DraftWizard = ({
   const [longitude, setLongitude] = useState(draftObservation?.longitude);
   const [altitude, setAltitude] = useState(draftObservation?.altitude);
   const [location, setLocation] = useState(draftObservation?.location);
+  const [isLocating, setIsLocating] = useState(false);
   const [isCollectionLocation, setIsCollectionLocation] = useState(
     draftObservation?.isCollectionLocation || true,
   );
@@ -490,32 +491,39 @@ const DraftWizard = ({
                     />
                   </View>
                 </View>
-                <View row right marginB-s2>
-                  <Button
-                    size={Button.sizes.xSmall}
-                    iconSource={() => (
-                      <View marginR-5>
-                        {false ? (
-                          <ActivityIndicator
-                            size="small"
-                            color={Colors.white}
-                          />
-                        ) : (
-                          <Icon name="globe" size={15} color="white" />
-                        )}
-                      </View>
-                    )}
-                    label="Use Current Location"
-                    onPress={async () => {
-                      const gps = await GetLocation.getCurrentPosition({
-                        enableHighAccuracy: true,
-                        timeout: 15000,
-                      });
-                      if (gps.latitude) setLatitude(gps.latitude.toFixed(4));
-                      if (gps.longitude) setLongitude(gps.longitude.toFixed(4));
-                      if (gps.altitude) setAltitude(gps.altitude.toFixed(2));
-                    }}
-                  />
+                <View row spread centerV marginB-s4>
+                  <Text text80R>Use Current Location</Text>
+                  <View flex right>
+                    <Button
+                      size={Button.sizes.xSmall}
+                      disabled={isLocating}
+                      iconSource={() => (
+                        <View marginR-5>
+                          {isLocating ? (
+                            <ActivityIndicator
+                              size="small"
+                              color={Colors.white}
+                            />
+                          ) : (
+                            <Icon name="globe" size={15} color="white" />
+                          )}
+                        </View>
+                      )}
+                      label="Locate"
+                      onPress={async () => {
+                        setIsLocating(true);
+                        const gps = await GetLocation.getCurrentPosition({
+                          enableHighAccuracy: true,
+                          timeout: 15000,
+                        });
+                        if (gps.latitude) setLatitude(gps.latitude.toFixed(4));
+                        if (gps.longitude)
+                          setLongitude(gps.longitude.toFixed(4));
+                        if (gps.altitude) setAltitude(gps.altitude.toFixed(2));
+                        setIsLocating(false);
+                      }}
+                    />
+                  </View>
                 </View>
                 <View spread row centerV>
                   <Text>Hide exact coordinates?</Text>

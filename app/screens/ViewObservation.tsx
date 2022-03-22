@@ -4,7 +4,6 @@ import { NameView } from '../components/NameView';
 import { OwnerView } from '../components/OwnerView';
 import Photo from '../components/Photo';
 import HeaderButtons from '../components/header/HeaderButtons';
-import useDayjs from '../hooks/useDayjs';
 import {
   removeObservation as removeObservationAction,
   selectById,
@@ -17,7 +16,7 @@ import React, { useLayoutEffect } from 'react';
 import { Button as NativeButton, Dimensions, ScrollView } from 'react-native';
 import {
   Carousel,
-  Chip,
+  Card,
   Colors,
   Text,
   TouchableOpacity,
@@ -40,6 +39,19 @@ const ViewObservation = ({
 }: ForwardedViewObservationProps) => {
   const navigation = useNavigation();
   const route = useRoute();
+  console.log(observation);
+
+  const decimelToDMS = (decimel: number, lng: boolean) => {
+    return [
+      0 | decimel,
+      '°',
+      0 | (((decimel = (decimel < 0 ? -decimel : decimel) + 1e-4) % 1) * 60),
+      "'",
+      0 | (((decimel * 60) % 1) * 60),
+      '" ',
+      decimel < 0 ? (lng ? 'W' : 'S') : lng ? 'E' : 'N',
+    ].join('');
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -59,67 +71,73 @@ const ViewObservation = ({
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View marginT-20>
-          <Carousel
-            horizontal
-            allowAccessibleLayout
-            pageControlPosition={Carousel.pageControlPositions.UNDER}
-            pageControlProps={{
-              color: Colors.primary,
-              inactiveColor: Colors.grey30,
-            }}
-          >
-            {concat(observation.photoIds).map((id: string) => (
-              <TouchableOpacity
-                key={id}
-                flex
-                center
-                onPress={() =>
-                  navigation.navigate('View Photo', {
-                    id: id,
-                  })
-                }
-              >
-                <Photo
-                  id={id}
+        {observation.photoIds.length > 0 && (
+          <View marginT-s4>
+            <Carousel
+              horizontal
+              allowAccessibleLayout
+              pageControlPosition={Carousel.pageControlPositions.OVER}
+              pageControlProps={{
+                color: Colors.primary,
+                inactiveColor: Colors.grey30,
+              }}
+            >
+              {concat(observation.photoIds).map((id: string) => (
+                <TouchableOpacity
                   key={id}
-                  width={screenWidth - 40}
-                  height={280}
-                  borderRadius={10}
-                />
-              </TouchableOpacity>
-            ))}
-          </Carousel>
-        </View>
-        <View flex paddingH-20>
-          <Text text70M>
-            Date:{' '}
-            <Text text70>
-              <DateView date={observation.date} format="YYYY-MM-DD" />
+                  flex
+                  center
+                  onPress={() =>
+                    navigation.navigate('View Photo', {
+                      id: id,
+                    })
+                  }
+                >
+                  <Photo
+                    id={id}
+                    key={id}
+                    width={screenWidth - 30}
+                    height={280}
+                    borderRadius={10}
+                  />
+                </TouchableOpacity>
+              ))}
+            </Carousel>
+          </View>
+        )}
+        <View padding-s4>
+          <Card padding-s2>
+            <View row spread>
+              <Text text90M grey10>
+                Observation #{id}
+              </Text>
+              <Text text90M grey30>
+                <DateView date={observation.date} format="ll" />
+              </Text>
+            </View>
+            <View row spread centerV>
+              <Text text70M>
+                <NameView name={observation.consensus} />
+              </Text>
+              <Text text90L>
+                <ConfidenceView confidence={observation.confidence} />
+              </Text>
+            </View>
+            <Text text100M grey30>
+              Location
             </Text>
-          </Text>
-          <Text text70M>
-            Owner:{' '}
-            <Text text70>
-              <OwnerView owner={observation.owner} />
+            <Text text90R grey10>
+              {observation.location_name}
             </Text>
-          </Text>
-          <Text text70M>
-            Consensus:{' '}
-            <Text text70>
-              <NameView name={observation.consensus} />
+            <Text text100M grey30>
+              Coordinates
             </Text>
-          </Text>
-          <Text text70M>
-            Confidence:{' '}
-            <Text text70>
-              <ConfidenceView confidence={observation.confidence} />
+            <Text text90R grey10>
+              {decimelToDMS(observation?.latitude, false)}{' '}
+              {decimelToDMS(observation?.longitude, true)}{' '}
+              {observation?.altitude}m
             </Text>
-          </Text>
-          <Text text70M>
-            Location name: <Text text70>{observation.location_name}</Text>
-          </Text>
-          <Text text70M>
+            {/* <Text text70M>
             Is collection location?:{' '}
             <Text text70>
               {observation.is_collection_location ? 'Yes' : 'No'}
@@ -132,19 +150,28 @@ const ViewObservation = ({
           <Text text70M>
             Specimen Available:{' '}
             <Text text70>{observation.specimen_available ? 'Yes' : 'No'}</Text>{' '}
-          </Text>
-          <Text text70M>
-            Created at:{' '}
-            <Text text70>
-              <DateView date={observation.created_at} format="lll" />
-            </Text>{' '}
-          </Text>
-          <Text text70M>
-            Updated at:{' '}
-            <Text text70>
-              <DateView date={observation.updated_at} format="lll" />
-            </Text>
-          </Text>
+          </Text> */}
+            <View flex row spread>
+              <View>
+                <Text text100M>Owner</Text>
+                <Text text100L>
+                  <OwnerView owner={observation.owner} />
+                </Text>
+              </View>
+              <View>
+                <Text text100M>Created At</Text>
+                <Text text100L>
+                  <DateView date={observation.created_at} format="lll" />
+                </Text>
+              </View>
+              <View>
+                <Text text100M>Updated At</Text>
+                <Text text100L>
+                  <DateView date={observation.updated_at} format="lll" />
+                </Text>
+              </View>
+            </View>
+          </Card>
         </View>
       </ScrollView>
     </View>

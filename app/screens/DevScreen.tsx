@@ -92,44 +92,28 @@ const DevScreen = () => {
         />
         <View padding-s4>
           <FormGroup>
-            <Text marginB-15>Logged in as {auth.user.login_name}</Text>
-            <Text marginB-15>
-              Current API endpoint: {Config.MUSHROOM_OBSERVER_API_URL}
+            <Text text100M grey10>
+              Version
             </Text>
-            <Text marginB-15>
-              Current API key:{' '}
+            <Text text80R>{DeviceInfo.getVersion()}</Text>
+            <Text text100M grey10>
+              Current User
+            </Text>
+            <Text text80R>{auth.user.login_name}</Text>
+            <Text text100M grey10>
+              API Endpoint
+            </Text>
+            <Text text80R>{Config.MUSHROOM_OBSERVER_API_URL}</Text>
+            <Text text100M grey10>
+              API Key
+            </Text>
+            <Text text80R>
               {`********************${auth.key.substring(
                 auth.key.length - 4,
                 auth.key.length,
               )}`}
             </Text>
-            <Text marginB-15>Version: {DeviceInfo.getVersion()}</Text>
           </FormGroup>
-          <Card
-            flex
-            row
-            marginV-5
-            borderRadius={10}
-            enableShadow
-            onPress={() => {}}
-          >
-            <View flex flexG padding-7 height={90}>
-              <Text text70B0>Draft #1</Text>
-              <Text text80BO numberOfLines={1} ellipsizeMode="tail">
-                Fungi
-              </Text>
-              <Text text90L numberOfLines={1} ellipsizeMode="tail">
-                Fayetteville, Arkansas, USA
-              </Text>
-              <Text text100L>{dayjs().format('ll')}</Text>
-            </View>
-            <NoPhoto
-              width={110}
-              height={90}
-              borderTopRightRadius={10}
-              borderBottomRightRadius={10}
-            />
-          </Card>
         </View>
       </ScrollView>
     </View>

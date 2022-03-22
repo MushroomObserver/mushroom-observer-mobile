@@ -29,7 +29,7 @@ export const ObservationDetails = ({
       <Text text80M grey10 numberOfLines={1} ellipsizeMode="tail">
         {name}
       </Text>
-      <Text text100L grey10 numberOfLines={1} ellipsizeMode="tail">
+      <Text text90L grey10 numberOfLines={1} ellipsizeMode="tail">
         {location}
       </Text>
     </View>

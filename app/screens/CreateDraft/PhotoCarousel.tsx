@@ -25,6 +25,18 @@ const Photo = ({ id, draftPhoto, onUseInfo, onRemovePhoto }: PhotoProps) => {
   const navigation = useNavigation();
   const dayjs = useDayjs();
 
+  const decimelToDMS = (decimel: number, lng: boolean) => {
+    return [
+      0 | decimel,
+      '°',
+      0 | (((decimel = (decimel < 0 ? -decimel : decimel) + 1e-4) % 1) * 60),
+      "'",
+      0 | (((decimel * 60) % 1) * 60),
+      '" ',
+      decimel < 0 ? (lng ? 'W' : 'S') : lng ? 'E' : 'N',
+    ].join('');
+  };
+
   return (
     <View flex center marginH-s4>
       <DraftPhoto id={id} key={id} borderRadius={11} cover aspectRatio={1.3} />
@@ -41,25 +53,21 @@ const Photo = ({ id, draftPhoto, onUseInfo, onRemovePhoto }: PhotoProps) => {
         }}
       >
         <View flex marginR-10>
-          <Text text100L>
-            Date: {dayjs(draftPhoto?.date).format('M/DD/YYYY')}
-          </Text>
-          <View centerV row spread>
+          <View row spread>
             {draftPhoto?.latitude && draftPhoto?.longitude ? (
-              <>
+              <View>
                 <Text text100L>
-                  Latitude: {draftPhoto?.latitude?.toFixed(4)}
+                  {decimelToDMS(draftPhoto?.latitude, false)}{' '}
+                  {decimelToDMS(draftPhoto?.longitude, true)}
                 </Text>
-                <Text text100L>
-                  Longitude: {draftPhoto?.longitude?.toFixed(4)}
-                </Text>
-                <Text text100L>
-                  Altitude: {draftPhoto?.altitude?.toFixed(2)}m
-                </Text>
-              </>
+                <Text text100L>{draftPhoto?.altitude?.toFixed(2)}m</Text>
+              </View>
             ) : (
               <Text text100L>No location info available.</Text>
             )}
+            <Text text100M grey10>
+              {dayjs(draftPhoto?.date).format('ll')}
+            </Text>
           </View>
         </View>
         <View centerV>
