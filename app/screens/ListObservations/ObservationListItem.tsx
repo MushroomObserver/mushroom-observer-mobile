@@ -1,5 +1,7 @@
 import NoPhoto from '../../components/NoPhoto';
+import ObservationDetails from '../../components/ObservationDetails';
 import Photo from '../../components/Photo';
+import useDayjs from '../../hooks/useDayjs';
 import { selectKey } from '../../store/auth';
 import {
   selectById,
@@ -23,6 +25,7 @@ const ObservationListItem = ({
   removeObservation,
 }: ObservationListItemProps) => {
   const navigation = useNavigation();
+  const dayjs = useDayjs();
 
   return (
     <Drawer
@@ -60,34 +63,28 @@ const ObservationListItem = ({
         enableShadow
         onPress={() => navigation.navigate('View Observation', { id })}
       >
-        <View flex flexG padding-7>
-          <Text>Observation #{observation.id}</Text>
-          <Text>Date: {observation.date}</Text>
-          <Text numberOfLines={1} ellipsizeMode="tail">
-            {`${observation.consensus?.name} ${
-              observation.consensus?.author ? observation.consensus.author : ''
-            }`}
-          </Text>
-          <Text numberOfLines={1} ellipsizeMode="tail">
-            {observation.location_name}
-          </Text>
-        </View>
         {(get(observation, 'photoIds[0]') && (
           <Photo
             id={observation.photoIds[0]}
             width={90}
-            height={90}
-            borderTopRightRadius={10}
-            borderBottomRightRadius={10}
+            borderTopLeftRadius={10}
+            borderBottomLeftRadius={10}
           />
         )) || (
           <NoPhoto
             width={90}
-            height={90}
-            borderTopRightRadius={10}
-            borderBottomRightRadius={10}
+            borderTopLeftRadius={10}
+            borderBottomLeftRadius={10}
           />
         )}
+        <ObservationDetails
+          title={`Observation #${observation.id}`}
+          date={observation.date}
+          name={`${observation.consensus?.name} ${
+            observation.consensus?.author ? observation.consensus.author : ''
+          }`}
+          location={observation.location_name}
+        />
       </Card>
     </Drawer>
   );

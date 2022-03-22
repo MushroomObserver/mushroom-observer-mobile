@@ -1,5 +1,6 @@
 import DraftPhoto from '../../components/DraftPhoto';
 import NoPhoto from '../../components/NoPhoto';
+import ObservationDetails from '../../components/ObservationDetails';
 import useDayjs from '../../hooks/useDayjs';
 import {
   selectById,
@@ -43,31 +44,26 @@ const DraftListItem = ({
         enableShadow
         onPress={() => navigation.navigate('Edit Draft', { id })}
       >
-        <View flex flexG padding-7 height={90}>
-          <Text>Date: {dayjs(draftObservation?.date).format('ll')}</Text>
-          <Text numberOfLines={1} ellipsizeMode="tail">
-            {draftObservation?.name}
-          </Text>
-          <Text numberOfLines={1} ellipsizeMode="tail">
-            {draftObservation?.location}
-          </Text>
-        </View>
         {(get(draftObservation, 'draftPhotoIds[0]') && (
           <DraftPhoto
             id={get(draftObservation, 'draftPhotoIds[0]')}
             width={90}
-            height={90}
-            borderTopRightRadius={10}
-            borderBottomRightRadius={10}
+            borderTopLeftRadius={10}
+            borderBottomLeftRadius={10}
           />
         )) || (
           <NoPhoto
             width={90}
-            height={90}
-            borderTopRightRadius={10}
-            borderBottomRightRadius={10}
+            borderTopLeftRadius={10}
+            borderBottomLeftRadius={10}
           />
         )}
+        <ObservationDetails
+          title={`Draft`}
+          date={draftObservation?.date}
+          name={draftObservation?.name}
+          location={draftObservation?.location}
+        />
       </Card>
     </Drawer>
   );

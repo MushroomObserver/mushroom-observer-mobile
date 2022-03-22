@@ -1,14 +1,19 @@
+import DraftPhoto from '../components/DraftPhoto';
+import NoPhoto from '../components/NoPhoto';
 import { FormGroup } from '../components/base/FormGroup';
 import { TextField } from '../components/base/TextField';
 import HeaderButtons from '../components/header/HeaderButtons';
 import { useAuth } from '../hooks/useAuth';
+import useDayjs from '../hooks/useDayjs';
 import { useNavigation } from '@react-navigation/core';
+import { get } from 'lodash';
 import React, { useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView } from 'react-native';
 import Config from 'react-native-config';
 import DeviceInfo from 'react-native-device-info';
 import {
   Button,
+  Card,
   Colors,
   ConnectionStatusBar,
   Image,
@@ -24,6 +29,7 @@ import { Item } from 'react-navigation-header-buttons';
 const DevScreen = () => {
   const navigation = useNavigation();
   const auth = useAuth();
+  const dayjs = useDayjs();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -99,65 +105,31 @@ const DevScreen = () => {
             </Text>
             <Text marginB-15>Version: {DeviceInfo.getVersion()}</Text>
           </FormGroup>
-          <FormGroup marginB-s4>
-            <Image
-              cover
-              blurRadius={1}
-              source={{
-                uri: 'https://images.ctfassets.net/cnu0m8re1exe/2d094asxiXehGCvcx7QnKH/e792b90410266045506464e4c844b6d3/shutterstock_315070247.jpg',
-              }}
-              overlayType={Image.overlayTypes.SOLID}
-            />
-            <Text text80M>Login</Text>
-            <View flex>
-              <TextField
-                placeholder={'Email'}
-                floatingPlaceholder
-                enableErrors
-                validate={['required', 'email']}
-                validateOnChange
-                validationMessage={['Field is required', 'Email is invalid']}
-              />
+          <Card
+            flex
+            row
+            marginV-5
+            borderRadius={10}
+            enableShadow
+            onPress={() => {}}
+          >
+            <View flex flexG padding-7 height={90}>
+              <Text text70B0>Draft #1</Text>
+              <Text text80BO numberOfLines={1} ellipsizeMode="tail">
+                Fungi
+              </Text>
+              <Text text90L numberOfLines={1} ellipsizeMode="tail">
+                Fayetteville, Arkansas, USA
+              </Text>
+              <Text text100L>{dayjs().format('ll')}</Text>
             </View>
-            <TextField
-              placeholder="Password"
-              floatingPlaceholder
-              trailingAccessory={<TrailingAccessory />}
+            <NoPhoto
+              width={110}
+              height={90}
+              borderTopRightRadius={10}
+              borderBottomRightRadius={10}
             />
-          </FormGroup>
-          <FormGroup>
-            <ProgressBar progress={55} />
-            <Text text80M>Coordinates</Text>
-            <View row>
-              <View flex>
-                <TextField
-                  text80
-                  placeholder="Latitude"
-                  floatingPlaceholder
-                  floatOnFocus
-                />
-              </View>
-              <View flex>
-                <TextField
-                  placeholder="Longitude"
-                  floatingPlaceholder
-                  floatOnFocus
-                />
-              </View>
-              <View flex>
-                <TextField
-                  value={value}
-                  onChangeText={e => {
-                    console.log(e);
-                    setValue(e);
-                  }}
-                  placeholder="Altitude"
-                  floatingPlaceholder
-                  floatOnFocus
-                />
-              </View>
-            </View>
-          </FormGroup>
+          </Card>
         </View>
       </ScrollView>
     </View>
