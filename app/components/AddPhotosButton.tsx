@@ -21,7 +21,6 @@ const AddPhotosButton = ({
   const { showActionSheetWithOptions } = useActionSheet();
   return (
     <Button
-      marginB-15
       label="Add Photos"
       size={Button.sizes.medium}
       onPress={() =>

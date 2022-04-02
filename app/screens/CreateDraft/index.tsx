@@ -441,11 +441,13 @@ const DraftWizard = ({
               />
             </View>
             <View flex margin-s4>
-              <AddPhotosButton
-                callback={addPhotos}
-                numPhotos={draftPhotoIds.length}
-                maxPhotos={SELECTION_LIMIT}
-              />
+              <View marginB-s4>
+                <AddPhotosButton
+                  callback={addPhotos}
+                  numPhotos={draftPhotoIds.length}
+                  maxPhotos={SELECTION_LIMIT}
+                />
+              </View>
               <FormGroup>
                 <Text marginB-s2 text80 textDefault>
                   Date

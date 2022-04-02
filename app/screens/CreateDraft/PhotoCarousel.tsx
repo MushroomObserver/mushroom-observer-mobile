@@ -1,13 +1,19 @@
 import DraftPhoto from '../../components/DraftPhoto';
 import useDayjs from '../../hooks/useDayjs';
+import decimelToDMS from '../../hooks/useDecimelToDMS';
 import { selectById } from '../../store/draftImages';
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { Dimensions } from 'react-native';
-import { Carousel, Chip, Colors, Text, View } from 'react-native-ui-lib';
+import {
+  Carousel,
+  Chip,
+  Colors,
+  Spacings,
+  Text,
+  View,
+} from 'react-native-ui-lib';
 import { connect, ConnectedProps } from 'react-redux';
-
-const { width: screenWidth } = Dimensions.get('window');
 
 interface PhotoCarouselProps {
   draftPhotoIds: string[];
@@ -25,21 +31,15 @@ const Photo = ({ id, draftPhoto, onUseInfo, onRemovePhoto }: PhotoProps) => {
   const navigation = useNavigation();
   const dayjs = useDayjs();
 
-  const decimelToDMS = (decimel: number, lng: boolean) => {
-    return [
-      0 | decimel,
-      '°',
-      0 | (((decimel = (decimel < 0 ? -decimel : decimel) + 1e-4) % 1) * 60),
-      "'",
-      0 | (((decimel * 60) % 1) * 60),
-      '" ',
-      decimel < 0 ? (lng ? 'W' : 'S') : lng ? 'E' : 'N',
-    ].join('');
-  };
-
   return (
-    <View flex center marginH-s4>
-      <DraftPhoto id={id} key={id} borderRadius={11} cover aspectRatio={1.3} />
+    <View marginH-s4>
+      <DraftPhoto
+        id={id}
+        key={id}
+        borderRadius={11}
+        width="100%"
+        aspectRatio={1.3}
+      />
       <View
         absT
         flex
@@ -160,6 +160,7 @@ const PhotoCarousel = ({
     >
       {draftPhotoIds.map(id => (
         <ConnectedPhoto
+          marginH-s3
           key={id}
           id={id}
           onUseInfo={onUseInfo}

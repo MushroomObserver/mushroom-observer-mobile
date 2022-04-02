@@ -7,6 +7,7 @@ export interface ObservationDetailsProps {
   date: string;
   name: string;
   location: string;
+  coordinates: string;
 }
 
 export const ObservationDetails = ({
@@ -14,6 +15,7 @@ export const ObservationDetails = ({
   date,
   name,
   location,
+  coordinates,
 }: ObservationDetailsProps) => {
   const dayjs = useDayjs();
   return (
@@ -31,6 +33,9 @@ export const ObservationDetails = ({
       </Text>
       <Text text90L grey10 numberOfLines={1} ellipsizeMode="tail">
         {location}
+      </Text>
+      <Text text90L grey10>
+        {coordinates}
       </Text>
     </View>
   );

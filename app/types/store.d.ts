@@ -7,6 +7,7 @@ export interface Owner {
 export interface Name {
   id: number;
   name: string;
+  author: string;
   rank: string;
 }
 
@@ -81,15 +82,15 @@ export interface DraftObservation {
 
 export interface DraftImage {
   id: string;
-  fileName?:string;
-  fileSize?:number;
-  type?:string;
+  fileName?: string;
+  fileSize?: number;
+  type?: string;
   width?: number;
-  height?:number;
-  latitude?:number;
-  longitude?:number;
-  altitude?:number;
-  uri?:string;
+  height?: number;
+  latitude?: number;
+  longitude?: number;
+  altitude?: number;
+  uri?: string;
   copyrightHolder?: string;
   date?: string;
   license?: string;

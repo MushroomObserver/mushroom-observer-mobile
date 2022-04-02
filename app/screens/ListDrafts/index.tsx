@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/core';
 import { nanoid } from '@reduxjs/toolkit';
 import React from 'react';
 import { FlatList, StyleSheet } from 'react-native';
-import { FloatingButton, View } from 'react-native-ui-lib';
+import { FloatingButton, Spacings, View } from 'react-native-ui-lib';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -31,8 +31,10 @@ const DraftList = ({
       />
       <FloatingButton
         visible
+        bottomMargin={Spacings.s4}
         button={{
           label: 'Create Observation',
+          size: 'medium',
           onPress: () => {
             const id = nanoid();
             addDraftObservation({

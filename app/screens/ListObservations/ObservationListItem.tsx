@@ -1,17 +1,15 @@
-import NoPhoto from '../../components/NoPhoto';
-import ObservationDetails from '../../components/ObservationDetails';
-import Photo from '../../components/Photo';
-import useDayjs from '../../hooks/useDayjs';
+import ListItemLayout from '../../components/layouts/ListItemLayout';
+import getImageUri from '../../hooks/useGetImageUri';
 import { selectKey } from '../../store/auth';
+import { selectById as selectImageById } from '../../store/images';
 import {
-  selectById,
+  selectById as selectObservationById,
   removeObservation as removeObservationAction,
 } from '../../store/observations';
 import { useNavigation } from '@react-navigation/core';
-import { get } from 'lodash';
 import React from 'react';
 import { Alert } from 'react-native';
-import { Card, Colors, Drawer, Text, View } from 'react-native-ui-lib';
+import { Colors, Drawer } from 'react-native-ui-lib';
 import { connect, ConnectedProps } from 'react-redux';
 
 interface ObservationListItemProps extends PropsFromRedux {
@@ -19,14 +17,14 @@ interface ObservationListItemProps extends PropsFromRedux {
 }
 
 const ObservationListItem = ({
-  apiKey,
   id,
   observation,
+  photo,
   removeObservation,
 }: ObservationListItemProps) => {
   const navigation = useNavigation();
-  const dayjs = useDayjs();
 
+  console.log(photo);
   return (
     <Drawer
       useNativeAnimations
@@ -54,46 +52,27 @@ const ObservationListItem = ({
         },
       ]}
     >
-      <Card
-        flex
-        row
-        marginV-5
-        marginH-10
-        borderRadius={10}
-        enableShadow
+      <ListItemLayout
+        uri={getImageUri(photo?.files[0])}
+        title={`Observation #${observation.id}`}
+        date={observation.date}
+        name={`${observation.consensus?.name} ${
+          observation.consensus?.author ? observation.consensus.author : ''
+        }`}
+        location={observation.location_name}
+        coordinates={observation.coordinates}
         onPress={() => navigation.navigate('View Observation', { id })}
-      >
-        {(get(observation, 'photoIds[0]') && (
-          <Photo
-            id={observation.photoIds[0]}
-            width={90}
-            borderTopLeftRadius={10}
-            borderBottomLeftRadius={10}
-          />
-        )) || (
-          <NoPhoto
-            width={90}
-            borderTopLeftRadius={10}
-            borderBottomLeftRadius={10}
-          />
-        )}
-        <ObservationDetails
-          title={`Observation #${observation.id}`}
-          date={observation.date}
-          name={`${observation.consensus?.name} ${
-            observation.consensus?.author ? observation.consensus.author : ''
-          }`}
-          location={observation.location_name}
-        />
-      </Card>
+      />
     </Drawer>
   );
 };
 
 const mapStateToProps = (state: any, ownProps: any) => {
+  const observation = selectObservationById(state, ownProps.id);
+  const photo = selectImageById(state, observation.photoIds[0]);
   return {
-    apiKey: selectKey(state),
-    observation: selectById(state, ownProps.id),
+    observation,
+    photo,
   };
 };
 

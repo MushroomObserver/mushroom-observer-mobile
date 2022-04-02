@@ -4,7 +4,6 @@ import CreateDraft from './screens/CreateDraft';
 import CreatePhoto from './screens/CreatePhoto';
 import DevScreen from './screens/DevScreen';
 import EditObservation from './screens/EditObservation';
-import EditPhoto from './screens/EditPhoto';
 import ListDrafts from './screens/ListDrafts';
 import ListObservations from './screens/ListObservations';
 import Login from './screens/Login';
@@ -16,7 +15,6 @@ import { selectTotal as selectDraftObservationTotal } from './store/draftObserva
 import { selectError, selectInfo, selectWarning } from './store/flash';
 import { preloadLocations } from './store/locations';
 import { preloadNames } from './store/names';
-import { selectTotal as selectObservationTotal } from './store/observations';
 import { LoginStackParamList } from './types/navigation';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -27,6 +25,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { View } from 'react-native-ui-lib';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { OverflowMenuProvider } from 'react-navigation-header-buttons';
@@ -141,7 +140,6 @@ const HomeStack = () => (
     <HomeStackScreen name="Edit Observation" component={EditObservation} />
     <HomeStackScreen name="Create Photo" component={CreatePhoto} />
     <HomeStackScreen name="View Photo" component={ViewPhoto} />
-    <HomeStackScreen name="Edit Photo" component={EditPhoto} />
   </HomeStackNavigator>
 );
 
@@ -161,16 +159,18 @@ const App = () => {
   });
 
   return (
-    <View flex>
-      <FlashView info={info} />
-      <FlashView warning={warning} />
-      <FlashView error={error} />
-      <NavigationContainer ref={navigationRef}>
-        <OverflowMenuProvider>
-          {!user ? <LoginStack /> : <HomeStack />}
-        </OverflowMenuProvider>
-      </NavigationContainer>
-    </View>
+    <SafeAreaProvider>
+      <View flex>
+        <FlashView info={info} />
+        <FlashView warning={warning} />
+        <FlashView error={error} />
+        <NavigationContainer ref={navigationRef}>
+          <OverflowMenuProvider>
+            {!user ? <LoginStack /> : <HomeStack />}
+          </OverflowMenuProvider>
+        </NavigationContainer>
+      </View>
+    </SafeAreaProvider>
   );
 };
 

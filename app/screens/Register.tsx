@@ -4,7 +4,7 @@ import { loginSuccess } from '../store/auth';
 import { usePostUserMutation } from '../store/mushroomObserver';
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView } from 'react-native';
-import { Button, Colors, LoaderScreen, View } from 'react-native-ui-lib';
+import { Button, Colors, LoaderScreen, Text, View } from 'react-native-ui-lib';
 import { useDispatch } from 'react-redux';
 
 const Register = () => {
@@ -44,7 +44,11 @@ const Register = () => {
       <ScrollView>
         <View padding-30>
           <FormGroup>
+            <Text text70M marginB-s2>
+              Register
+            </Text>
             <TextField
+              preset="default"
               ref={emailInput}
               autoFocus
               autoCorrect={false}
@@ -63,6 +67,7 @@ const Register = () => {
               errorMessage={['This field is required', 'Email is invalid']}
             />
             <TextField
+              preset="default"
               ref={usernameInput}
               autoCorrect={false}
               autoCapitalize="none"
@@ -80,6 +85,7 @@ const Register = () => {
               errorMessage="This field is required"
             />
             <TextField
+              preset="default"
               ref={passwordInput}
               autoCorrect={false}
               autoCapitalize="none"
@@ -96,6 +102,7 @@ const Register = () => {
               errorMessage="This field is required"
             />
             <TextField
+              preset="default"
               ref={confirmPasswordInput}
               autoCorrect={false}
               autoCapitalize="none"

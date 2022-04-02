@@ -2,33 +2,33 @@ import { ConfidenceView } from '../components/ConfidenceView';
 import { DateView } from '../components/DateView';
 import { NameView } from '../components/NameView';
 import { OwnerView } from '../components/OwnerView';
-import Photo from '../components/Photo';
-import HeaderButtons from '../components/header/HeaderButtons';
+import decimelToDMS from '../hooks/useDecimelToDMS';
+import getImageUri from '../hooks/useGetImageUri';
+import { selectById as selectImageById } from '../store/images';
 import {
   removeObservation as removeObservationAction,
-  selectById,
+  selectById as selectObservationById,
 } from '../store/observations';
 import { ForwardedViewObservationProps } from '../types/navigation';
-import { Observation } from '../types/store';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import { concat, find, round } from 'lodash';
-import React, { useLayoutEffect } from 'react';
-import { Button as NativeButton, Dimensions, ScrollView } from 'react-native';
+import { concat, first, nth } from 'lodash';
+import React from 'react';
+import { Dimensions, ScrollView } from 'react-native';
 import {
   Carousel,
   Card,
   Colors,
   Text,
-  TouchableOpacity,
   View,
+  Image,
+  TouchableOpacity,
 } from 'react-native-ui-lib';
-import { Item } from 'react-navigation-header-buttons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect } from 'react-redux';
 
 interface ViewObservationProps {
   id: number;
-  observation: Observation;
 }
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -36,136 +36,141 @@ const { width: screenWidth } = Dimensions.get('window');
 const ViewObservation = ({
   id,
   observation,
+  photos,
 }: ForwardedViewObservationProps) => {
   const navigation = useNavigation();
   const route = useRoute();
-  console.log(observation);
-
-  const decimelToDMS = (decimel: number, lng: boolean) => {
-    return [
-      0 | decimel,
-      '°',
-      0 | (((decimel = (decimel < 0 ? -decimel : decimel) + 1e-4) % 1) * 60),
-      "'",
-      0 | (((decimel * 60) % 1) * 60),
-      '" ',
-      decimel < 0 ? (lng ? 'W' : 'S') : lng ? 'E' : 'N',
-    ].join('');
-  };
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: `Observation #${id}`,
-      headerRight: () => (
-        <HeaderButtons>
-          <Item
-            title="Edit"
-            onPress={() => navigation.navigate('Edit Observation', { id })}
-            disabled
-          />
-        </HeaderButtons>
-      ),
-    });
-  }, [navigation, route]);
 
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        {observation.photoIds.length > 0 && (
-          <View marginT-s4>
-            <Carousel
-              horizontal
-              allowAccessibleLayout
-              pageControlPosition={Carousel.pageControlPositions.OVER}
-              pageControlProps={{
-                color: Colors.primary,
-                inactiveColor: Colors.grey30,
-              }}
-            >
-              {concat(observation.photoIds).map((id: string) => (
-                <TouchableOpacity
-                  key={id}
-                  flex
-                  center
-                  onPress={() =>
-                    navigation.navigate('View Photo', {
-                      id: id,
-                    })
-                  }
-                >
-                  <Photo
-                    id={id}
-                    key={id}
-                    width={screenWidth - 30}
-                    height={280}
-                    borderRadius={10}
-                  />
-                </TouchableOpacity>
-              ))}
-            </Carousel>
-          </View>
-        )}
         <View padding-s4>
-          <Card padding-s2>
-            <View row spread>
-              <Text text90M grey10>
+          <Card>
+            <View row spread padding-s2>
+              <Text text80M grey10>
                 Observation #{id}
               </Text>
-              <Text text90M grey30>
+              <Text text80M grey30>
                 <DateView date={observation.date} format="ll" />
               </Text>
             </View>
-            <View row spread centerV>
-              <Text text70M>
+            {photos.length != 0 && (
+              <Carousel showCounter horizontal allowAccessibleLayout>
+                {concat(photos).map(photo => (
+                  <TouchableOpacity
+                    key={photo.id}
+                    onPress={() =>
+                      navigation.navigate('View Photo', {
+                        id: photo.id,
+                      })
+                    }
+                  >
+                    <Image
+                      source={{ uri: getImageUri(first(photo.files)) }}
+                      height={340}
+                      blurRadius={1}
+                    />
+                    <View absF center>
+                      {(() => {
+                        const aspectRatio = photo.width / photo.height;
+                        console.log(photo);
+                        return (
+                          <Image
+                            source={{ uri: getImageUri(nth(photo.files, -3)) }}
+                            key={photo.id}
+                            aspectRatio={aspectRatio}
+                            width={aspectRatio < 1 ? undefined : '100%'}
+                            height={aspectRatio < 1 ? '100%' : undefined}
+                          />
+                        );
+                      })()}
+                    </View>
+                    <View
+                      absB
+                      absH
+                      padding-s2
+                      backgroundColor={Colors.rgba(Colors.white, 0.7)}
+                    >
+                      <Text text90M grey10>
+                        Notes
+                      </Text>
+                      <Text text90R grey10 numberOfLines={1}>
+                        {photo.notes?.replace(/<(.|\n)*?>/g, '')}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </Carousel>
+            )}
+            <View paddingT-0={photos.length === 0} padding-s2>
+              <Text text60M marginB-s2>
                 <NameView name={observation.consensus} />
               </Text>
-              <Text text90L>
-                <ConfidenceView confidence={observation.confidence} />
+              <Text text90M grey10>
+                Location
+              </Text>
+              <Text text90R grey10 marginB-s2>
+                {observation.location_name}
+              </Text>
+              <View row spread>
+                <View marginB-s2>
+                  <Text text90M grey10 marginR-s1>
+                    Coordinates
+                  </Text>
+                  <Text text90R grey10>
+                    {decimelToDMS(observation?.latitude, false)}{' '}
+                    {decimelToDMS(observation?.longitude, true)}{' '}
+                    {observation?.altitude}m
+                  </Text>
+                  <View row centerV>
+                    <Icon
+                      name={observation.gps_hidden ? 'lock' : 'unlock'}
+                      color={Colors.grey30}
+                    />
+                    <Text marginL-s1 text100M grey30>
+                      {observation.gps_hidden
+                        ? 'Hidden from public'
+                        : 'Visible to public'}
+                    </Text>
+                  </View>
+                </View>
+                <View>
+                  <Text text90M grey10>
+                    Confidence
+                  </Text>
+                  <Text text90R>
+                    <ConfidenceView confidence={observation.confidence} />
+                  </Text>
+                </View>
+              </View>
+              <Text text90M grey10>
+                Notes
+              </Text>
+              <Text text90R grey10>
+                {observation.notes?.replace(/<(.|\n)*?>/g, '')}
               </Text>
             </View>
-            <Text text100M grey30>
-              Location
-            </Text>
-            <Text text90R grey10>
-              {observation.location_name}
-            </Text>
-            <Text text100M grey30>
-              Coordinates
-            </Text>
-            <Text text90R grey10>
-              {decimelToDMS(observation?.latitude, false)}{' '}
-              {decimelToDMS(observation?.longitude, true)}{' '}
-              {observation?.altitude}m
-            </Text>
-            {/* <Text text70M>
-            Is collection location?:{' '}
-            <Text text70>
-              {observation.is_collection_location ? 'Yes' : 'No'}
-            </Text>
-          </Text>
-          <Text text70M>
-            GPS Hidden:{' '}
-            <Text text70>{observation.gps_hidden ? 'Yes' : 'No'}</Text>{' '}
-          </Text>
-          <Text text70M>
-            Specimen Available:{' '}
-            <Text text70>{observation.specimen_available ? 'Yes' : 'No'}</Text>{' '}
-          </Text> */}
-            <View flex row spread>
+            <View flex row spread padding-s2>
               <View>
-                <Text text100M>Owner</Text>
+                <Text text100M grey10>
+                  Owner
+                </Text>
                 <Text text100L>
                   <OwnerView owner={observation.owner} />
                 </Text>
               </View>
               <View>
-                <Text text100M>Created At</Text>
+                <Text text100M grey10>
+                  Created At
+                </Text>
                 <Text text100L>
                   <DateView date={observation.created_at} format="lll" />
                 </Text>
               </View>
               <View>
-                <Text text100M>Updated At</Text>
+                <Text text100M grey10>
+                  Updated At
+                </Text>
                 <Text text100L>
                   <DateView date={observation.updated_at} format="lll" />
                 </Text>
@@ -178,9 +183,16 @@ const ViewObservation = ({
   );
 };
 
-const mapStateToProps = (state: any, ownProps: ViewObservationProps) => ({
-  observation: selectById(state, ownProps.id),
-});
+const mapStateToProps = (state: any, ownProps: ViewObservationProps) => {
+  const observation = selectObservationById(state, ownProps.id);
+  const photos = observation.photoIds.map((id: string) =>
+    selectImageById(state, id),
+  );
+  return {
+    observation,
+    photos,
+  };
+};
 
 const mapDispatchToProps = {
   removeObservation: removeObservationAction,

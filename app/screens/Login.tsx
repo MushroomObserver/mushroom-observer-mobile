@@ -6,7 +6,14 @@ import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView } from 'react-native';
 import Config from 'react-native-config';
-import { Button, Colors, Image, LoaderScreen, View } from 'react-native-ui-lib';
+import {
+  Button,
+  Colors,
+  Image,
+  LoaderScreen,
+  Text,
+  View,
+} from 'react-native-ui-lib';
 import { connect, ConnectedProps } from 'react-redux';
 
 const Login = ({ loginSuccess }: PropsFromRedux) => {
@@ -49,6 +56,9 @@ const Login = ({ loginSuccess }: PropsFromRedux) => {
         <View padding-30>
           <Image marginB-15 logo />
           <FormGroup>
+            <Text text70M marginB-s2>
+              Login
+            </Text>
             <TextField
               preset="default"
               ref={usernameInput}

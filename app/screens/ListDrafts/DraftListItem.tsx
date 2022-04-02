@@ -1,15 +1,13 @@
-import DraftPhoto from '../../components/DraftPhoto';
-import NoPhoto from '../../components/NoPhoto';
-import ObservationDetails from '../../components/ObservationDetails';
+import ListItemLayout from '../../components/layouts/ListItemLayout';
 import useDayjs from '../../hooks/useDayjs';
+import { selectById as selectDraftImageById } from '../../store/draftImages';
 import {
-  selectById,
+  selectById as selectDraftObservationById,
   removeDraftObservation as removeDraftObservationAction,
 } from '../../store/draftObservations';
 import { useNavigation } from '@react-navigation/core';
-import { get } from 'lodash';
 import React from 'react';
-import { Card, Colors, Drawer, Text, View } from 'react-native-ui-lib';
+import { Colors, Drawer } from 'react-native-ui-lib';
 import { connect, ConnectedProps } from 'react-redux';
 
 interface DraftListItemProps extends PropsFromRedux {
@@ -19,6 +17,7 @@ interface DraftListItemProps extends PropsFromRedux {
 const DraftListItem = ({
   id,
   draftObservation,
+  draftPhoto,
   removeDraftObservation,
 }: DraftListItemProps) => {
   const navigation = useNavigation();
@@ -35,43 +34,29 @@ const DraftListItem = ({
         },
       ]}
     >
-      <Card
-        flex
-        row
-        marginV-5
-        marginH-10
-        borderRadius={10}
-        enableShadow
+      <ListItemLayout
+        uri={draftPhoto?.uri}
+        title={`Draft`}
+        date={draftObservation?.date}
+        name={draftObservation?.name}
+        location={draftObservation?.location}
         onPress={() => navigation.navigate('Edit Draft', { id })}
-      >
-        {(get(draftObservation, 'draftPhotoIds[0]') && (
-          <DraftPhoto
-            id={get(draftObservation, 'draftPhotoIds[0]')}
-            width={90}
-            borderTopLeftRadius={10}
-            borderBottomLeftRadius={10}
-          />
-        )) || (
-          <NoPhoto
-            width={90}
-            borderTopLeftRadius={10}
-            borderBottomLeftRadius={10}
-          />
-        )}
-        <ObservationDetails
-          title={`Draft`}
-          date={draftObservation?.date}
-          name={draftObservation?.name}
-          location={draftObservation?.location}
-        />
-      </Card>
+      />
     </Drawer>
   );
 };
 
-const mapStateToProps = (state: any, ownProps: any) => ({
-  draftObservation: selectById(state, ownProps.id),
-});
+const mapStateToProps = (state: any, ownProps: any) => {
+  const draftObservation = selectDraftObservationById(state, ownProps.id);
+  const draftPhoto = selectDraftImageById(
+    state,
+    draftObservation?.draftPhotoIds[0],
+  );
+  return {
+    draftObservation,
+    draftPhoto,
+  };
+};
 
 const mapDispatchToProps = {
   removeDraftObservation: removeDraftObservationAction,

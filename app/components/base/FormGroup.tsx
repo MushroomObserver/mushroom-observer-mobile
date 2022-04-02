@@ -1,15 +1,10 @@
 import React from 'react';
-import { Colors, View, ViewProps } from 'react-native-ui-lib';
+import { Colors, Card, CardProps } from 'react-native-ui-lib';
 
-export const FormGroup = (props: ViewProps) => {
+export const FormGroup = (props: CardProps) => {
   return (
-    <View
-      br20
-      style={{ borderColor: Colors.grey40, borderWidth: 1 }}
-      padding-s2
-      {...props}
-    >
+    <Card br20 bg-white padding-s2 {...props}>
       {props.children}
-    </View>
+    </Card>
   );
 };

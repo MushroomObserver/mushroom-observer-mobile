@@ -11,6 +11,14 @@ const NoPhoto = ({
   borderTopRightRadius,
   borderBottomRightRadius,
   borderBottomLeftRadius,
+}: {
+  width?: number;
+  height?: number;
+  borderRadius?: number;
+  borderTopLeftRadius?: number;
+  borderTopRightRadius?: number;
+  borderBottomRightRadius?: number;
+  borderBottomLeftRadius?: number;
 }) => (
   <View
     style={{
