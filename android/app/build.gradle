@@ -144,8 +144,8 @@ android {
         applicationId "org.mushroomobserver.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 39
-        versionName "1.0.39"
+        versionCode 40
+        versionName "1.0.40"
     }
     splits {
         abi {
@@ -156,12 +156,12 @@ android {
         }
     }
     signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
+         debug {
+             storeFile file('debug.keystore')
+             storePassword 'android'
+             keyAlias 'androiddebugkey'
+             keyPassword 'android'
+         }
     }
     buildTypes {
         debug {

@@ -1,13 +1,14 @@
 import ConfirmButton from '../components/ConfirmButton';
+import { FormGroup } from '../components/base/FormGroup';
 import HeaderButtons from '../components/header/HeaderButtons';
 import { useAuth } from '../hooks/useAuth';
 import { persistor } from '../store';
 import { logout } from '../store/auth';
 import { useNavigation } from '@react-navigation/core';
 import React, { useLayoutEffect } from 'react';
-import { Alert, ScrollView } from 'react-native';
+import { Alert, Linking, ScrollView } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import { Text, View } from 'react-native-ui-lib';
+import { Button, Text, View } from 'react-native-ui-lib';
 import { Item } from 'react-navigation-header-buttons';
 import { useDispatch } from 'react-redux';
 
@@ -46,16 +47,37 @@ const Settings = () => {
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View padding-30>
-          <Text marginB-15>Logged in as {auth.user.login_name}</Text>
-          <Text marginB-15>
-            Current API key:{' '}
-            {`********************${auth.key.substring(
-              auth.key.length - 4,
-              auth.key.length,
-            )}`}
-          </Text>
-          <Text marginB-15>Version: {DeviceInfo.getVersion()}</Text>
+        <View padding-s4>
+          <FormGroup>
+            <Text text100M grey10>
+              Version
+            </Text>
+            <Text text80R>{DeviceInfo.getVersion()}</Text>
+            <Text text100M grey10>
+              Current User
+            </Text>
+            <Text text80R>{auth.user.login_name}</Text>
+            <Text text100M grey10>
+              API Key
+            </Text>
+            <Text text80R>
+              {`********************${auth.key.substring(
+                auth.key.length - 4,
+                auth.key.length,
+              )}`}
+            </Text>
+          </FormGroup>
+          <Button
+            marginT-s4
+            label="Submit Feedback"
+            onPress={() =>
+              Linking.openURL(
+                `https://docs.google.com/forms/d/e/1FAIpQLSdqlFlaoUEbL76eFTbJ70cISN0oO3vgz8fZulD4QGb-wCNaZw/viewform?usp=pp_url&entry.1034709423=${
+                  auth.user.login_name
+                }&entry.1883000247=${DeviceInfo.getVersion()}`,
+              )
+            }
+          />
         </View>
       </ScrollView>
     </View>

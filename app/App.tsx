@@ -95,7 +95,7 @@ const HomeTabs = ({ draftObservationCount }: PropsFromRedux) => (
         ),
       }}
     />
-    {__DEV__ && (
+    {/* {__DEV__ && (
       <HomeTabsScreen
         name="Developer"
         component={DevScreen}
@@ -105,7 +105,7 @@ const HomeTabs = ({ draftObservationCount }: PropsFromRedux) => (
           ),
         }}
       />
-    )}
+    )} */}
   </HomeTabsNavigator>
 );
 
