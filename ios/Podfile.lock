@@ -494,7 +494,7 @@ DEPENDENCIES:
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
-  - ExpoModulesCore (from `../node_modules/react-native-unimodules/node_modules/expo-modules-core/ios`)
+  - ExpoModulesCore (from `../node_modules/expo-modules-core/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - Flipper (= 0.135.0)
@@ -611,7 +611,7 @@ EXTERNAL SOURCES:
   EXImageLoader:
     :path: "../node_modules/expo-image-loader/ios"
   ExpoModulesCore:
-    :path: "../node_modules/react-native-unimodules/node_modules/expo-modules-core/ios"
+    :path: "../node_modules/expo-modules-core/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
@@ -731,7 +731,7 @@ SPEC CHECKSUMS:
   EXConstants: 4cb52b6d8f636c767104a44bf7db3873e9c01a6f
   EXFileSystem: 0a04aba8da751b9ac954065911bcf166503f8267
   EXImageLoader: d3531a3fe530b22925c19977cb53bb43e3821fe6
-  ExpoModulesCore: 2734852616127a6c1fc23012197890a6f3763dc7
+  ExpoModulesCore: 730c7158b2fb179ba5921230e56a083a2304974d
   FBLazyVector: 500821d196c3d1bd10e7e828bc93ce075234080f
   FBReactNativeSpec: 74c869e2cffa2ffec685cd1bac6788c021da6005
   Flipper: 23bca214cb1ad827e1c965cbb1d2ed23158a7bd8

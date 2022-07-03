@@ -9,7 +9,7 @@ import { persistor, store } from './store';
 import loadAssets from './styles/assets';
 import loadFoundation from './styles/foundation';
 import loadTheme from './styles/theme';
-import { StatusBar, StyleSheet } from 'react-native';
+import { StatusBar } from 'react-native';
 
 loadAssets();
 loadFoundation();
@@ -29,13 +29,7 @@ export default () => {
           <StatusBar barStyle="dark-content" />
           <App />
         </PersistGate>
-      </Provider>
+    </Provider>
     </ActionSheetProvider>
   );
 };
-
-const styles = StyleSheet.create({
-  safeAreaView: {
-    flex: 1,
-  }
-})

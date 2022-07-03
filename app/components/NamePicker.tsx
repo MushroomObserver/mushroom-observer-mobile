@@ -48,11 +48,8 @@ const NamePicker = ({ name, names, onChangeName }: NamePickerProps) => {
         onChange={onChangeName}
         topBarProps={{ title: 'Name' }}
         listProps={{
-          data: filter(
-            sortedNames,
-            ({ text_name, author }) =>
-              lowerCase(text_name).includes(lowerCase(query)) ||
-              lowerCase(author).includes(lowerCase(query)),
+          data: filter(sortedNames, ({ text_name }) =>
+            lowerCase(text_name).startsWith(lowerCase(query)),
           ),
           renderItem: ({ item }: { item: Name }) => {
             return (

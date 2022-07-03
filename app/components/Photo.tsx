@@ -1,11 +1,12 @@
+import getImageUri from '../hooks/useGetImageUri';
 import { selectById } from '../store/images';
 import { Image as ImageType } from '../types/store';
 import React from 'react';
 import Config from 'react-native-config';
-import { Image } from 'react-native-ui-lib';
+import { Image, ImageProps } from 'react-native-ui-lib';
 import { connect } from 'react-redux';
 
-interface PhotoProps {
+interface PhotoProps extends ImageProps {
   id: string;
   photo?: ImageType;
   width: number;
@@ -27,20 +28,12 @@ const Photo = ({
   borderTopRightRadius,
   borderBottomRightRadius,
   borderBottomLeftRadius,
+  ...props
 }: PhotoProps) => {
-  const getPhotoUri = (uri: string) => {
-    if (__DEV__)
-      return uri.replace(
-        'http://images.mushroomobserver.org',
-        Config.MUSHROOM_OBSERVER_API_URL + '/images',
-      );
-    return uri;
-  };
-
   return (
     <Image
+      {...props}
       style={{
-        resizeMode: 'cover',
         width,
         height,
         borderRadius,
@@ -50,7 +43,7 @@ const Photo = ({
         borderBottomLeftRadius,
       }}
       resizeMethod="auto"
-      source={{ uri: getPhotoUri(photo?.files[1]) }}
+      source={{ uri: getImageUri(photo?.files[1]) }}
     />
   );
 };

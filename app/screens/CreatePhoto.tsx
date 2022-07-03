@@ -1,5 +1,7 @@
 import DraftPhoto from '../components/DraftPhoto';
 import { NotesField } from '../components/NotesField';
+import { FormGroup } from '../components/base/FormGroup';
+import { TextField } from '../components/base/TextField';
 import useDayjs from '../hooks/useDayjs';
 import {
   selectById,
@@ -9,13 +11,7 @@ import { ForwardedCreatePhotoProps } from '../types/navigation';
 import { useNavigation } from '@react-navigation/core';
 import React, { useLayoutEffect, useState } from 'react';
 import { Button as NativeButton, Dimensions, ScrollView } from 'react-native';
-import {
-  Picker,
-  Text,
-  TextField,
-  View,
-  DateTimePicker,
-} from 'react-native-ui-lib';
+import { Picker, Text, View, DateTimePicker } from 'react-native-ui-lib';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -76,23 +72,23 @@ const CreatePhoto = ({
             borderRadius={10}
           />
         </View>
-        <View padding-20>
+        <FormGroup margin-s4 padding-s2>
           <TextField
-            title="Copyright Holder"
+            preset="default"
+            label="Copyright Holder"
             value={copyrightHolder}
             onChangeText={setCopyrightHolder}
           />
+          <Text marginB-s2 text80 textDefault>
+            Date
+          </Text>
           <DateTimePicker
-            title={'Date'}
             value={date}
             maximumDate={new Date()}
+            themeVariant="light"
             mode="date"
-            display="default"
             onChange={setDate}
           />
-          <Text marginT-0 marginB-20>
-            Date the photograph or drawing was created.
-          </Text>
           <Picker title="License" onChange={setLicense} value={license}>
             <Picker.Item
               value={3.0}
@@ -109,7 +105,7 @@ const CreatePhoto = ({
             notes={notes}
             onChangeNotes={setNotes}
           />
-        </View>
+        </FormGroup>
       </ScrollView>
     </View>
   );

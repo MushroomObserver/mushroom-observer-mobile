@@ -1,13 +1,19 @@
 import DraftPhoto from '../../components/DraftPhoto';
 import useDayjs from '../../hooks/useDayjs';
+import decimelToDMS from '../../hooks/useDecimelToDMS';
 import { selectById } from '../../store/draftImages';
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { Dimensions } from 'react-native';
-import { Carousel, Chip, Colors, Text, View } from 'react-native-ui-lib';
+import {
+  Carousel,
+  Chip,
+  Colors,
+  Spacings,
+  Text,
+  View,
+} from 'react-native-ui-lib';
 import { connect, ConnectedProps } from 'react-redux';
-
-const { width: screenWidth } = Dimensions.get('window');
 
 interface PhotoCarouselProps {
   draftPhotoIds: string[];
@@ -26,8 +32,14 @@ const Photo = ({ id, draftPhoto, onUseInfo, onRemovePhoto }: PhotoProps) => {
   const dayjs = useDayjs();
 
   return (
-    <View flex center marginH-s4>
-      <DraftPhoto id={id} key={id} borderRadius={11} cover aspectRatio={1.3} />
+    <View marginH-s4>
+      <DraftPhoto
+        id={id}
+        key={id}
+        borderRadius={11}
+        width="100%"
+        aspectRatio={1.3}
+      />
       <View
         absT
         flex
@@ -41,25 +53,21 @@ const Photo = ({ id, draftPhoto, onUseInfo, onRemovePhoto }: PhotoProps) => {
         }}
       >
         <View flex marginR-10>
-          <Text text100L>
-            Date: {dayjs(draftPhoto?.date).format('M/DD/YYYY')}
-          </Text>
-          <View centerV row spread>
+          <View row spread>
             {draftPhoto?.latitude && draftPhoto?.longitude ? (
-              <>
+              <View>
                 <Text text100L>
-                  Latitude: {draftPhoto?.latitude?.toFixed(4)}
+                  {decimelToDMS(draftPhoto?.latitude, false)}{' '}
+                  {decimelToDMS(draftPhoto?.longitude, true)}
                 </Text>
-                <Text text100L>
-                  Longitude: {draftPhoto?.longitude?.toFixed(4)}
-                </Text>
-                <Text text100L>
-                  Altitude: {draftPhoto?.altitude?.toFixed(2)}m
-                </Text>
-              </>
+                <Text text100L>{draftPhoto?.altitude?.toFixed(2)}m</Text>
+              </View>
             ) : (
               <Text text100L>No location info available.</Text>
             )}
+            <Text text100M grey10>
+              {dayjs(draftPhoto?.date).format('ll')}
+            </Text>
           </View>
         </View>
         <View centerV>
@@ -152,6 +160,7 @@ const PhotoCarousel = ({
     >
       {draftPhotoIds.map(id => (
         <ConnectedPhoto
+          marginH-s3
           key={id}
           id={id}
           onUseInfo={onUseInfo}

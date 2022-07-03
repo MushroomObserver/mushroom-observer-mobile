@@ -59,11 +59,6 @@ type ForwardedViewPhotoProps = ForwardedStackScreenProps<
   'View Photo'
 >;
 
-type ForwardedEditPhotoProps = ForwardedStackScreenProps<
-  HomeStackParamList,
-  'Edit Photo'
->;
-
 declare global {
   namespace ReactNavigation {
     interface RootParamList extends LoginStackParamList, HomeStackParamList {}

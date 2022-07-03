@@ -6,7 +6,7 @@ export const NameView = ({ name }: { name: Name }) => {
   if (name) {
     return (
       <Text>
-        {name.name} ({name.rank})
+        {name.name} {name?.author}
       </Text>
     );
   }

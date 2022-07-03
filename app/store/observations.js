@@ -1,6 +1,12 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 
-const adapter = createEntityAdapter();
+const adapter = createEntityAdapter({
+  selectId: ({ id }) => id,
+  sortComparer: (a, b) => {
+    console.log(a, b);
+    return a.date < b.date;
+  },
+});
 
 const slice = createSlice({
   name: 'observations',
