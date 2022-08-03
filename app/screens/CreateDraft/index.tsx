@@ -167,6 +167,7 @@ const DraftWizard = ({
                       ? dayjs(image.date).format('YYYYMMDD')
                       : undefined,
                     license: image?.license?.value,
+                    md5sum: image?.md5,
                     notes: image?.notes,
                     observations: newObservation.id,
                     original_name: image.fileName,
@@ -372,6 +373,7 @@ const DraftWizard = ({
         if (timestamp) {
           timestamp = jsCoreDateCreator(timestamp);
         }
+        console.log(asset);
         return {
           ...asset,
           id: newId,

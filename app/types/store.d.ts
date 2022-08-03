@@ -81,6 +81,7 @@ export interface DraftObservation {
 }
 
 export interface DraftImage {
+  md5: any;
   id: string;
   fileName?: string;
   fileSize?: number;

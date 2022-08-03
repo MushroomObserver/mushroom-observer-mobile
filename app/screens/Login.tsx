@@ -4,14 +4,16 @@ import { loginSuccess as loginSuccessAction } from '../store/auth';
 import { useGetApiKeyForUserMutation } from '../store/mushroomObserver';
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { Linking, ScrollView, Touchable } from 'react-native';
 import Config from 'react-native-config';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Button,
   Colors,
   Image,
   LoaderScreen,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native-ui-lib';
 import { connect, ConnectedProps } from 'react-redux';
@@ -53,66 +55,75 @@ const Login = ({ loginSuccess }: PropsFromRedux) => {
   return (
     <View flex>
       <ScrollView>
-        <View padding-30>
-          <Image marginB-15 logo />
-          <FormGroup>
-            <Text text70M marginB-s2>
-              Login
-            </Text>
-            <TextField
-              preset="default"
-              ref={usernameInput}
-              autoFocus
-              autoCorrect={false}
-              autoCapitalize="none"
-              label="Username"
-              textContentType="username"
-              autoCompleteType="username"
-              returnKeyType="next"
-              enablesReturnKeyAutomatically
-              onChangeText={onChangeUsername}
-              onSubmitEditing={() => {
-                passwordInput.current.focus();
-              }}
-              blurOnSubmit={false}
-              value={username}
-              validate="required"
-              validationMessage="Username is required"
-            />
-            <TextField
-              preset="default"
-              ref={passwordInput}
-              autoCorrect={false}
-              autoCapitalize="none"
-              label="Password"
-              textContentType="password"
-              autoCompleteType="password"
-              returnKeyType="done"
-              enablesReturnKeyAutomatically
-              secureTextEntry
-              onChangeText={onChangePassword}
-              onSubmitEditing={submitLogin}
-              value={password}
-              validate={['required', () => loginFailed]}
-              validationMessage={[
-                'Password is required',
-                'Incorrect username or password',
-              ]}
-            />
-          </FormGroup>
-          <View marginT-s4 row spread>
-            <Button
-              outline
-              label="Register"
-              onPress={() => navigation.navigate('Register')}
-            />
-            <Button
-              label="Login"
-              disabled={!username || !password || response.isLoading}
-              onPress={submitLogin}
-            />
+        <SafeAreaView>
+          <View paddingH-20>
+            <Image marginB-15 logo />
+            <FormGroup>
+              <Text text70M marginB-s2>
+                Login
+              </Text>
+              <TextField
+                preset="default"
+                ref={usernameInput}
+                autoFocus
+                autoCorrect={false}
+                autoCapitalize="none"
+                label="Username"
+                textContentType="username"
+                returnKeyType="next"
+                enablesReturnKeyAutomatically
+                onChangeText={onChangeUsername}
+                onSubmitEditing={() => {
+                  passwordInput.current?.focus();
+                }}
+                blurOnSubmit={false}
+                value={username}
+                validate="required"
+                validationMessage="Username is required"
+              />
+              <TextField
+                preset="default"
+                ref={passwordInput}
+                autoCorrect={false}
+                autoCapitalize="none"
+                label="Password"
+                textContentType="password"
+                returnKeyType="done"
+                enablesReturnKeyAutomatically
+                secureTextEntry
+                onChangeText={onChangePassword}
+                onSubmitEditing={submitLogin}
+                value={password}
+                validate={['required', () => loginFailed]}
+                validationMessage={[
+                  'Password is required',
+                  'Incorrect username or password',
+                ]}
+              />
+            </FormGroup>
+            <View marginT-s4 row spread>
+              <Text text100L grey10>
+                Visit{' '}
+                <Text
+                  onPress={() =>
+                    Linking.openURL(
+                      'https://mushroomobserver.org/account/signup',
+                    )
+                  }
+                  underline
+                >
+                  MushroomObserver.org
+                </Text>{' '}
+                to create an account.
+              </Text>
+              <Button
+                label="Login"
+                disabled={!username || !password || response.isLoading}
+                onPress={submitLogin}
+              />
+            </View>
           </View>
-        </View>
+        </SafeAreaView>
       </ScrollView>
       {response.isLoading && (
         <LoaderScreen

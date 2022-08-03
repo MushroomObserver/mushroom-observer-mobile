@@ -31,8 +31,9 @@ const encodeQueryParams = (object: any) => {
 
 const createValidateStatus =
   <ApiResult>() =>
-  (response: Response, body: ApiResponse<ApiResult>) =>
-    response.status === 200 && !body.errors;
+  (response: Response, body: ApiResponse<ApiResult>) => {
+    return response.status === 200 && !body.errors;
+  };
 
 const mushroomObserverApi = createApi({
   reducerPath: 'mushroomObserverApi',
@@ -145,7 +146,7 @@ const mushroomObserverApi = createApi({
       }),
     }),
     postImage: builder.mutation({
-      query: ({ uri, name, type, key, ...params }) => {
+      query: ({ uri, name, type, md5sum, key, ...params }) => {
         const formData = new FormData();
         formData.append('upload', {
           uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
@@ -154,6 +155,7 @@ const mushroomObserverApi = createApi({
         });
         return {
           url: `images?${encodeQueryParams(params)}&api_key=${key}&detail=high`,
+          // )}&md5sum=${md5sum}&api_key=${key}&detail=high`,
           method: 'POST',
           body: formData,
           headers: {
