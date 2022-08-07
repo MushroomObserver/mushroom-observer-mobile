@@ -8,7 +8,6 @@ import locations from './locations';
 import mushroomObserverApi from './mushroomObserver';
 import names from './names';
 import observations from './observations';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import {
@@ -65,8 +64,12 @@ export const store = configureStore({
   reducer: persistReducer(mainPersistConfig, rootReducer),
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
+      immutableCheck: {
+        warnAfter: 2000,
+      },
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        warnAfter: 2000,
       },
     }).concat(mushroomObserverApi.middleware, googleApi.middleware),
   devTools: true,

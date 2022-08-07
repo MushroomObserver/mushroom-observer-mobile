@@ -4,7 +4,7 @@ import { loginSuccess as loginSuccessAction } from '../store/auth';
 import { useGetApiKeyForUserMutation } from '../store/mushroomObserver';
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useRef, useState } from 'react';
-import { Linking, ScrollView, Touchable } from 'react-native';
+import { Linking, ScrollView } from 'react-native';
 import Config from 'react-native-config';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -13,7 +13,6 @@ import {
   Image,
   LoaderScreen,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native-ui-lib';
 import { connect, ConnectedProps } from 'react-redux';
@@ -103,18 +102,15 @@ const Login = ({ loginSuccess }: PropsFromRedux) => {
             </FormGroup>
             <View marginT-s4 row spread>
               <Text text100L grey10>
-                Visit{' '}
+                ©{' '}
                 <Text
                   onPress={() =>
-                    Linking.openURL(
-                      'https://mushroomobserver.org/account/signup',
-                    )
+                    Linking.openURL('https://mushroomobserver.org/')
                   }
                   underline
                 >
                   MushroomObserver.org
-                </Text>{' '}
-                to create an account.
+                </Text>
               </Text>
               <Button
                 label="Login"
