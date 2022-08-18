@@ -27,11 +27,7 @@ const LocationPicker = ({
             <Incubator.TextField
               preset="default"
               label="Location"
-              validate="required"
               value={selectedItem}
-              validateOnStart
-              validateOnChange
-              validationMessage="Location is required"
             />
           );
         }}
@@ -46,9 +42,6 @@ const LocationPicker = ({
         onChange={onChangeLocation}
         onSearchChange={setQuery}
         topBarProps={{ title: 'Location' }}
-        validateOnStart
-        validateOnChange
-        validateOnBlur
         listProps={{
           data: orderBy(
             filter(locations, ({ name }) =>
@@ -61,8 +54,6 @@ const LocationPicker = ({
             <Picker.Item key={item.id} value={item.name} label={item.name} />
           ),
         }}
-        validate="required"
-        errorMessage="This field is required"
       />
       <View flex>
         <View right marginB-s2>

@@ -251,6 +251,34 @@ const DraftWizard = ({
       headerLeft: () => (
         <HeaderButtons>
           <Item
+            title="Discard"
+            onPress={() =>
+              Alert.alert(
+                'Discard Observation',
+                'Do you want to discard this observation?',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Discard',
+                    onPress: () => {
+                      removeDraftObservation(id);
+                      navigation.navigate('Home', {
+                        screen: 'My Drafts',
+                      });
+                    },
+                  },
+                ],
+              )
+            }
+          />
+        </HeaderButtons>
+      ),
+      headerRight: () => (
+        <HeaderButtons>
+          <Item
             title="Save"
             onPress={() => {
               updateDraftObservation({
@@ -274,51 +302,22 @@ const DraftWizard = ({
               });
             }}
           />
-        </HeaderButtons>
-      ),
-      headerRight: () => (
-        <HeaderButtons>
-          <Item
-            title="Upload"
-            disabled={!location}
-            onPress={() =>
-              uploadObservation({
-                name,
-                date,
-                location,
-                isCollectionLocation,
-                latitude,
-                longitude,
-                altitude,
-                gpsHidden,
-                vote,
-                notes,
-              })
-            }
-          />
           <OverflowMenu>
             <HiddenItem
-              title="Discard"
+              title="Upload"
               onPress={() =>
-                Alert.alert(
-                  'Discard Observation',
-                  'Do you want to discard this observation?',
-                  [
-                    {
-                      text: 'Cancel',
-                      style: 'cancel',
-                    },
-                    {
-                      text: 'Discard',
-                      onPress: () => {
-                        removeDraftObservation(id);
-                        navigation.navigate('Home', {
-                          screen: 'My Drafts',
-                        });
-                      },
-                    },
-                  ],
-                )
+                uploadObservation({
+                  name,
+                  date,
+                  location,
+                  isCollectionLocation,
+                  latitude,
+                  longitude,
+                  altitude,
+                  gpsHidden,
+                  vote,
+                  notes,
+                })
               }
             />
           </OverflowMenu>
@@ -423,10 +422,7 @@ const DraftWizard = ({
           state={Wizard.States.ENABLED}
           label="Photos, Date, and GPS"
         />
-        <Wizard.Step
-          state={location ? Wizard.States.ENABLED : Wizard.States.ERROR}
-          label="Name and Location"
-        />
+        <Wizard.Step state={Wizard.States.ENABLED} label="Name and Location" />
         <Wizard.Step
           state={Wizard.States.ENABLED}
           label="Confidence and Notes"
@@ -466,7 +462,6 @@ const DraftWizard = ({
                     <TextField
                       preset="default"
                       label="Latitude"
-                      disabled
                       value={_.toString(latitude)}
                       maxLength={5}
                       keyboardType="numeric"
