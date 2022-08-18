@@ -69,7 +69,10 @@ const ObservationListItem = ({
 
 const mapStateToProps = (state: any, ownProps: any) => {
   const observation = selectObservationById(state, ownProps.id);
-  const photo = selectImageById(state, observation.photoIds[0]);
+  let photo;
+  if (observation?.photoIds) {
+    photo = selectImageById(state, observation.photoIds[0]);
+  }
   return {
     observation,
     photo,

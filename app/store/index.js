@@ -60,6 +60,13 @@ const rootReducer = (state, action) => {
   return mainReducer(state, action);
 };
 
+const middlewares = [mushroomObserverApi.middleware, googleApi.middleware];
+
+if (__DEV__) {
+  const createDebugger = require('redux-flipper').default;
+  middlewares.push(createDebugger());
+}
+
 export const store = configureStore({
   reducer: persistReducer(mainPersistConfig, rootReducer),
   middleware: getDefaultMiddleware =>
@@ -71,7 +78,7 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         warnAfter: 2000,
       },
-    }).concat(mushroomObserverApi.middleware, googleApi.middleware),
+    }).concat(middlewares),
   devTools: true,
 });
 
