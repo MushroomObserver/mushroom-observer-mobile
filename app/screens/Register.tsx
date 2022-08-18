@@ -42,7 +42,7 @@ const Register = () => {
   return (
     <View flex>
       <ScrollView>
-        <View padding-30>
+        <View padding-s4>
           <FormGroup>
             <Text text70M marginB-s2>
               Register

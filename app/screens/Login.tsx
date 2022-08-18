@@ -101,6 +101,18 @@ const Login = ({ loginSuccess }: PropsFromRedux) => {
               />
             </FormGroup>
             <View marginT-s4 row spread>
+              <Button
+                outline
+                label="Register"
+                onPress={() => navigation.navigate('Register')}
+              />
+              <Button
+                label="Login"
+                disabled={!username || !password || response.isLoading}
+                onPress={submitLogin}
+              />
+            </View>
+            <View center>
               <Text text100L grey10>
                 ©{' '}
                 <Text
@@ -112,11 +124,6 @@ const Login = ({ loginSuccess }: PropsFromRedux) => {
                   MushroomObserver.org
                 </Text>
               </Text>
-              <Button
-                label="Login"
-                disabled={!username || !password || response.isLoading}
-                onPress={submitLogin}
-              />
             </View>
           </View>
         </SafeAreaView>

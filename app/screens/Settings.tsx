@@ -67,6 +67,23 @@ const Settings = () => {
               )}`}
             </Text>
           </FormGroup>
+          <FormGroup marginT-s4>
+            <Text text100M grey10>
+              Delete Account
+            </Text>
+            <Text text80R>
+              To delete your account, please email your request to{' '}
+              <Text
+                onPress={() =>
+                  Linking.openURL('mailto:webmaster@mushroomobserver.org')
+                }
+                underline
+              >
+                webmaster@mushroomobserver.org
+              </Text>
+              .
+            </Text>
+          </FormGroup>
           <Button
             marginT-s4
             label="Submit Feedback"
