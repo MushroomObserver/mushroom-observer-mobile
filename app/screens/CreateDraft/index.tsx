@@ -63,6 +63,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { HiddenItem, Item } from 'react-navigation-header-buttons';
 import { withForwardedNavigationParams } from 'react-navigation-props-mapper';
 import { connect, ConnectedProps } from 'react-redux';
+import { act } from 'react-test-renderer';
 
 interface DraftWizardProps extends PropsFromRedux {
   id: string;
@@ -116,6 +117,25 @@ const DraftWizard = ({
   const [postImage, postImageResult] = usePostImageMutation();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    updateDraftObservation({
+      id,
+      changes: {
+        date: dayjs(date).format('YYYYMMDD'),
+        latitude,
+        longitude,
+        altitude,
+        gpsHidden,
+        name,
+        location,
+        isCollectionLocation,
+        vote,
+        notes,
+        draftPhotoIds,
+      },
+    });
+  }, [activeIndex]);
 
   const uploadObservation = useCallback(
     ({
