@@ -2,7 +2,6 @@ import { ConfidenceView } from '../components/ConfidenceView';
 import { DateView } from '../components/DateView';
 import { NameView } from '../components/NameView';
 import { OwnerView } from '../components/OwnerView';
-import decimelToDMS from '../hooks/useDecimelToDMS';
 import getImageUri from '../hooks/useGetImageUri';
 import { selectById as selectImageById } from '../store/images';
 import {
@@ -118,8 +117,7 @@ const ViewObservation = ({
                     Coordinates
                   </Text>
                   <Text text90R grey10>
-                    {decimelToDMS(observation?.latitude, false)}{' '}
-                    {decimelToDMS(observation?.longitude, true)}{' '}
+                    {observation?.latitude} {observation?.longitude}{' '}
                     {observation?.altitude}m
                   </Text>
                   <View row centerV>
