@@ -4,11 +4,20 @@ import HeaderButtons from '../components/header/HeaderButtons';
 import { useAuth } from '../hooks/useAuth';
 import { persistor } from '../store';
 import { logout } from '../store/auth';
+import { useDeleteUserMutation } from '../store/mushroomObserver';
 import { useNavigation } from '@react-navigation/core';
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Alert, Linking, ScrollView } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import { Button, Text, View } from 'react-native-ui-lib';
+import { color } from 'react-native-reanimated';
+import {
+  Button,
+  Colors,
+  LoaderScreen,
+  Text,
+  TextField,
+  View,
+} from 'react-native-ui-lib';
 import { Item } from 'react-navigation-header-buttons';
 import { useDispatch } from 'react-redux';
 
@@ -16,6 +25,17 @@ const Settings = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const auth = useAuth();
+
+  const [deleteUser, deleteUserResult] = useDeleteUserMutation();
+  const [username, setUsername] = useState('');
+
+  console.log(deleteUserResult.error?.data?.errors);
+  useEffect(() => {
+    if (deleteUserResult.isSuccess) {
+      persistor.purge();
+      dispatch(logout());
+    }
+  }, [deleteUserResult]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -44,6 +64,17 @@ const Settings = () => {
     });
   });
 
+  if (deleteUserResult.isLoading) {
+    return (
+      <LoaderScreen
+        color={Colors.blue30}
+        backgroundColor={Colors.grey50}
+        message="Loading..."
+        overlay
+      />
+    );
+  }
+
   return (
     <View flex>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -71,30 +102,32 @@ const Settings = () => {
             <Text text100M grey10>
               Delete Account
             </Text>
-            <Text text80R>
-              To delete your account, please email your request to{' '}
-              <Text
-                onPress={() =>
-                  Linking.openURL('mailto:webmaster@mushroomobserver.org')
-                }
-                underline
-              >
-                webmaster@mushroomobserver.org
-              </Text>
-              .
+            <Text text80R marginB-s4>
+              If you would like to delete your account, type your username below
+              to confirm.
             </Text>
+            <TextField
+              preset="default"
+              autoCorrect={false}
+              autoCapitalize="none"
+              label="Username"
+              textContentType="username"
+              onChangeText={setUsername}
+              value={username}
+              validate={() => deleteUserResult.isError}
+              validationMessage={
+                'There was a problem deleting your account, please try again later.'
+              }
+            />
+            <Button
+              disabled={username !== auth.user.login_name}
+              backgroundColor={Colors.red10}
+              label="Delete Account"
+              onPress={() => {
+                deleteUser({ key: auth.key });
+              }}
+            />
           </FormGroup>
-          <Button
-            marginT-s4
-            label="Submit Feedback"
-            onPress={() =>
-              Linking.openURL(
-                `https://docs.google.com/forms/d/e/1FAIpQLSdqlFlaoUEbL76eFTbJ70cISN0oO3vgz8fZulD4QGb-wCNaZw/viewform?usp=pp_url&entry.1034709423=${
-                  auth.user.login_name
-                }&entry.1883000247=${DeviceInfo.getVersion()}`,
-              )
-            }
-          />
         </View>
       </ScrollView>
     </View>
