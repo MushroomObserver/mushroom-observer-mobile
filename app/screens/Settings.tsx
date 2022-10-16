@@ -29,7 +29,6 @@ const Settings = () => {
   const [deleteUser, deleteUserResult] = useDeleteUserMutation();
   const [username, setUsername] = useState('');
 
-  console.log(deleteUserResult.error?.data?.errors);
   useEffect(() => {
     if (deleteUserResult.isSuccess) {
       persistor.purge();
