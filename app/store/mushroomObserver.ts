@@ -155,7 +155,6 @@ const mushroomObserverApi = createApi({
         });
         return {
           url: `images?${encodeQueryParams(params)}&api_key=${key}&detail=high`,
-          // )}&md5sum=${md5sum}&api_key=${key}&detail=high`,
           method: 'POST',
           body: formData,
           headers: {
@@ -163,6 +162,19 @@ const mushroomObserverApi = createApi({
             Accept: 'application/json',
           },
           validateStatus: createValidateStatus<Image>(),
+        };
+      },
+    }),
+    deleteUser: builder.mutation({
+      query: ({ key }) => {
+        console.log('key');
+        return {
+          url: `users?api_key=${key}`,
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
         };
       },
     }),
@@ -178,6 +190,7 @@ export const {
   useGetImagesQuery,
   usePostImageMutation,
   useDeleteImageMutation,
+  useDeleteUserMutation,
 } = mushroomObserverApi;
 
 export default mushroomObserverApi;

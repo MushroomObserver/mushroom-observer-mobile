@@ -76,9 +76,8 @@ const ViewObservation = ({ id, observation }: ViewObservationProps) => {
             Coordinates
           </Text>
           <Text text90R grey10>
-            {decimelToDMS(observation?.latitude, false)}{' '}
-            {decimelToDMS(observation?.longitude, true)} {observation?.altitude}
-            m
+            {observation?.latitude} {observation?.longitude}{' '}
+            {observation?.altitude}m
           </Text>
           <View row centerV>
             <Icon

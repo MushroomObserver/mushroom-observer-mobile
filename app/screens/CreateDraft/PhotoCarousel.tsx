@@ -1,6 +1,5 @@
 import DraftPhoto from '../../components/DraftPhoto';
 import useDayjs from '../../hooks/useDayjs';
-import decimelToDMS from '../../hooks/useDecimelToDMS';
 import { selectById } from '../../store/draftImages';
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
@@ -57,8 +56,7 @@ const Photo = ({ id, draftPhoto, onUseInfo, onRemovePhoto }: PhotoProps) => {
             {draftPhoto?.latitude && draftPhoto?.longitude ? (
               <View>
                 <Text text100L>
-                  {decimelToDMS(draftPhoto?.latitude, false)}{' '}
-                  {decimelToDMS(draftPhoto?.longitude, true)}
+                  {draftPhoto?.latitude} {draftPhoto?.longitude}
                 </Text>
                 <Text text100L>{draftPhoto?.altitude?.toFixed(2)}m</Text>
               </View>
