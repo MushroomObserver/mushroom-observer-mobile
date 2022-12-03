@@ -98,7 +98,9 @@ const mushroomObserverApi = createApi({
     >({
       query: ({ location = 'Earth', ...params }) => {
         return {
-          url: `observations?location=${location}&${encodeQueryParams(params)}`,
+          url: `observations?location=${encodeURIComponent(
+            location,
+          )}&${encodeQueryParams(params)}`,
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
