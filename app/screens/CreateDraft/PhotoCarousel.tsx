@@ -56,7 +56,7 @@ const Photo = ({ id, draftPhoto, onUseInfo, onRemovePhoto }: PhotoProps) => {
             {draftPhoto?.latitude && draftPhoto?.longitude ? (
               <View>
                 <Text text100L>
-                  {draftPhoto?.latitude} {draftPhoto?.longitude}
+                  {draftPhoto?.latitude.toFixed(4)} {draftPhoto?.longitude.toFixed(4)}
                 </Text>
                 <Text text100L>{draftPhoto?.altitude?.toFixed(2)}m</Text>
               </View>
