@@ -144,8 +144,8 @@ android {
         applicationId "org.mushroomobserver.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 48
-        versionName "1.0.48"
+        versionCode 49
+        versionName "1.0.49"
     }
     packagingOptions {
         pickFirst 'lib/x86/libc++_shared.so'
