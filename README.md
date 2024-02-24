@@ -4,24 +4,11 @@
 
 This is the Mushroom Observer mobile application. It is a React Native app for iOS and Android with the goal of allowing users to create observations and upload photos from their mobile device and while in the field.
 
-## Setup
+The latest instructions for building this app for iPhone and Android are here:
+[How to Build mushroom-observer-mobile for iPhone and Android](https://github.com/MushroomObserver/mushroom-observer-mobile/discussions/70)
 
-- Follow the instructions for [setting up a React Native development environment](https://reactnative.dev/docs/environment-setup) until you reach the section "Creating a new application"
-- Clone this repository from GitHub using `git clone git@github.com:MushroomObserver/mushroom-observer-mobile.git`
-  - Follow the instructions for [adding an SSH key to your GitHub account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) if you do not already have one added
-- Navigate into the project directory using `cd mushroom-observer-mobile` and then run `npm install`
-- Create `.env.development` based on `.env.template`
-  - Set `MUSHROOM_OBSERVER_API_URL` to `http://localhost:3000` if using [developer-startup](), or `https://www.mushroomovserver.org` for the live site
-  - Set `MUSHROOM_OBSERVER_API_KEY` to one you create on your local development server or the live site
-    - To create an API key, go to your Mushroom Observer account preferences and then click "API Key Manager" on the right side
-    - Enter a name for your API key and then click "Create a New Key"
-    - Use the new key as your app's API key
-
-## Development
-
-- Run `npm start` to start the build server
-- In another terminal instance, run `npm run android-dev` to start the app on an Android emulator or run `npm run ios-dev` to start the app in an iOS simulator
-- Changes should be reflected after a file save
+Release instructions are here:
+[How to Release a New Version of the Mushroom Observer Mobile App](https://github.com/MushroomObserver/mushroom-observer-mobile/discussions/77)
 
 ## Reference Material
 
