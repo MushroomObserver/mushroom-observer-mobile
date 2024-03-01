@@ -248,9 +248,9 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            if (nativeArchitectures) {
+            if (reactNativeArchitectures) {
                 ndk {
-                    abiFilters nativeArchitectures.split(',')
+                    abiFilters reactNativeArchitectures.split(',')
                 }
             }
         }
